@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS EduHub - Master Operating Systems</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-light: #60a5fa;
+            --accent-green: #10b981;
+            --accent-green-light: #34d399;
+            /* Soft blue and green gradient */
+            --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #e0f2fe 50%, #d1fae5 100%);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+            color: #1e293b;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card.interactive:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(37, 99, 235, 0.1);
+            background: rgba(255, 255, 255, 0.85);
+            cursor: pointer;
+        }
+
+        .glass-btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.7rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            width: 100%;
+        }
+
+        .glass-btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .glass-btn-locked {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            color: #64748b;
+            border-radius: 0.75rem;
+            padding: 0.7rem 1.5rem;
+            font-weight: 600;
+            width: 100%;
+            pointer-events: none;
+            /* Let parent card handle the click */
+        }
+
+        /* Branding & Typography */
+        .brand-text {
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-light) 50%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .card-icon-container {
+            width: 65px;
+            height: 65px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.85rem;
+            margin-bottom: 1.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .icon-blue {
+            color: var(--primary-blue);
+        }
+
+        .icon-green {
+            color: var(--accent-green);
+        }
+
+        .badge-coming-soon {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--primary-blue);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            font-size: 0.7rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+        }
+
+        /* SPA Transitions */
+        .spa-section {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 4rem 1rem 3rem;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-weight: 900;
+            color: #0f172a;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            color: #475569;
+            font-size: 1.15rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Modal Glass Styling */
+        .glass-modal-content {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 20px rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-backdrop.show {
+            opacity: 0.4;
+        }
+
+        .nav-link {
+            font-weight: 600;
+            color: #64748b;
+            transition: color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-blue);
+        }
+
+        .navbar-toggler {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            border-radius: 0.75rem;
+            padding: 0.35rem 0.65rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header / Navbar -->
+    <nav class="navbar navbar-expand-lg glass-nav sticky-top py-2 px-3">
+        <div class="container max-w-7xl">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#" onclick="navigateTo('home-section')">
+                <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm"
+                    style="width: 42px; height: 42px;">
+                    <i class="bi bi-motherboard-fill text-primary fs-5"></i>
+                </div>
+                <span class="brand-text fs-4">OS EduHub</span>
+            </a>
+
+            <button class="navbar-toggler shadow-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+                <i class="bi bi-list fs-2 text-primary"></i>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end mt-3 mt-lg-0" id="navbarNav">
+                <ul class="navbar-nav gap-1 gap-lg-3 text-center text-lg-start">
+                    <li class="nav-item">
+                        <a class="nav-link active text-primary" data-target="home-section"
+                            onclick="navigateTo('home-section')">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-target="learning-section"
+                            onclick="navigateTo('learning-section')">Learning Hub</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link coming-soon-trigger">Resources</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link coming-soon-trigger">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Application Area -->
+    <main class="container flex-grow-1 pb-5">
+
+        <!-- ============================================== -->
+        <!-- HOME SECTION (Importance of Operating Systems) -->
+        <!-- ============================================== -->
+        <div id="home-section" class="spa-section">
+            <section class="hero-section">
+                <h1 class="display-4 hero-title">Why Operating Systems Matter</h1>
+                <p class="hero-subtitle">
+                    An Operating System (OS) is the most critical software running on any computer. It acts as an
+                    intermediary between computer hardware and the user, silently organizing the chaos of modern
+                    computing.
+                </p>
+                <div class="mt-4">
+                    <button class="glass-btn-primary d-inline-block w-auto px-4"
+                        onclick="navigateTo('learning-section')">
+                        Explore Learning Modules <i class="bi bi-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- OS Use Cases Grid -->
+            <div class="row g-4 align-items-stretch">
+                <!-- Use Case 1 -->
+                <div class="col-12 col-md-6">
+                    <div class="glass-card interactive">
+                        <div class="card-icon-container icon-blue">
+                            <i class="bi bi-cpu-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Resource Allocation & Scheduling</h5>
+                        <p class="text-muted mb-0">
+                            The OS acts as the ultimate manager, dividing finite resources—CPU time, memory space, and
+                            I/O access—among countless competing applications fairly and efficiently.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Use Case 2 -->
+                <div class="col-12 col-md-6">
+                    <div class="glass-card interactive">
+                        <div class="card-icon-container icon-green">
+                            <i class="bi bi-layers-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Hardware Abstraction</h5>
+                        <p class="text-muted mb-0">
+                            It shields developers from complex hardware specifications by providing a clean, unified
+                            API. Programs can save a file without needing to understand how a spinning hard drive or
+                            NVMe SSD physically operates.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Use Case 3 -->
+                <div class="col-12 col-md-6">
+                    <div class="glass-card interactive">
+                        <div class="card-icon-container icon-blue">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Security & Isolation</h5>
+                        <p class="text-muted mb-0">
+                            By confining applications to isolated memory spaces (Virtual Memory) and managing user
+                            permissions, the OS ensures a rogue or buggy program cannot crash the entire system or steal
+                            data.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Use Case 4 -->
+                <div class="col-12 col-md-6">
+                    <div class="glass-card interactive">
+                        <div class="card-icon-container icon-green">
+                            <i class="bi bi-folder-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">File & Data Management</h5>
+                        <p class="text-muted mb-0">
+                            It transforms raw magnetic tracks and flash blocks into a logical, human-readable hierarchy
+                            of folders and files, handling the complexities of journaling and data integrity.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- LEARNING SECTION (Interactive Modules)         -->
+        <!-- ============================================== -->
+        <div id="learning-section" class="spa-section d-none">
+            <section class="hero-section pb-4">
+                <h2 class="display-5 hero-title">Interactive Learning Modules</h2>
+                <p class="hero-subtitle">
+                    Select a topic below to visualize and interact with core OS algorithms in real-time.
+                </p>
+            </section>
+
+            <!-- Modules Grid -->
+            <div class="row g-4 align-items-stretch">
+                <!-- Module 1: CPU Scheduling (Active) -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="glass-card interactive" onclick="window.location.href='cpu_schedule.html'">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="card-icon-container icon-blue">
+                                <i class="bi bi-diagram-3-fill"></i>
+                            </div>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">CPU Scheduling</h5>
+                        <p class="text-muted small flex-grow-1 mb-4">
+                            Interactive visual simulation of FCFS, SJF, SRTF, Priority, and Round Robin algorithms.
+                        </p>
+                        <button class="glass-btn-primary mt-auto"
+                            onclick="event.stopPropagation(); window.location.href='cpu_schedule.html'">
+                            Launch Simulator
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Module 2: Memory Management -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="glass-card interactive coming-soon-trigger">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="card-icon-container icon-green">
+                                <i class="bi bi-memory"></i>
+                            </div>
+                            <span class="badge-coming-soon">Coming Soon</span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Memory Management</h5>
+                        <p class="text-muted small flex-grow-1 mb-4">
+                            Explore paging, segmentation, allocation strategies, and virtual memory visually.
+                        </p>
+                        <button class="glass-btn-locked mt-auto">
+                            <i class="bi bi-lock-fill me-1"></i> Locked
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Module 3: Process Synchronization -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="glass-card interactive coming-soon-trigger">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="card-icon-container icon-blue">
+                                <i class="bi bi-arrow-repeat"></i>
+                            </div>
+                            <span class="badge-coming-soon">Coming Soon</span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Process Sync</h5>
+                        <p class="text-muted small flex-grow-1 mb-4">
+                            Understand mutexes, semaphores, deadlocks, and classic synchronization problems.
+                        </p>
+                        <button class="glass-btn-locked mt-auto">
+                            <i class="bi bi-lock-fill me-1"></i> Locked
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Module 4: OS Interviews -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="glass-card interactive coming-soon-trigger">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="card-icon-container icon-green">
+                                <i class="bi bi-patch-question-fill"></i>
+                            </div>
+                            <span class="badge-coming-soon">Coming Soon</span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">OS Interview Q&A</h5>
+                        <p class="text-muted small flex-grow-1 mb-4">
+                            Curated collection of the top 50 most frequently asked operating systems interview
+                            questions.
+                        </p>
+                        <button class="glass-btn-locked mt-auto">
+                            <i class="bi bi-lock-fill me-1"></i> Locked
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Glassmorphism Coming Soon Modal -->
+    <div class="modal fade" id="comingSoonModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-modal-content border-0">
+                <div class="modal-header border-0 pb-0 justify-content-end">
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center pt-0 pb-5 px-4 px-md-5">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4"
+                        style="width: 80px; height: 80px; background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(37, 99, 235, 0.2);">
+                        <i class="bi bi-tools fs-1" style="color: var(--primary-blue);"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-3">Coming Soon!</h3>
+                    <p class="text-muted mb-4 fs-5" style="line-height: 1.6;">
+                        We are working hard to build this module. Stay tuned for an interactive and engaging experience!
+                    </p>
+                    <button type="button" class="glass-btn-primary" data-bs-dismiss="modal">Got it, thanks!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- SPA Navigation & Interactions -->
+    <script>
+        // SPA Navigation Logic
+        function navigateTo(sectionId) {
+            // Hide all SPA sections
+            document.querySelectorAll('.spa-section').forEach(section => {
+                section.classList.add('d-none');
+            });
+
+            // Show the target section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('d-none');
+            }
+
+            // Update Navbar Active States
+            document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+                // Ignore triggers without data-target (like "Coming Soon" links)
+                if (link.hasAttribute('data-target')) {
+                    link.classList.remove('active', 'text-primary');
+                    if (link.getAttribute('data-target') === sectionId) {
+                        link.classList.add('active', 'text-primary');
+                    }
+                }
+            });
+
+            // Collapse mobile navbar if it's open
+            const navbarCollapse = document.getElementById('navbarNav');
+            if (window.innerWidth < 992 && navbarCollapse.classList.contains('show')) {
+                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse) || new bootstrap.Collapse(navbarCollapse);
+                bsCollapse.hide();
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const comingSoonModal = new bootstrap.Modal(document.getElementById('comingSoonModal'));
+
+            // Attach event listener to all "Coming Soon" triggers
+            const triggers = document.querySelectorAll('.coming-soon-trigger');
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation(); // Stop event from triggering parent card clicks
+                    comingSoonModal.show();
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
