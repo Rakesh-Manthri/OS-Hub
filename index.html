@@ -191,22 +191,119 @@
             opacity: 0.4;
         }
 
-        .nav-link {
-            font-weight: 600;
-            color: #64748b;
-            transition: color 0.2s ease;
-            cursor: pointer;
+        .brand-icon {
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-green));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
-        .nav-link:hover {
-            color: var(--primary-blue);
-        }
-
-        .navbar-toggler {
-            background: rgba(255, 255, 255, 0.8);
+        .glass-nav-toggler {
+            background: rgba(255, 255, 255, 0.85);
             border: 1px solid rgba(203, 213, 225, 0.8);
             border-radius: 0.75rem;
             padding: 0.35rem 0.65rem;
+            color: var(--primary-blue);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.25s ease;
+        }
+
+        .glass-nav-toggler:hover, .glass-nav-toggler:focus {
+            background: #ffffff;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            outline: none;
+        }
+
+        .nav-pills .nav-link {
+            color: var(--text-muted);
+            font-weight: 600;
+            border-radius: 2rem;
+            padding: 0.5rem 1.25rem;
+            transition: all 0.25s ease;
+            margin: 0 0.2rem;
+            cursor: pointer;
+        }
+
+        .nav-pills .nav-link:hover {
+            color: var(--primary-blue);
+            background: rgba(219, 234, 254, 0.5);
+        }
+
+        .nav-pills .nav-link.active {
+            background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
+
+        /* Mobile Navbar & Responsive Enhancements */
+        @media (max-width: 991.98px) {
+            .glass-nav {
+                padding-top: 0.6rem;
+                padding-bottom: 0.6rem;
+            }
+
+            .navbar-collapse {
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(25px);
+                -webkit-backdrop-filter: blur(25px);
+                border: 1px solid rgba(226, 232, 240, 0.95);
+                border-radius: 1.25rem;
+                padding: 0.9rem;
+                margin-top: 0.75rem;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 0 15px rgba(37, 99, 235, 0.06);
+            }
+
+            .nav-pills {
+                display: flex;
+                flex-direction: column;
+                gap: 0.45rem;
+                width: 100%;
+            }
+
+            .nav-pills .nav-link {
+                width: 100%;
+                text-align: left;
+                padding: 0.75rem 1.1rem;
+                border-radius: 0.85rem;
+                display: flex;
+                align-items: center;
+                font-size: 0.95rem;
+                margin: 0;
+                background: rgba(248, 250, 252, 0.75);
+                border: 1px solid rgba(226, 232, 240, 0.85);
+                color: var(--text-main);
+                transition: all 0.2s ease;
+            }
+
+            .nav-pills .nav-link:hover {
+                background: rgba(219, 234, 254, 0.6);
+                color: var(--primary-blue);
+                transform: translateX(3px);
+            }
+
+            .nav-pills .nav-link.active {
+                background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+                color: white;
+                border-color: transparent;
+                box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+            }
+
+            .nav-pills .nav-link i {
+                font-size: 1.2rem;
+                margin-right: 0.75rem !important;
+                width: 24px;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -214,36 +311,43 @@
 <body>
 
     <!-- Header / Navbar -->
-    <nav class="navbar navbar-expand-lg glass-nav sticky-top py-2 px-3">
-        <div class="container max-w-7xl">
+    <nav class="navbar navbar-expand-lg glass-nav sticky-top py-2 px-3 mb-4">
+        <div class="container-fluid max-w-7xl">
             <a class="navbar-brand d-flex align-items-center gap-2" href="#" onclick="navigateTo('home-section')">
-                <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm"
-                    style="width: 42px; height: 42px;">
-                    <i class="bi bi-motherboard-fill text-primary fs-5"></i>
+                <div class="brand-icon">
+                    <i class="bi bi-motherboard-fill"></i>
                 </div>
-                <span class="brand-text fs-4">OS EduHub</span>
+                <div>
+                    <span class="brand-text fs-4">OS EduHub</span>
+                </div>
             </a>
 
-            <button class="navbar-toggler shadow-none" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
+            <button class="navbar-toggler glass-nav-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="bi bi-list fs-2 text-primary"></i>
             </button>
 
-            <div class="collapse navbar-collapse justify-content-end mt-3 mt-lg-0" id="navbarNav">
-                <ul class="navbar-nav gap-1 gap-lg-3 text-center text-lg-start">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="nav nav-pills ms-auto my-2 my-lg-0" id="mainNav">
                     <li class="nav-item">
-                        <a class="nav-link active text-primary" data-target="home-section"
-                            onclick="navigateTo('home-section')">Home</a>
+                        <button class="nav-link active" data-target="home-section" onclick="navigateTo('home-section')">
+                            <i class="bi bi-house-door-fill me-1"></i> Home
+                        </button>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-target="learning-section"
-                            onclick="navigateTo('learning-section')">Learning Hub</a>
+                        <button class="nav-link" data-target="learning-section" onclick="navigateTo('learning-section')">
+                            <i class="bi bi-journal-bookmark-fill me-1"></i> Learning Hub
+                        </button>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link coming-soon-trigger">Resources</a>
+                        <button class="nav-link coming-soon-trigger">
+                            <i class="bi bi-collection-fill me-1"></i> Resources
+                        </button>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link coming-soon-trigger">About</a>
+                        <button class="nav-link coming-soon-trigger">
+                            <i class="bi bi-info-circle-fill me-1"></i> About
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -366,21 +470,20 @@
                     </div>
                 </div>
 
-                <!-- Module 2: Memory Management -->
+                <!-- Module 2: Page Replacement Simulator -->
                 <div class="col-12 col-md-6 col-lg-3">
-                    <div class="glass-card interactive coming-soon-trigger">
+                    <div class="glass-card interactive" onclick="window.location.href='page_replacement.html'">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <div class="card-icon-container icon-green">
                                 <i class="bi bi-memory"></i>
                             </div>
-                            <span class="badge-coming-soon">Coming Soon</span>
                         </div>
-                        <h5 class="fw-bold text-dark mb-2">Memory Management</h5>
+                        <h5 class="fw-bold text-dark mb-2">Page Replacement</h5>
                         <p class="text-muted small flex-grow-1 mb-4">
-                            Explore paging, segmentation, allocation strategies, and virtual memory visually.
+                            Simulate FIFO, LRU, MRU, Optimal & LFU page replacement algorithms with step-by-step frame matrices.
                         </p>
-                        <button class="glass-btn-locked mt-auto">
-                            <i class="bi bi-lock-fill me-1"></i> Locked
+                        <button class="glass-btn-primary mt-auto" onclick="event.stopPropagation(); window.location.href='page_replacement.html'">
+                            Launch Simulator
                         </button>
                     </div>
                 </div>
@@ -469,12 +572,11 @@
             }
 
             // Update Navbar Active States
-            document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
-                // Ignore triggers without data-target (like "Coming Soon" links)
+            document.querySelectorAll('#mainNav .nav-link').forEach(link => {
                 if (link.hasAttribute('data-target')) {
-                    link.classList.remove('active', 'text-primary');
+                    link.classList.remove('active');
                     if (link.getAttribute('data-target') === sectionId) {
-                        link.classList.add('active', 'text-primary');
+                        link.classList.add('active');
                     }
                 }
             });

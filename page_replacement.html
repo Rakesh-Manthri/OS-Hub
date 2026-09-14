@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS EduHub - Page Replacement Algorithms Simulator</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Prism.js for C Code Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-light: #60a5fa;
+            --primary-blue-soft: #dbeafe;
+            
+            --accent-pink: #ec4899;
+            --accent-pink-light: #f472b6;
+            --accent-pink-soft: #fce7f3;
+            
+            --accent-green: #10b981;
+            --accent-green-light: #34d399;
+            --accent-green-soft: #d1fae5;
+
+            --accent-amber: #f59e0b;
+            --accent-purple: #8b5cf6;
+            
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-bg-card: rgba(255, 255, 255, 0.82);
+            --glass-bg-hover: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.88);
+            --glass-border-subtle: rgba(226, 232, 240, 0.8);
+            --glass-shadow: 0 10px 30px 0 rgba(37, 99, 235, 0.06), 0 4px 12px 0 rgba(236, 72, 153, 0.04);
+            --glass-shadow-lg: 0 20px 40px -15px rgba(37, 99, 235, 0.12), 0 0 25px 0 rgba(16, 185, 129, 0.06);
+            
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-main);
+            background: linear-gradient(135deg, #e0e7ff 0%, #e0f2fe 50%, #d1fae5 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Glass Orbs Background */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        .orb-blue {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(96, 165, 250, 0.7) 0%, rgba(37, 99, 235, 0.2) 70%);
+            top: -100px;
+            left: -100px;
+            animation-duration: 18s;
+        }
+
+        .orb-pink {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(244, 114, 182, 0.65) 0%, rgba(236, 72, 153, 0.15) 70%);
+            bottom: 10%;
+            right: -100px;
+            animation-duration: 22s;
+        }
+
+        .orb-green {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(52, 211, 153, 0.6) 0%, rgba(16, 185, 129, 0.15) 70%);
+            top: 40%;
+            left: 45%;
+            animation-duration: 25s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, -30px) scale(1.08); }
+            100% { transform: translate(-30px, 40px) scale(0.95); }
+        }
+
+        /* Glassmorphism Panel */
+        .glass-panel {
+            background: var(--glass-bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            box-shadow: var(--glass-shadow-lg);
+            border-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .brand-icon {
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-green));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .brand-text {
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-purple) 50%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-pills .nav-link {
+            color: var(--text-muted);
+            font-weight: 600;
+            border-radius: 2rem;
+            padding: 0.5rem 1.25rem;
+            transition: all 0.25s ease;
+            margin: 0 0.2rem;
+        }
+
+        .nav-pills .nav-link:hover {
+            color: var(--primary-blue);
+            background: rgba(219, 234, 254, 0.5);
+        }
+
+        .nav-pills .nav-link.active {
+            background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
+
+        /* Buttons & Controls */
+        .btn-glass-primary {
+            background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            padding: 0.6rem 1.3rem;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+            transition: all 0.25s ease;
+        }
+
+        .btn-glass-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-glass-outline {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(203, 213, 225, 0.9);
+            color: var(--text-main);
+            border-radius: 0.75rem;
+            font-weight: 600;
+            padding: 0.55rem 1.1rem;
+            transition: all 0.25s ease;
+        }
+
+        .btn-glass-outline:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            transform: translateY(-1px);
+        }
+
+        .form-control-glass {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(203, 213, 225, 0.85);
+            border-radius: 0.65rem;
+            padding: 0.55rem 0.85rem;
+            font-size: 0.925rem;
+            transition: all 0.2s ease;
+            font-family: var(--font-mono);
+        }
+
+        .form-control-glass:focus {
+            background: #ffffff;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            outline: none;
+        }
+
+        .form-select-glass {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(203, 213, 225, 0.85);
+            border-radius: 0.75rem;
+            padding: 0.6rem 2.2rem 0.6rem 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+
+        .form-select-glass:focus {
+            background-color: #ffffff;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        /* KPI Badges */
+        .kpi-card {
+            border-radius: 1rem;
+            padding: 1.25rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            transition: transform 0.25s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .kpi-blue {
+            background: linear-gradient(135deg, rgba(219, 234, 254, 0.85), rgba(239, 246, 255, 0.95));
+            border-left: 5px solid var(--primary-blue);
+        }
+
+        .kpi-red {
+            background: linear-gradient(135deg, rgba(254, 226, 226, 0.85), rgba(254, 242, 242, 0.95));
+            border-left: 5px solid #ef4444;
+        }
+
+        .kpi-green {
+            background: linear-gradient(135deg, rgba(209, 250, 229, 0.85), rgba(236, 253, 245, 0.95));
+            border-left: 5px solid var(--accent-green);
+        }
+
+        .kpi-purple {
+            background: linear-gradient(135deg, rgba(237, 233, 254, 0.85), rgba(245, 243, 255, 0.95));
+            border-left: 5px solid var(--accent-purple);
+        }
+
+        .kpi-value {
+            font-size: 1.85rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        /* Interactive Memory Frame Visualizer */
+        .frame-visualizer-container {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 249, 255, 0.8) 100%);
+            border-radius: 1.15rem;
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .frame-slot-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #cbd5e1;
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .frame-slot-card.hit {
+            border-color: var(--accent-green);
+            background: linear-gradient(135deg, #ffffff 0%, rgba(236, 253, 245, 0.95) 100%);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2), 0 8px 20px rgba(16, 185, 129, 0.15);
+            transform: scale(1.03);
+        }
+
+        .frame-slot-card.fault {
+            border-color: #ef4444;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(254, 242, 242, 0.95) 100%);
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2), 0 8px 20px rgba(239, 68, 68, 0.15);
+            transform: scale(1.03);
+        }
+
+        .frame-slot-card.replaced {
+            border-color: var(--accent-amber);
+            background: linear-gradient(135deg, #ffffff 0%, rgba(254, 243, 199, 0.95) 100%);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+        }
+
+        .page-badge-val {
+            font-size: 1.75rem;
+            font-weight: 800;
+            font-family: var(--font-mono);
+            color: var(--primary-blue);
+        }
+
+        /* Matrix Table */
+        .table-matrix-wrapper {
+            overflow-x: auto;
+            border-radius: 1rem;
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .table-matrix {
+            margin-bottom: 0;
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+        }
+
+        .table-matrix th {
+            background: rgba(241, 245, 249, 0.9);
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 0.75rem;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        .table-matrix td {
+            padding: 0.65rem 0.75rem;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            border-right: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .status-badge-hit {
+            background: rgba(209, 250, 229, 0.9);
+            color: #065f46;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+
+        .status-badge-fault {
+            background: rgba(254, 226, 226, 0.9);
+            color: #991b1b;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+
+        .current-step-col {
+            background: rgba(219, 234, 254, 0.5) !important;
+            box-shadow: inset 0 0 0 2px var(--primary-blue);
+        }
+
+        /* Algorithm Theory Cards */
+        .algo-card {
+            border-radius: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(12px);
+            padding: 1.75rem;
+            box-shadow: var(--glass-shadow);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .algo-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--glass-shadow-lg);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        /* Code Container */
+        .code-container {
+            background: #1e293b;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-header {
+            background: #0f172a;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        pre[class*="language-"] {
+            margin: 0;
+            padding: 1.5rem;
+            background: #1e293b;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            line-height: 1.6;
+            max-height: 520px;
+            overflow-y: auto;
+        }
+
+        /* Comparison Bar */
+        .comp-bar-wrapper {
+            background: rgba(241, 245, 249, 0.85);
+            border-radius: 0.5rem;
+            height: 26px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .comp-bar {
+            height: 100%;
+            border-radius: 0.5rem;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            padding-left: 0.65rem;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+
+        .glass-nav-toggler {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            border-radius: 0.75rem;
+            padding: 0.35rem 0.65rem;
+            color: var(--primary-blue);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.25s ease;
+        }
+
+        .glass-nav-toggler:hover, .glass-nav-toggler:focus {
+            background: #ffffff;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            outline: none;
+        }
+
+        /* Dropdown Glass Styling & Stacking */
+        .controls-bar-panel {
+            position: relative;
+            z-index: 1050;
+        }
+
+        .dropdown {
+            position: relative;
+            z-index: 1060;
+        }
+
+        .dropdown-menu-glass {
+            background: #ffffff !important;
+            backdrop-filter: blur(25px) !important;
+            -webkit-backdrop-filter: blur(25px) !important;
+            border: 1px solid rgba(203, 213, 225, 0.9) !important;
+            border-radius: 1rem !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 20px rgba(37, 99, 235, 0.15) !important;
+            z-index: 99999 !important;
+            min-width: 280px;
+            padding: 0.6rem 0.5rem;
+            margin-top: 0.5rem !important;
+        }
+
+        .dropdown-menu-glass .dropdown-item {
+            border-radius: 0.6rem;
+            font-weight: 600;
+            padding: 0.65rem 0.9rem;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-menu-glass .dropdown-item:hover {
+            background: linear-gradient(135deg, rgba(219, 234, 254, 0.75), rgba(209, 250, 229, 0.75));
+            color: var(--primary-blue);
+            transform: translateX(3px);
+        }
+
+        /* Mobile Navbar & Responsive Enhancements */
+        @media (max-width: 991.98px) {
+            .glass-nav {
+                padding-top: 0.6rem;
+                padding-bottom: 0.6rem;
+            }
+
+            .navbar-collapse {
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(25px);
+                -webkit-backdrop-filter: blur(25px);
+                border: 1px solid rgba(226, 232, 240, 0.95);
+                border-radius: 1.25rem;
+                padding: 0.9rem;
+                margin-top: 0.75rem;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 0 15px rgba(37, 99, 235, 0.06);
+            }
+
+            .nav-pills {
+                display: flex;
+                flex-direction: column;
+                gap: 0.45rem;
+                width: 100%;
+            }
+
+            .nav-pills .nav-link {
+                width: 100%;
+                text-align: left;
+                padding: 0.75rem 1.1rem;
+                border-radius: 0.85rem;
+                display: flex;
+                align-items: center;
+                font-size: 0.95rem;
+                margin: 0;
+                background: rgba(248, 250, 252, 0.75);
+                border: 1px solid rgba(226, 232, 240, 0.85);
+                color: var(--text-main);
+                transition: all 0.2s ease;
+            }
+
+            .nav-pills .nav-link:hover {
+                background: rgba(219, 234, 254, 0.6);
+                color: var(--primary-blue);
+                transform: translateX(3px);
+            }
+
+            .nav-pills .nav-link.active {
+                background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+                color: white;
+                border-color: transparent;
+                box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+            }
+
+            .nav-pills .nav-link i {
+                font-size: 1.2rem;
+                margin-right: 0.75rem !important;
+                width: 24px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dropdown-menu-glass {
+                min-width: 275px !important;
+                width: calc(100vw - 2.5rem) !important;
+                max-width: 330px !important;
+                left: auto !important;
+                right: 0 !important;
+                transform: none !important;
+            }
+
+            .dropdown-menu-glass .dropdown-item {
+                font-size: 0.825rem;
+                padding: 0.55rem 0.75rem;
+                white-space: normal;
+                word-break: break-word;
+                line-height: 1.35;
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .dropdown-menu-glass .dropdown-item i {
+                margin-top: 2px;
+                font-size: 1rem;
+                flex-shrink: 0;
+            }
+
+            .kpi-value {
+                font-size: 1.4rem;
+            }
+
+            .brand-text {
+                font-size: 1.15rem;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Orbs -->
+    <div class="ambient-bg">
+        <div class="ambient-orb orb-blue"></div>
+        <div class="ambient-orb orb-pink"></div>
+        <div class="ambient-orb orb-green"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg glass-nav sticky-top py-2 px-3 mb-4" style="z-index: 1000;">
+        <div class="container-fluid max-w-7xl">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="brand-icon">
+                    <i class="bi bi-memory"></i>
+                </div>
+                <div>
+                    <span class="brand-text fs-4">OS EduHub</span>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2 font-monospace" style="font-size: 0.7rem;">Page Replacement</span>
+                </div>
+            </a>
+
+            <button class="navbar-toggler glass-nav-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list fs-2 text-primary"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="nav nav-pills ms-auto my-2 my-lg-0" id="mainNav" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab-simulator" data-bs-toggle="pill" data-bs-target="#section-simulator" type="button" role="tab">
+                            <i class="bi bi-play-circle-fill me-1"></i> Simulation
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-compare" data-bs-toggle="pill" data-bs-target="#section-compare" type="button" role="tab">
+                            <i class="bi bi-bar-chart-fill me-1"></i> Compare All
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-theory" data-bs-toggle="pill" data-bs-target="#section-theory" type="button" role="tab">
+                            <i class="bi bi-book-half me-1"></i> Algorithms
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-code" data-bs-toggle="pill" data-bs-target="#section-code" type="button" role="tab">
+                            <i class="bi bi-code-slash me-1"></i> Code in C
+                        </button>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a href="index.html" class="btn btn-sm btn-glass-outline d-inline-flex align-items-center mt-1 mt-lg-0">
+                            <i class="bi bi-house-door-fill me-1"></i> Hub Home
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container-fluid px-3 px-md-4 max-w-7xl pb-5 position-relative" style="z-index: 1;">
+        
+        <div class="tab-content" id="mainTabContent">
+            
+            <!-- ========================================== -->
+            <!-- 1. SIMULATOR SECTION                      -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade show active" id="section-simulator" role="tabpanel">
+                
+                <!-- Controls & Input Panel -->
+                <div class="glass-panel controls-bar-panel p-3 p-md-4 mb-4">
+                    <div class="row g-3 align-items-center">
+                        <!-- Algorithm Selector -->
+                        <div class="col-12 col-md-4 col-lg-3">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1">
+                                <i class="bi bi-diagram-3-fill text-primary me-1"></i> Page Replacement Algorithm
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="algoSelect">
+                                <option value="FIFO" selected>FIFO (First-In, First-Out)</option>
+                                <option value="LRU">LRU (Least Recently Used)</option>
+                                <option value="MRU">MRU (Most Recently Used)</option>
+                                <option value="OPTIMAL">Optimal (Belady's Min Algorithm)</option>
+                                <option value="LFU">LFU (Least Frequently Used)</option>
+                            </select>
+                        </div>
+
+                        <!-- Number of Frames -->
+                        <div class="col-6 col-md-3 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1">
+                                <i class="bi bi-grid-3x3-gap-fill text-success me-1"></i> Frame Capacity
+                            </label>
+                            <div class="input-group">
+                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="adjustFrames(-1)">-</button>
+                                <input type="number" class="form-control form-control-glass text-center fw-bold" id="frameCountInput" value="3" min="1" max="10">
+                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="adjustFrames(1)">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Reference String Input -->
+                        <div class="col-12 col-md-5 col-lg-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1">
+                                <i class="bi bi-list-ol text-primary me-1"></i> Page Reference String (Comma/Space separated)
+                            </label>
+                            <input type="text" class="form-control form-control-glass" id="refStringInput" value="7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1" placeholder="e.g. 7, 0, 1, 2, 0, 3, 0, 4">
+                        </div>
+
+                        <!-- Actions & Presets -->
+                        <div class="col-12 col-lg-3 d-flex flex-wrap gap-2 justify-content-end align-items-center mt-3 mt-lg-4">
+                            <div class="dropdown">
+                                <button class="btn btn-glass-outline btn-sm dropdown-toggle" type="button" id="presetsDropdown" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                                    <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Load Presets
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-glass border-0" aria-labelledby="presetsDropdown">
+                                    <li>
+                                        <button class="dropdown-item rounded-2 py-2" type="button" onclick="loadPreset('standard')">
+                                            <i class="bi bi-journal-text text-primary me-2"></i>Standard Textbook Set (3 Frames)
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item rounded-2 py-2" type="button" onclick="loadPreset('belady')">
+                                            <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Belady's Anomaly Demo (FIFO 3 vs 4)
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item rounded-2 py-2" type="button" onclick="loadPreset('locality')">
+                                            <i class="bi bi-arrow-repeat text-success me-2"></i>High Locality of Reference
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item rounded-2 py-2" type="button" onclick="loadPreset('thrashing')">
+                                            <i class="bi bi-cpu-fill text-purple me-2" style="color: var(--accent-purple);"></i>Thrashing Benchmark Pattern
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="btn btn-glass-outline btn-sm" type="button" onclick="generateRandomRefString()" title="Randomize Reference String">
+                                <i class="bi bi-shuffle me-1"></i> Random
+                            </button>
+                            <button class="btn btn-glass-primary" type="button" onclick="runSimulation()">
+                                <i class="bi bi-play-fill me-1"></i> Simulate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary KPI Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3">
+                        <div class="kpi-card kpi-blue">
+                            <div class="kpi-label">Total References</div>
+                            <div class="kpi-value text-primary mt-1" id="kpiTotalReq">0</div>
+                            <small class="text-muted d-block mt-1">Page Access Sequence Length</small>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <div class="kpi-card kpi-red">
+                            <div class="kpi-label">Page Faults (Misses)</div>
+                            <div class="kpi-value text-danger mt-1" id="kpiPageFaults">0</div>
+                            <small class="text-muted d-block mt-1" id="kpiFaultRate">Fault Ratio: 0.00%</small>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <div class="kpi-card kpi-green">
+                            <div class="kpi-label">Page Hits</div>
+                            <div class="kpi-value text-success mt-1" id="kpiPageHits">0</div>
+                            <small class="text-muted d-block mt-1" id="kpiHitRate">Hit Ratio: 0.00%</small>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <div class="kpi-card kpi-purple">
+                            <div class="kpi-label">Physical Frame Count</div>
+                            <div class="kpi-value text-purple mt-1" id="kpiFrameSlots" style="color: var(--accent-purple);">3</div>
+                            <small class="text-muted d-block mt-1">Allocated Memory Slots</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-Time Memory Frame Visualizer & Playback -->
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                        <div>
+                            <h5 class="fw-bold mb-0 text-dark d-flex align-items-center">
+                                <i class="bi bi-memory text-primary me-2"></i>Step-by-Step Frame Visualizer
+                            </h5>
+                            <small class="text-muted">Interactive memory pipeline state at step <strong class="text-primary font-monospace" id="stepCounterLabel">0 / 0</strong></small>
+                        </div>
+
+                        <!-- Stepper & Playback Controls -->
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="bg-white px-3 py-1.5 rounded-3 border d-flex align-items-center gap-2 shadow-sm">
+                                <button class="btn btn-sm btn-link text-secondary p-0" onclick="stepSimulation('prev')" title="Previous Step">
+                                    <i class="bi bi-skip-start-fill fs-5"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-primary p-0" id="btnPlay" onclick="togglePlay()" title="Play / Pause">
+                                    <i class="bi bi-play-fill fs-4" id="playIcon"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-secondary p-0" onclick="stepSimulation('next')" title="Next Step">
+                                    <i class="bi bi-skip-end-fill fs-5"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-danger p-0" onclick="resetPlayback()" title="Reset">
+                                    <i class="bi bi-arrow-counterclockwise fs-5"></i>
+                                </button>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 bg-white px-3 py-1 rounded-3 border">
+                                <label for="stepScrubber" class="small fw-bold text-muted mb-0 font-monospace">Step:</label>
+                                <input type="range" class="form-range" id="stepScrubber" min="0" max="0" value="0" style="width: 120px;" oninput="scrubStep(this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Frame Visualization Grid -->
+                    <div class="frame-visualizer-container">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div>
+                                <span class="text-muted small fw-bold text-uppercase">Requested Page:</span>
+                                <span class="badge bg-primary fs-6 font-monospace ms-2" id="liveReqPageBadge">-</span>
+                            </div>
+                            <div>
+                                <span class="text-muted small fw-bold text-uppercase me-2">Access Status:</span>
+                                <span id="liveStatusBadge" class="badge bg-secondary font-monospace fs-6">IDLE</span>
+                            </div>
+                        </div>
+
+                        <!-- Rendered Frame Slots Grid -->
+                        <div class="row g-3" id="frameSlotsGrid">
+                            <!-- Dynamic Frame Cards rendered here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comprehensive Execution Matrix Table -->
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <h5 class="fw-bold mb-0 text-dark">
+                                <i class="bi bi-table text-success me-2"></i>Complete Execution Matrix Table
+                            </h5>
+                            <small class="text-muted">Full trace of memory frames across all page requests</small>
+                        </div>
+                        <span class="badge bg-light text-dark border font-monospace" id="matrixSummaryBadge">0 steps</span>
+                    </div>
+
+                    <div class="table-matrix-wrapper">
+                        <table class="table table-matrix align-middle" id="matrixTable">
+                            <thead id="matrixHead">
+                                <!-- Dynamic Headers -->
+                            </thead>
+                            <tbody id="matrixBody">
+                                <!-- Dynamic Frame Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 2. COMPARE ALL ALGORITHMS SECTION         -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-compare" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                        <div>
+                            <h4 class="fw-bold mb-1 brand-text">
+                                <i class="bi bi-intersect me-2"></i>Multi-Algorithm Benchmark
+                            </h4>
+                            <p class="text-muted mb-0">Simulates and compares FIFO, LRU, MRU, Optimal, and LFU algorithms side-by-side on your exact reference string.</p>
+                        </div>
+                        <button class="btn btn-glass-primary" onclick="generateComparison()">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Recompute Benchmark
+                        </button>
+                    </div>
+
+                    <div class="row g-4 mb-4" id="comparisonCardsRow">
+                        <!-- Dynamic Comparison Cards -->
+                    </div>
+
+                    <!-- Comparison Visual Bar Chart -->
+                    <div class="glass-panel p-4 mb-4">
+                        <h5 class="fw-bold mb-3 text-dark">
+                            <i class="bi bi-bar-chart-fill text-danger me-2"></i>Page Faults Comparison (Lower is Better)
+                        </h5>
+                        <div id="chartPageFaults" class="d-flex flex-column gap-3">
+                            <!-- Visual Bars -->
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-4">
+                        <h5 class="fw-bold mb-3 text-dark">
+                            <i class="bi bi-bar-chart-fill text-success me-2"></i>Hit Ratio Comparison (Higher is Better)
+                        </h5>
+                        <div id="chartHitRatio" class="d-flex flex-column gap-3">
+                            <!-- Visual Bars -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 3. ALGORITHMS & THEORY SECTION            -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-theory" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="text-center max-w-3xl mx-auto mb-5">
+                        <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2 fw-bold text-uppercase mb-2">Memory Management Concepts</span>
+                        <h2 class="fw-bold brand-text mb-3">Page Replacement Algorithms Guide</h2>
+                        <p class="text-muted">When a page fault occurs and no physical memory frame is free, the operating system must select an existing page in memory to replace with the newly requested page.</p>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- FIFO Card -->
+                        <div class="col-12 col-lg-6">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold text-primary mb-1">1. First-In, First-Out (FIFO)</h4>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Queue-Based Replacement</span>
+                                    </div>
+                                    <i class="bi bi-arrow-right-circle-fill fs-2 text-primary"></i>
+                                </div>
+                                <p class="text-muted">The OS maintains a queue of all pages currently in memory. When a replacement is needed, the page at the head of the queue (the oldest loaded page) is evicted.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Pros & Cons:</h6>
+                                <ul class="text-muted small ps-3">
+                                    <li><strong>Pros:</strong> Extremely simple to implement using a FIFO queue. Minimal overhead.</li>
+                                    <li><strong>Cons:</strong> Ignores how frequently or recently a page is accessed. Suffer from <strong>Belady's Anomaly</strong> (increasing frame count can sometimes increase page faults).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- LRU Card -->
+                        <div class="col-12 col-lg-6">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold text-success mb-1">2. Least Recently Used (LRU)</h4>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">Stack / Clock Based</span>
+                                    </div>
+                                    <i class="bi bi-clock-history fs-2 text-success"></i>
+                                </div>
+                                <p class="text-muted">Replaces the page that has not been accessed for the longest period of time. It relies on the principle of <em>Temporal Locality of Reference</em>.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Pros & Cons:</h6>
+                                <ul class="text-muted small ps-3">
+                                    <li><strong>Pros:</strong> Highly effective in real-world workloads; immune to Belady's Anomaly (Stack Algorithm).</li>
+                                    <li><strong>Cons:</strong> Requires hardware support (counters or stack) for fast lookup; high overhead if done purely in software.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- MRU Card -->
+                        <div class="col-12 col-lg-6">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold text-purple mb-1" style="color: var(--accent-purple);">3. Most Recently Used (MRU)</h4>
+                                        <span class="badge bg-purple-subtle text-purple border border-purple-subtle">Inverse Locality</span>
+                                    </div>
+                                    <i class="bi bi-lightning-charge-fill fs-2 text-purple" style="color: var(--accent-purple);"></i>
+                                </div>
+                                <p class="text-muted">Replaces the page that was accessed most recently. Useful in scenarios where older pages are more likely to be re-used than recently accessed ones (e.g., cyclic file scanning).</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Pros & Cons:</h6>
+                                <ul class="text-muted small ps-3">
+                                    <li><strong>Pros:</strong> Ideal for sequential scans over large datasets exceeding frame capacity.</li>
+                                    <li><strong>Cons:</strong> Poor performance for standard interactive workloads with strong temporal locality.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Optimal Card -->
+                        <div class="col-12 col-lg-6">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold text-amber mb-1" style="color: var(--accent-amber);">4. Optimal Page Replacement (OPT / MIN)</h4>
+                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Theoretical Benchmark</span>
+                                    </div>
+                                    <i class="bi bi-star-fill fs-2 text-warning"></i>
+                                </div>
+                                <p class="text-muted">Replaces the page that will not be used for the longest time in the future. Also known as Belady's Optimal Algorithm.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Pros & Cons:</h6>
+                                <ul class="text-muted small ps-3">
+                                    <li><strong>Pros:</strong> Guarantees the absolute lowest possible page fault rate for a given frame capacity.</li>
+                                    <li><strong>Cons:</strong> Impossible to implement in real OS kernel because it requires future knowledge of memory accesses. Used primarily as a theoretical benchmark.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 4. CODE IN C SECTION                      -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-code" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                        <div>
+                            <h4 class="fw-bold mb-1 brand-text">
+                                <i class="bi bi-code-slash me-2"></i>C Implementation Code
+                            </h4>
+                            <p class="text-muted mb-0">Production-ready C source code for page replacement algorithms.</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <select class="form-select form-select-glass form-select-sm" id="codeAlgoSelect" onchange="updateCodeDisplay()">
+                                <option value="FIFO">FIFO Code</option>
+                                <option value="LRU">LRU Code</option>
+                                <option value="OPTIMAL">Optimal Code</option>
+                            </select>
+                            <button class="btn btn-glass-outline btn-sm" onclick="copyCode()">
+                                <i class="bi bi-clipboard me-1"></i> Copy Code
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="code-container">
+                        <div class="code-header">
+                            <div class="code-dots">
+                                <span style="background: #ef4444;"></span>
+                                <span style="background: #f59e0b;"></span>
+                                <span style="background: #10b981;"></span>
+                            </div>
+                            <span class="text-light small font-monospace" id="codeFileName">page_replacement_fifo.c</span>
+                        </div>
+                        <pre><code class="language-c" id="codeBlock">/* C Implementation of FIFO Page Replacement */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Bootstrap & Prism JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+
+    <!-- Page Replacement Logic Script -->
+    <script>
+        // Global Simulation State
+        let simulationHistory = [];
+        let currentStepIndex = 0;
+        let playInterval = null;
+
+        // Presets Dataset
+        const presets = {
+            standard: {
+                frames: 3,
+                refString: "7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1"
+            },
+            belady: {
+                frames: 3,
+                refString: "1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5"
+            },
+            locality: {
+                frames: 3,
+                refString: "1, 2, 1, 2, 1, 2, 1, 2, 3, 4, 1, 2"
+            },
+            thrashing: {
+                frames: 3,
+                refString: "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+            }
+        };
+
+        // C Code Templates
+        const cCodeSnippets = {
+            FIFO: `#include <stdio.h>
+#include <stdbool.h>
+
+void fifoPageReplacement(int pages[], int n, int capacity) {
+    int frames[capacity];
+    for (int i = 0; i < capacity; i++) frames[i] = -1;
+
+    int pageFaults = 0, pageHits = 0;
+    int index = 0;
+
+    printf("\\n--- FIFO Page Replacement Simulation ---\\n");
+    for (int i = 0; i < n; i++) {
+        int currentPage = pages[i];
+        bool hit = false;
+
+        for (int j = 0; j < capacity; j++) {
+            if (frames[j] == currentPage) {
+                hit = true;
+                pageHits++;
+                break;
+            }
+        }
+
+        if (!hit) {
+            frames[index] = currentPage;
+            index = (index + 1) % capacity;
+            pageFaults++;
+            printf("Step %2d: Page %d -> [FAULT] Frames: ", i + 1, currentPage);
+        } else {
+            printf("Step %2d: Page %d -> [ HIT ] Frames: ", i + 1, currentPage);
+        }
+
+        for (int j = 0; j < capacity; j++) {
+            if (frames[j] != -1) printf("%d ", frames[j]);
+            else printf("- ");
+        }
+        printf("\\n");
+    }
+
+    printf("\\nTotal Requests: %d\\nPage Faults: %d\\nPage Hits: %d\\nHit Ratio: %.2f%%\\n", 
+            n, pageFaults, pageHits, ((float)pageHits / n) * 100);
+}
+
+int main() {
+    int pages[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1};
+    int n = sizeof(pages) / sizeof(pages[0]);
+    int capacity = 3;
+    fifoPageReplacement(pages, n, capacity);
+    return 0;
+}`,
+            LRU: `#include <stdio.h>
+#include <stdbool.h>
+
+void lruPageReplacement(int pages[], int n, int capacity) {
+    int frames[capacity];
+    int lastUsed[capacity];
+    for (int i = 0; i < capacity; i++) {
+        frames[i] = -1;
+        lastUsed[i] = -1;
+    }
+
+    int pageFaults = 0, pageHits = 0;
+
+    printf("\\n--- LRU Page Replacement Simulation ---\\n");
+    for (int i = 0; i < n; i++) {
+        int currentPage = pages[i];
+        bool hit = false;
+
+        for (int j = 0; j < capacity; j++) {
+            if (frames[j] == currentPage) {
+                hit = true;
+                pageHits++;
+                lastUsed[j] = i;
+                break;
+            }
+        }
+
+        if (!hit) {
+            int lruIndex = 0;
+            int minTime = i + 1;
+            for (int j = 0; j < capacity; j++) {
+                if (frames[j] == -1) {
+                    lruIndex = j;
+                    break;
+                }
+                if (lastUsed[j] < minTime) {
+                    minTime = lastUsed[j];
+                    lruIndex = j;
+                }
+            }
+            frames[lruIndex] = currentPage;
+            lastUsed[lruIndex] = i;
+            pageFaults++;
+            printf("Step %2d: Page %d -> [FAULT]\\n", i + 1, currentPage);
+        } else {
+            printf("Step %2d: Page %d -> [ HIT ]\\n", i + 1, currentPage);
+        }
+    }
+    printf("\\nTotal Faults: %d, Hits: %d\\n", pageFaults, pageHits);
+}
+
+int main() {
+    int pages[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1};
+    int n = sizeof(pages) / sizeof(pages[0]);
+    int capacity = 3;
+    lruPageReplacement(pages, n, capacity);
+    return 0;
+}`,
+            OPTIMAL: `#include <stdio.h>
+#include <stdbool.h>
+
+void optimalPageReplacement(int pages[], int n, int capacity) {
+    int frames[capacity];
+    for (int i = 0; i < capacity; i++) frames[i] = -1;
+
+    int pageFaults = 0, pageHits = 0;
+
+    printf("\\n--- Optimal Page Replacement Simulation ---\\n");
+    for (int i = 0; i < n; i++) {
+        int currentPage = pages[i];
+        bool hit = false;
+
+        for (int j = 0; j < capacity; j++) {
+            if (frames[j] == currentPage) {
+                hit = true;
+                pageHits++;
+                break;
+            }
+        }
+
+        if (!hit) {
+            int replaceIdx = -1;
+            int farthest = i;
+
+            for (int j = 0; j < capacity; j++) {
+                if (frames[j] == -1) {
+                    replaceIdx = j;
+                    break;
+                }
+                int k;
+                for (k = i + 1; k < n; k++) {
+                    if (frames[j] == pages[k]) break;
+                }
+                if (k > farthest) {
+                    farthest = k;
+                    replaceIdx = j;
+                }
+            }
+            frames[replaceIdx] = currentPage;
+            pageFaults++;
+            printf("Step %2d: Page %d -> [FAULT]\\n", i + 1, currentPage);
+        } else {
+            printf("Step %2d: Page %d -> [ HIT ]\\n", i + 1, currentPage);
+        }
+    }
+    printf("\\nTotal Faults: %d, Hits: %d\\n", pageFaults, pageHits);
+}
+
+int main() {
+    int pages[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1};
+    int n = sizeof(pages) / sizeof(pages[0]);
+    int capacity = 3;
+    optimalPageReplacement(pages, n, capacity);
+    return 0;
+}`
+        };
+
+        // Parse Reference String
+        function getRefArray() {
+            const str = document.getElementById('refStringInput').value;
+            return str.split(/[\s,]+/).map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+        }
+
+        function adjustFrames(delta) {
+            const inp = document.getElementById('frameCountInput');
+            let val = parseInt(inp.value) + delta;
+            if (val >= 1 && val <= 10) {
+                inp.value = val;
+                runSimulation();
+            }
+        }
+
+        function loadPreset(key) {
+            if (presets[key]) {
+                document.getElementById('frameCountInput').value = presets[key].frames;
+                document.getElementById('refStringInput').value = presets[key].refString;
+                runSimulation();
+            }
+        }
+
+        function generateRandomRefString() {
+            const len = 15;
+            const arr = [];
+            for (let i = 0; i < len; i++) {
+                arr.push(Math.floor(Math.random() * 8));
+            }
+            document.getElementById('refStringInput').value = arr.join(', ');
+            runSimulation();
+        }
+
+        // Simulate Selected Algorithm
+        function simulateAlgorithm(algo, refArr, capacity) {
+            let frames = Array(capacity).fill(-1);
+            let history = [];
+            let fifoQueue = []; // for FIFO
+            let lastAccess = {}; // for LRU/MRU
+            let freqMap = {}; // for LFU
+            let loadTime = {}; // for LFU tie breaking
+
+            let hits = 0;
+            let faults = 0;
+
+            for (let i = 0; i < refArr.length; i++) {
+                const page = refArr[i];
+                let isHit = frames.includes(page);
+                let replacedPage = null;
+                let victimIndex = -1;
+
+                freqMap[page] = (freqMap[page] || 0) + 1;
+
+                if (isHit) {
+                    hits++;
+                    victimIndex = frames.indexOf(page);
+                    lastAccess[page] = i;
+                } else {
+                    faults++;
+                    // Check for empty slot
+                    let emptyIdx = frames.indexOf(-1);
+                    if (emptyIdx !== -1) {
+                        victimIndex = emptyIdx;
+                        frames[victimIndex] = page;
+                        fifoQueue.push(page);
+                        loadTime[page] = i;
+                    } else {
+                        // Eviction needed based on algorithm
+                        if (algo === 'FIFO') {
+                            replacedPage = fifoQueue.shift();
+                            victimIndex = frames.indexOf(replacedPage);
+                            frames[victimIndex] = page;
+                            fifoQueue.push(page);
+                        } else if (algo === 'LRU') {
+                            let minTime = Infinity;
+                            for (let j = 0; j < capacity; j++) {
+                                const p = frames[j];
+                                const t = lastAccess[p] !== undefined ? lastAccess[p] : -1;
+                                if (t < minTime) {
+                                    minTime = t;
+                                    replacedPage = p;
+                                    victimIndex = j;
+                                }
+                            }
+                            frames[victimIndex] = page;
+                        } else if (algo === 'MRU') {
+                            let maxTime = -1;
+                            for (let j = 0; j < capacity; j++) {
+                                const p = frames[j];
+                                const t = lastAccess[p] !== undefined ? lastAccess[p] : -1;
+                                if (t > maxTime) {
+                                    maxTime = t;
+                                    replacedPage = p;
+                                    victimIndex = j;
+                                }
+                            }
+                            frames[victimIndex] = page;
+                        } else if (algo === 'OPTIMAL') {
+                            let farthest = i;
+                            victimIndex = 0;
+                            for (let j = 0; j < capacity; j++) {
+                                const p = frames[j];
+                                let nextUse = Infinity;
+                                for (let k = i + 1; k < refArr.length; k++) {
+                                    if (refArr[k] === p) {
+                                        nextUse = k;
+                                        break;
+                                    }
+                                }
+                                if (nextUse > farthest) {
+                                    farthest = nextUse;
+                                    victimIndex = j;
+                                }
+                            }
+                            replacedPage = frames[victimIndex];
+                            frames[victimIndex] = page;
+                        } else if (algo === 'LFU') {
+                            let minFreq = Infinity;
+                            victimIndex = 0;
+                            for (let j = 0; j < capacity; j++) {
+                                const p = frames[j];
+                                const f = freqMap[p] || 0;
+                                if (f < minFreq) {
+                                    minFreq = f;
+                                    victimIndex = j;
+                                } else if (f === minFreq) {
+                                    if (loadTime[p] < loadTime[frames[victimIndex]]) {
+                                        victimIndex = j;
+                                    }
+                                }
+                            }
+                            replacedPage = frames[victimIndex];
+                            frames[victimIndex] = page;
+                            loadTime[page] = i;
+                        }
+                    }
+                    lastAccess[page] = i;
+                }
+
+                history.push({
+                    step: i + 1,
+                    page: page,
+                    frames: [...frames],
+                    isHit: isHit,
+                    replacedPage: replacedPage,
+                    victimIndex: victimIndex
+                });
+            }
+
+            return { history, hits, faults, total: refArr.length };
+        }
+
+        // Run Main Simulation
+        function runSimulation() {
+            const algo = document.getElementById('algoSelect').value;
+            const capacity = parseInt(document.getElementById('frameCountInput').value);
+            const refArr = getRefArray();
+
+            if (refArr.length === 0) return;
+
+            const res = simulateAlgorithm(algo, refArr, capacity);
+            simulationHistory = res.history;
+
+            // Update KPI Cards
+            document.getElementById('kpiTotalReq').innerText = res.total;
+            document.getElementById('kpiPageFaults').innerText = res.faults;
+            document.getElementById('kpiPageHits').innerText = res.hits;
+            document.getElementById('kpiFrameSlots').innerText = capacity;
+
+            const faultRate = ((res.faults / res.total) * 100).toFixed(1);
+            const hitRate = ((res.hits / res.total) * 100).toFixed(1);
+            document.getElementById('kpiFaultRate').innerText = `Fault Ratio: ${faultRate}%`;
+            document.getElementById('kpiHitRate').innerText = `Hit Ratio: ${hitRate}%`;
+
+            // Reset Stepper
+            const scrubber = document.getElementById('stepScrubber');
+            scrubber.max = res.history.length - 1;
+            scrubber.value = 0;
+            currentStepIndex = 0;
+
+            renderFrameStep(0);
+            renderMatrixTable(res.history, capacity);
+            generateComparison();
+        }
+
+        // Render Frame Step in Visualizer
+        function renderFrameStep(index) {
+            if (!simulationHistory || simulationHistory.length === 0) return;
+            const item = simulationHistory[index];
+            const capacity = parseInt(document.getElementById('frameCountInput').value);
+
+            document.getElementById('stepCounterLabel').innerText = `${index + 1} / ${simulationHistory.length}`;
+            document.getElementById('liveReqPageBadge').innerText = item.page;
+
+            const statusBadge = document.getElementById('liveStatusBadge');
+            if (item.isHit) {
+                statusBadge.innerText = "PAGE HIT";
+                statusBadge.className = "badge bg-success font-monospace fs-6";
+            } else {
+                statusBadge.innerText = item.replacedPage !== null ? `FAULT (Evicted Page ${item.replacedPage})` : "FAULT (Empty Slot)";
+                statusBadge.className = "badge bg-danger font-monospace fs-6";
+            }
+
+            const grid = document.getElementById('frameSlotsGrid');
+            grid.innerHTML = '';
+
+            for (let i = 0; i < capacity; i++) {
+                const pageVal = item.frames[i];
+                const col = document.createElement('div');
+                col.className = 'col';
+
+                let cardStateClass = '';
+                if (i === item.victimIndex) {
+                    cardStateClass = item.isHit ? 'hit' : 'fault';
+                }
+
+                col.innerHTML = `
+                    <div class="frame-slot-card ${cardStateClass}">
+                        <span class="text-muted small fw-bold font-monospace">Frame ${i + 1}</span>
+                        <span class="page-badge-val mt-1">${pageVal !== -1 ? pageVal : '-'}</span>
+                    </div>
+                `;
+                grid.appendChild(col);
+            }
+
+            // Sync matrix column highlighting
+            document.querySelectorAll('.table-matrix td, .table-matrix th').forEach(el => el.classList.remove('current-step-col'));
+            document.querySelectorAll(`.col-step-${index}`).forEach(el => el.classList.add('current-step-col'));
+        }
+
+        // Render Full Matrix Table
+        function renderMatrixTable(history, capacity) {
+            const head = document.getElementById('matrixHead');
+            const body = document.getElementById('matrixBody');
+            document.getElementById('matrixSummaryBadge').innerText = `${history.length} steps`;
+
+            let headHTML = `<tr><th style="min-width: 100px;">Frame / Step</th>`;
+            for (let i = 0; i < history.length; i++) {
+                headHTML += `<th class="col-step-${i}">${i + 1}<br><small class="text-primary fs-6">${history[i].page}</small></th>`;
+            }
+            headHTML += `</tr>`;
+            head.innerHTML = headHTML;
+
+            let bodyHTML = '';
+
+            for (let f = 0; f < capacity; f++) {
+                bodyHTML += `<tr><th class="text-muted">Frame ${f + 1}</th>`;
+                for (let i = 0; i < history.length; i++) {
+                    const pageVal = history[i].frames[f];
+                    const isVictim = history[i].victimIndex === f;
+                    const cellBg = isVictim ? (history[i].isHit ? 'style="background: rgba(209, 250, 229, 0.5); fw-bold;"' : 'style="background: rgba(254, 226, 226, 0.5); fw-bold;"') : '';
+                    bodyHTML += `<td class="col-step-${i}" ${cellBg}>${pageVal !== -1 ? pageVal : '-'}</td>`;
+                }
+                bodyHTML += `</tr>`;
+            }
+
+            // Add Status Row
+            bodyHTML += `<tr style="border-top: 2px solid #cbd5e1;"><th class="text-dark fw-bold">Status</th>`;
+            for (let i = 0; i < history.length; i++) {
+                const badge = history[i].isHit ? `<span class="status-badge-hit">HIT</span>` : `<span class="status-badge-fault">FAULT</span>`;
+                bodyHTML += `<td class="col-step-${i}">${badge}</td>`;
+            }
+            bodyHTML += `</tr>`;
+
+            body.innerHTML = bodyHTML;
+        }
+
+        // Playback Control
+        function stepSimulation(dir) {
+            if (dir === 'next' && currentStepIndex < simulationHistory.length - 1) {
+                currentStepIndex++;
+            } else if (dir === 'prev' && currentStepIndex > 0) {
+                currentStepIndex--;
+            }
+            document.getElementById('stepScrubber').value = currentStepIndex;
+            renderFrameStep(currentStepIndex);
+        }
+
+        function scrubStep(val) {
+            currentStepIndex = parseInt(val);
+            renderFrameStep(currentStepIndex);
+        }
+
+        function togglePlay() {
+            const btn = document.getElementById('playIcon');
+            if (playInterval) {
+                clearInterval(playInterval);
+                playInterval = null;
+                btn.className = 'bi bi-play-fill fs-4';
+            } else {
+                btn.className = 'bi bi-pause-fill fs-4';
+                playInterval = setInterval(() => {
+                    if (currentStepIndex < simulationHistory.length - 1) {
+                        stepSimulation('next');
+                    } else {
+                        togglePlay();
+                    }
+                }, 800);
+            }
+        }
+
+        function resetPlayback() {
+            if (playInterval) togglePlay();
+            currentStepIndex = 0;
+            document.getElementById('stepScrubber').value = 0;
+            renderFrameStep(0);
+        }
+
+        // Benchmark All Algorithms
+        function generateComparison() {
+            const capacity = parseInt(document.getElementById('frameCountInput').value);
+            const refArr = getRefArray();
+            const algos = ['FIFO', 'LRU', 'MRU', 'OPTIMAL', 'LFU'];
+
+            const results = algos.map(a => {
+                const res = simulateAlgorithm(a, refArr, capacity);
+                return {
+                    name: a,
+                    faults: res.faults,
+                    hits: res.hits,
+                    hitRatio: ((res.hits / res.total) * 100).toFixed(1)
+                };
+            });
+
+            // Benchmark Cards
+            const cardsRow = document.getElementById('comparisonCardsRow');
+            cardsRow.innerHTML = '';
+            results.forEach(r => {
+                const col = document.createElement('div');
+                col.className = 'col';
+                col.innerHTML = `
+                    <div class="glass-panel p-3 text-center h-100">
+                        <span class="badge bg-primary-subtle text-primary font-monospace fw-bold mb-2">${r.name}</span>
+                        <div class="fs-4 fw-bold text-danger">${r.faults} <span class="fs-6 text-muted font-normal">faults</span></div>
+                        <div class="fs-6 fw-bold text-success mt-1">${r.hitRatio}% <span class="fs-6 text-muted font-normal">hit ratio</span></div>
+                    </div>
+                `;
+                cardsRow.appendChild(col);
+            });
+
+            // Page Faults Bar Chart
+            const maxFaults = Math.max(...results.map(r => r.faults)) || 1;
+            const faultChart = document.getElementById('chartPageFaults');
+            faultChart.innerHTML = '';
+            results.forEach(r => {
+                const pct = (r.faults / maxFaults) * 100;
+                faultChart.innerHTML += `
+                    <div>
+                        <div class="d-flex justify-content-between small fw-bold mb-1">
+                            <span>${r.name}</span>
+                            <span class="text-danger">${r.faults} Faults</span>
+                        </div>
+                        <div class="comp-bar-wrapper">
+                            <div class="comp-bar bg-danger" style="width: ${pct}%;">${r.faults}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Hit Ratio Bar Chart
+            const hitChart = document.getElementById('chartHitRatio');
+            hitChart.innerHTML = '';
+            results.forEach(r => {
+                hitChart.innerHTML += `
+                    <div>
+                        <div class="d-flex justify-content-between small fw-bold mb-1">
+                            <span>${r.name}</span>
+                            <span class="text-success">${r.hitRatio}%</span>
+                        </div>
+                        <div class="comp-bar-wrapper">
+                            <div class="comp-bar bg-success" style="width: ${r.hitRatio}%;">${r.hitRatio}%</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // C Code Syntax Update
+        function updateCodeDisplay() {
+            const sel = document.getElementById('codeAlgoSelect').value;
+            const code = cCodeSnippets[sel] || "// Code unavailable";
+            document.getElementById('codeFileName').innerText = `page_replacement_${sel.toLowerCase()}.c`;
+            const codeBlock = document.getElementById('codeBlock');
+            codeBlock.textContent = code;
+            Prism.highlightElement(codeBlock);
+        }
+
+        function copyCode() {
+            const codeText = document.getElementById('codeBlock').textContent;
+            navigator.clipboard.writeText(codeText).then(() => {
+                alert("C Code copied to clipboard!");
+            });
+        }
+
+        // Initialize on Load
+        document.addEventListener('DOMContentLoaded', () => {
+            runSimulation();
+            updateCodeDisplay();
+
+            document.getElementById('algoSelect').addEventListener('change', runSimulation);
+            document.getElementById('refStringInput').addEventListener('change', runSimulation);
+        });
+    </script>
+</body>
+</html>
