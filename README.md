@@ -3,12 +3,12 @@
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![Bootstrap 5](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=flat-square&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Theme](https://img.shields.io/badge/Theme-Light%20Glassmorphism-38bdf8?style=flat-square)](#-design--glassmorphism-theme)
+[![Theme](https://img.shields.io/badge/Theme-Tactile%20Claymorphism-6366f1?style=flat-square)](#-design--claymorphism-theme)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](#license)
 
 **OS EduHub** is a modern, mobile-responsive, interactive educational platform and simulator suite designed for Operating Systems (OS) students, educators, and software engineers. 
 
-It provides an intuitive Single Page Application (SPA) hub along with two full-featured visual simulation platforms for **CPU Scheduling** and **Page Replacement Algorithms**.
+Styled with a **Tactile Claymorphism** design language, the interface delivers plush rounded surfaces, soft matte pastel color palettes, inflated shadows, and playful depth.
 
 ---
 
@@ -16,7 +16,7 @@ It provides an intuitive Single Page Application (SPA) hub along with two full-f
 
 ### 1. 🌐 OS EduHub Portal (`index.html`)
 - **Single Page Application (SPA)**: Smooth JavaScript tab routing between the **Home** section and **Learning Hub**.
-- **Educational Home Section**: Interactive glassmorphism cards detailing "Why Operating Systems Matter", covering:
+- **Educational Home Section**: Interactive plush clay cards detailing "Why Operating Systems Matter", covering:
   - Resource Allocation & Scheduling
   - Hardware Abstraction
   - Security & Isolation
@@ -33,9 +33,9 @@ It provides an intuitive Single Page Application (SPA) hub along with two full-f
   - **Priority Scheduling** (Non-Preemptive & Preemptive)
   - **Round Robin (RR)** (with dynamic Time Quantum $TQ$)
 - **Live CPU Core & Ready Queue Visualizer**:
-  - Real-time CPU dispatch socket displaying active execution state (`RUNNING` / `IDLE`).
+  - Real-time CPU dispatch socket displaying active execution state (`RUNNING` / `IDLE`) with a tactile 3D chip module.
   - Dynamic Ready Queue conveyor belt showing waiting processes ordered for dispatch.
-- **Interactive Gantt Chart**: Timeline execution chart with time ticks and idle state stripes.
+- **Interactive Gantt Chart**: Timeline execution chart with time ticks and idle state stripes styled as tactile clay blocks.
 - **Complete Metrics & Performance Benchmarks**:
   - Detailed solution table ($CT$, $TAT$, $WT$, $RT$) with CSV export.
   - Multi-algorithm side-by-side benchmark cards and visual bar charts.
@@ -51,24 +51,28 @@ It provides an intuitive Single Page Application (SPA) hub along with two full-f
   - **Optimal** (Belady's MIN Algorithm)
   - **LFU** (Least Frequently Used)
 - **Step-by-Step Memory Frame Visualizer**:
-  - Real-time frame grid displaying allocated page numbers, HIT / FAULT status badges, and evicted pages.
+  - Real-time frame grid displaying allocated page numbers, HIT / FAULT status badges, and evicted pages with plush 3D frame baskets.
   - Timeline stepper and playback controls (Play, Pause, Step Next/Prev, Reset).
-- **Execution Trace Matrix**: Complete step-by-step matrix table highlighting hits in soft green and faults in soft red.
+- **Execution Trace Matrix**: Complete step-by-step matrix table highlighting hits in soft pastel green and faults in soft pastel rose.
 - **Multi-Algorithm Benchmark**: Comparative bar charts measuring total page faults and hit ratios.
 - **Presets & Theory**: Standard textbook cases, Belady's Anomaly demo (3 vs 4 frames), locality patterns, and C code snippets.
 
 ---
 
-## 🎨 Design & Glassmorphism Theme
+## 🎨 Design & Claymorphism Theme
 
-The entire platform is styled using a unified **Light Glassmorphism** design language:
-- **Palette**:
-  - 🔵 **Vibrant Blue (`#2563eb`)**: Primary controls, navbar branding, and execution timelines.
-  - 🌸 **Rose Pink (`#ec4899`)**: Metrics highlights and interactive accents.
-  - 🌿 **Emerald Green (`#10b981`)**: CPU utilization, page hit badges, and status indicators.
-  - 🟣 **Purple & Amber (`#8b5cf6`, `#f59e0b`)**: Frame slots and algorithm badges.
-- **Glass Surfaces**: Frosted glass panels (`backdrop-filter: blur(16px)`), translucent white layers, and ambient light orbs.
-- **Unified Navigation Bar**: Identical glassmorphism navbars across all pages with responsive mobile menus and bi-directional linking.
+The entire platform is styled using a unified **Tactile Claymorphism** design language:
+- **Plush Rounded Surfaces**: Generous border radii (`20px` to `28px`) and pill-shaped elements give the interface a friendly, soft, and inviting feel.
+- **Matte Pastel Palette**:
+  - 🔵 **Pastel Cornflower Blue (`#436cf5` / `#edf3fe`)**: Primary actions, nav branding, and timeline blocks.
+  - 🌸 **Pastel Rose (`#f75583` / `#fef0f4`)**: Page fault states, waiting metrics, and accent pills.
+  - 🌿 **Pastel Mint (`#2ec491` / `#edfbf5`)**: Page hits, CPU throughput, and success badges.
+  - 🟣 **Pastel Purple & Amber (`#8b5cf6`, `#f59e0b`)**: Frame slots, algorithm tags, and category highlights.
+- **Inflated Shadows & Depth**:
+  - Dual inner highlights and cast shadows simulate light hitting puffy, inflated clay surfaces.
+  - Sunken tactile input wells (`inset` shadows) for input fields, search, and slider tracks.
+  - Interactive "pressed" micro-interactions on buttons (`transform: scale(0.97)` with deepened inner shadows).
+- **Unified Clay Navbar**: Floating, pillowy island navbar consistent across all pages with responsive mobile toggle menus.
 
 ---
 
