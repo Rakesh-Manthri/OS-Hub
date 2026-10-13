@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS EduHub - Operating Systems Syllabus (U24PC540IT)</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Claymorphism Matte Pastel Palette */
+            --clay-bg: #eef2f7;
+            --clay-surface: #ffffff;
+            --clay-surface-soft: #f7f9fd;
+
+            --primary-blue: #436cf5;
+            --primary-blue-light: #628efb;
+            --primary-blue-soft: #edf3fe;
+
+            --accent-pink: #f75583;
+            --accent-pink-light: #fb6d93;
+            --accent-pink-soft: #fef0f4;
+
+            --accent-green: #2ec491;
+            --accent-green-light: #38cf9b;
+            --accent-green-soft: #edfbf5;
+
+            --accent-amber: #f59e0b;
+            --accent-purple: #8b5cf6;
+
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Canonical Clay Shadows */
+            --clay-shadow-card:
+                0 8px 24px rgba(30, 40, 80, 0.13),
+                0 2px 6px rgba(30, 40, 80, 0.07),
+                inset 3px 3px 6px rgba(255, 255, 255, 0.9),
+                inset -3px -3px 8px rgba(170, 185, 215, 0.18);
+
+            --clay-shadow-card-hover:
+                0 14px 35px rgba(30, 40, 80, 0.19),
+                0 4px 10px rgba(30, 40, 80, 0.10),
+                inset 4px 4px 7px rgba(255, 255, 255, 0.95),
+                inset -4px -4px 9px rgba(160, 178, 210, 0.22);
+
+            --clay-shadow-btn:
+                0 6px 18px rgba(67, 108, 245, 0.32),
+                0 2px 5px rgba(30, 40, 80, 0.10),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.6),
+                inset -3px -3px 6px rgba(25, 55, 160, 0.3);
+
+            --clay-shadow-btn-hover:
+                0 10px 24px rgba(67, 108, 245, 0.42),
+                0 3px 8px rgba(30, 40, 80, 0.12),
+                inset 3px 3px 6px rgba(255, 255, 255, 0.7),
+                inset -3px -3px 6px rgba(35, 75, 180, 0.35);
+
+            --clay-shadow-btn-pressed:
+                0 2px 5px rgba(67, 108, 245, 0.2),
+                inset 3px 3px 6px rgba(20, 55, 150, 0.4),
+                inset -2px -2px 4px rgba(255, 255, 255, 0.3);
+
+            --clay-shadow-sunken:
+                inset 3px 3px 7px rgba(160, 175, 205, 0.35),
+                inset -3px -3px 7px rgba(255, 255, 255, 0.95);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-main);
+            background-color: var(--clay-bg);
+            background-image:
+                radial-gradient(circle at 10% 15%, rgba(220, 230, 252, 0.8) 0%, transparent 45%),
+                radial-gradient(circle at 90% 85%, rgba(252, 230, 240, 0.7) 0%, transparent 45%),
+                radial-gradient(circle at 50% 45%, rgba(226, 248, 240, 0.6) 0%, transparent 55%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Clay Orbs */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.35;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        .orb-blue {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(140, 175, 255, 0.6) 0%, rgba(67, 108, 245, 0.1) 70%);
+            top: -100px;
+            left: -100px;
+            animation-duration: 18s;
+        }
+
+        .orb-pink {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 170, 195, 0.55) 0%, rgba(247, 85, 131, 0.1) 70%);
+            bottom: 10%;
+            right: -100px;
+            animation-duration: 22s;
+        }
+
+        .orb-green {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(150, 240, 210, 0.5) 0%, rgba(46, 196, 145, 0.1) 70%);
+            top: 40%;
+            left: 45%;
+            animation-duration: 25s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(35px, -25px) scale(1.06); }
+            100% { transform: translate(-25px, 35px) scale(0.96); }
+        }
+
+        /* Plush Clay Panels & Cards */
+        .glass-panel {
+            background: var(--clay-surface);
+            border: 3px solid rgba(255, 255, 255, 0.95);
+            box-shadow: var(--clay-shadow-card);
+            border-radius: 26px;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .glass-panel:hover {
+            box-shadow: var(--clay-shadow-card-hover);
+        }
+
+        .glass-nav {
+            background: var(--clay-surface);
+            border-radius: 26px;
+            margin: 1.25rem auto 1.5rem;
+            max-width: min(96%, 1400px);
+            padding: 0.85rem 1.5rem;
+            border: 3px solid rgba(255, 255, 255, 0.95);
+            box-shadow: var(--clay-shadow-card);
+            transition: all 0.3s ease;
+        }
+
+        .brand-icon {
+            background: linear-gradient(145deg, #6c8cff, #436cf5);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            box-shadow:
+                0 4px 12px rgba(67, 108, 245, 0.35),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.6),
+                inset -2px -2px 4px rgba(25, 55, 160, 0.3);
+        }
+
+        .brand-text {
+            font-weight: 800;
+            background: linear-gradient(135deg, #436cf5 0%, #f75583 55%, #2ec491 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .glass-nav-toggler {
+            background: #f0f4fa;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 14px;
+            padding: 0.45rem 0.75rem;
+            color: #436cf5;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                0 4px 10px rgba(160, 175, 205, 0.25),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.8),
+                inset -2px -2px 4px rgba(160, 175, 205, 0.15);
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .glass-nav-toggler:hover, .glass-nav-toggler:focus {
+            transform: translateY(-2px);
+            background: #ffffff;
+            color: #2b55df;
+            box-shadow:
+                0 6px 14px rgba(67, 108, 245, 0.2),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.9),
+                inset -2px -2px 4px rgba(160, 175, 205, 0.15);
+            outline: none;
+        }
+
+        .nav-pills .nav-link {
+            color: var(--text-muted);
+            font-weight: 700;
+            border-radius: 18px;
+            padding: 0.6rem 1.35rem;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin: 0 0.25rem;
+            border: 2px solid transparent;
+            background: transparent;
+        }
+
+        .nav-pills .nav-link:hover {
+            color: #436cf5;
+            background: #f0f4fa;
+            box-shadow:
+                0 4px 12px rgba(160, 175, 205, 0.2),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.8),
+                inset -2px -2px 4px rgba(160, 175, 205, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .nav-pills .nav-link.active {
+            background: linear-gradient(145deg, #628efb, #436cf5);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow:
+                0 5px 16px rgba(67, 108, 245, 0.35),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.6),
+                inset -2px -2px 4px rgba(25, 55, 160, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Tactile Clay Buttons */
+        .btn-glass-primary {
+            background: linear-gradient(145deg, #628efb, #436cf5);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            box-shadow: var(--clay-shadow-btn);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn-glass-primary:hover {
+            background: linear-gradient(145deg, #6d96fc, #3b64ec);
+            color: white;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--clay-shadow-btn-hover);
+        }
+
+        .btn-glass-outline {
+            background: #f0f4fa;
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            color: var(--text-main);
+            border-radius: 18px;
+            font-weight: 700;
+            padding: 0.65rem 1.25rem;
+            box-shadow:
+                0 4px 10px rgba(160, 175, 205, 0.2),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.8),
+                inset -2px -2px 4px rgba(160, 175, 205, 0.15);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .btn-glass-outline:hover {
+            background: #ffffff;
+            color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(67, 108, 245, 0.2);
+        }
+
+        /* Hero Card Header */
+        .hero-banner {
+            background: var(--clay-surface);
+            border-radius: 32px;
+            border: 4px solid rgba(255, 255, 255, 0.95);
+            box-shadow: var(--clay-shadow-card);
+            padding: 3rem 2.5rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(67, 108, 245, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .meta-pill {
+            background: var(--clay-surface-soft);
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            padding: 0.55rem 1.2rem;
+            border-radius: 18px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow:
+                0 3px 8px rgba(30, 40, 80, 0.08),
+                inset 1px 1px 2px rgba(255, 255, 255, 0.8);
+            color: var(--text-main);
+        }
+
+        .meta-pill i {
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+        }
+
+        /* Unit Cards */
+        .unit-card {
+            background: var(--clay-surface);
+            border-radius: 28px;
+            border: 3px solid rgba(255, 255, 255, 0.95);
+            box-shadow: var(--clay-shadow-card);
+            padding: 2.25rem 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .unit-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--clay-shadow-card-hover);
+        }
+
+        .unit-badge {
+            font-family: var(--font-mono);
+            font-weight: 800;
+            font-size: 0.85rem;
+            padding: 0.45rem 1rem;
+            border-radius: 14px;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .unit-badge-1 { background: var(--primary-blue-soft); color: var(--primary-blue); border: 2px solid rgba(67, 108, 245, 0.2); }
+        .unit-badge-2 { background: var(--accent-green-soft); color: var(--accent-green); border: 2px solid rgba(46, 196, 145, 0.2); }
+        .unit-badge-3 { background: var(--accent-pink-soft); color: var(--accent-pink); border: 2px solid rgba(247, 85, 131, 0.2); }
+        .unit-badge-4 { background: #fef4df; color: var(--accent-amber); border: 2px solid rgba(245, 158, 11, 0.2); }
+        .unit-badge-5 { background: #f0eaff; color: var(--accent-purple); border: 2px solid rgba(139, 92, 246, 0.2); }
+
+        .co-card {
+            background: var(--clay-surface-soft);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            padding: 1.25rem 1.5rem;
+            height: 100%;
+            box-shadow: 0 4px 12px rgba(30, 40, 80, 0.06);
+            transition: transform 0.25s ease;
+        }
+
+        .co-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .co-badge {
+            background: var(--primary-blue);
+            color: white;
+            font-weight: 800;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.65rem;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-mono);
+        }
+
+        /* CIE Score Boxes */
+        .cie-metric-box {
+            background: var(--clay-surface);
+            border: 3px solid rgba(255, 255, 255, 0.95);
+            border-radius: 22px;
+            padding: 1.5rem 1.25rem;
+            text-align: center;
+            box-shadow: var(--clay-shadow-card);
+            height: 100%;
+            transition: transform 0.2s ease;
+        }
+
+        .cie-metric-box:hover {
+            transform: translateY(-4px);
+        }
+
+        .cie-val {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            line-height: 1.1;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Book Link Items */
+        .resource-item {
+            background: var(--clay-surface-soft);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            border-radius: 18px;
+            padding: 1.1rem 1.35rem;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .resource-item:hover {
+            background: #ffffff;
+            transform: translateX(4px);
+            box-shadow: 0 6px 16px rgba(30, 40, 80, 0.08);
+            color: var(--primary-blue);
+        }
+
+        .resource-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: var(--primary-blue-soft);
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 991.98px) {
+            .glass-nav {
+                border-radius: 20px;
+                padding: 0.65rem 1rem;
+                margin: 0.75rem auto 1rem;
+            }
+
+            .navbar-collapse {
+                background: #ffffff;
+                border: 2px solid rgba(67, 108, 245, 0.12);
+                border-radius: 20px;
+                padding: 0.85rem;
+                margin-top: 0.75rem;
+                box-shadow: 0 8px 24px rgba(30, 40, 80, 0.12);
+            }
+
+            .nav-pills {
+                display: flex;
+                flex-direction: column;
+                gap: 0.35rem;
+                width: 100%;
+            }
+
+            .nav-pills .nav-link {
+                width: 100%;
+                text-align: left;
+                padding: 0.7rem 1rem;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                font-size: 0.93rem;
+                margin: 0;
+                background: #f5f7fc;
+                box-shadow: none;
+                color: #475569;
+                border: 2px solid transparent;
+                transform: none !important;
+            }
+
+            .hero-banner {
+                padding: 2rem 1.5rem;
+                border-radius: 24px;
+            }
+
+            .nav-pills .nav-item:last-child a.btn {
+                width: 100%;
+                justify-content: center;
+                border-radius: 14px;
+                padding: 0.7rem 1rem;
+                margin-top: 0.25rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .glass-nav {
+                margin: 0.5rem auto 0.75rem;
+                padding: 0.55rem 0.85rem;
+            }
+
+            .brand-text {
+                font-size: 1.1rem;
+            }
+
+            .brand-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1.15rem;
+                border-radius: 12px;
+            }
+        }
+
+        @media print {
+            .glass-nav, .ambient-bg, .btn, .no-print {
+                display: none !important;
+            }
+            body {
+                background: #fff;
+                color: #000;
+            }
+            .unit-card, .hero-banner {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Ambient Animated Light Orbs -->
+    <div class="ambient-bg">
+        <div class="ambient-orb orb-blue"></div>
+        <div class="ambient-orb orb-pink"></div>
+        <div class="ambient-orb orb-green"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg glass-nav sticky-top py-2 px-3 mb-4">
+        <div class="container-fluid max-w-7xl">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="brand-icon">
+                    <i class="bi bi-book-half"></i>
+                </div>
+                <div>
+                    <span class="brand-text fs-4">OS EduHub</span>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2 font-monospace" style="font-size: 0.7rem;">Course Syllabus</span>
+                </div>
+            </a>
+
+            <button class="navbar-toggler glass-nav-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list fs-2 text-primary"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="nav nav-pills ms-auto my-2 my-lg-0" id="mainNav">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">
+                            <i class="bi bi-house-door-fill me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="lectures.html" class="nav-link">
+                            <i class="bi bi-collection-play-fill me-1"></i> Lectures
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="cpu_schedule.html" class="nav-link">
+                            <i class="bi bi-cpu-fill me-1"></i> CPU Scheduler
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="page_replacement.html" class="nav-link">
+                            <i class="bi bi-memory me-1"></i> Page Replacement
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="syllabus.html" class="nav-link active">
+                            <i class="bi bi-journal-text me-1"></i> Syllabus
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a href="index.html" class="btn btn-sm btn-glass-outline d-inline-flex align-items-center mt-1 mt-lg-0">
+                            <i class="bi bi-house-door-fill me-1"></i> Hub Home
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container px-3 px-md-4 max-w-7xl pb-5 position-relative" style="z-index: 1;">
+
+        <!-- ============================================== -->
+        <!-- COURSE HERO HEADER & METADATA                  -->
+        <!-- ============================================== -->
+        <section class="hero-banner">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+                <div>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill font-monospace fw-bold mb-2">
+                        <i class="bi bi-mortarboard-fill me-1"></i> Under Graduate Core Curriculum
+                    </span>
+                    <h1 class="display-5 fw-bold text-dark mb-1">OPERATING SYSTEMS</h1>
+                    <p class="text-muted fs-5 mb-0">Theory, Architectural Foundations, and Practical Implementation</p>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-glass-outline no-print" onclick="window.print()">
+                        <i class="bi bi-printer-fill me-1"></i> Print / PDF
+                    </button>
+                    <a href="cpu_schedule.html" class="btn btn-glass-primary no-print">
+                        <i class="bi bi-play-circle-fill me-1"></i> Simulators
+                    </a>
+                </div>
+            </div>
+
+            <!-- Course Metadata Badges -->
+            <div class="d-flex flex-wrap gap-2 pt-2">
+                <div class="meta-pill">
+                    <i class="bi bi-upc-scan"></i>
+                    <span>Course Code: <strong>U24PC540IT</strong></span>
+                </div>
+                <div class="meta-pill">
+                    <i class="bi bi-award-fill"></i>
+                    <span>Credits: <strong>3</strong></span>
+                </div>
+                <div class="meta-pill">
+                    <i class="bi bi-clock-history"></i>
+                    <span>L:T:P: <strong>3:0:0 (Hrs./week)</strong></span>
+                </div>
+                <div class="meta-pill">
+                    <i class="bi bi-check2-circle"></i>
+                    <span>SEE Marks: <strong>60</strong> (Duration: 3 Hours)</span>
+                </div>
+                <div class="meta-pill">
+                    <i class="bi bi-clipboard2-check"></i>
+                    <span>CIE Marks: <strong>40</strong></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- OBJECTIVES & OUTCOMES                          -->
+        <!-- ============================================== -->
+        <div class="row g-4 mb-5">
+            <!-- Course Objectives -->
+            <div class="col-12 col-lg-5">
+                <div class="glass-panel p-4 h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="course-card-icon icon-blue mb-0" style="width: 42px; height: 42px; font-size: 1.2rem;">
+                            <i class="bi bi-bullseye"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-0">Course Objectives</h4>
+                    </div>
+                    <p class="text-muted small">The foundational objectives students will cultivate:</p>
+                    <ol class="text-muted ps-3 mb-0" style="line-height: 1.8;">
+                        <li class="mb-2"><strong>Modern Principles & Functionalities:</strong> Demonstrate the core principles of modern operating systems, virtualization, and system functionalities.</li>
+                        <li><strong>System Services & Architectures:</strong> Discuss and dissect the services of major contemporary operating systems such as Windows, Linux, and Android.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Course Outcomes (COs) -->
+            <div class="col-12 col-lg-7">
+                <div class="glass-panel p-4 h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="course-card-icon icon-green mb-0" style="width: 42px; height: 42px; font-size: 1.2rem;">
+                                <i class="bi bi-trophy-fill"></i>
+                            </div>
+                            <h4 class="fw-bold text-dark mb-0">Course Outcomes (COs)</h4>
+                        </div>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill font-monospace small">5 Outcomes</span>
+                    </div>
+                    <p class="text-muted small mb-3">On successful completion of the course, students will be able to:</p>
+                    
+                    <div class="row g-2">
+                        <div class="col-12">
+                            <div class="co-card">
+                                <span class="co-badge">CO 1</span>
+                                <div class="text-dark small fw-semibold">Understand the functionalities of Operating Systems, Processes, threads, and evaluate CPU scheduling algorithms.</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="co-card">
+                                <span class="co-badge">CO 2</span>
+                                <div class="text-dark small fw-semibold">Apply contiguous & non-contiguous techniques for main memory management and virtual memory.</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="co-card">
+                                <span class="co-badge">CO 3</span>
+                                <div class="text-dark small fw-semibold">Design solutions for classical problems of synchronization and evaluate strategies for deadlock handling.</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="co-card">
+                                <span class="co-badge">CO 4</span>
+                                <div class="text-dark small fw-semibold">Implement techniques for file organization, I/O operations, disk scheduling, and system protection.</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="co-card">
+                                <span class="co-badge">CO 5</span>
+                                <div class="text-dark small fw-semibold">Compare and contrast key features and architectural functionalities of Windows 10, Linux, and Android OS.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- UNIT-BY-UNIT SYLLABUS BREAKDOWN                -->
+        <!-- ============================================== -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="fw-bold text-dark mb-1"><i class="bi bi-journal-bookmark-fill text-primary me-2"></i>Detailed Unit Syllabus</h2>
+                <p class="text-muted mb-0">Complete syllabus divided across five comprehensive pedagogical units.</p>
+            </div>
+        </div>
+
+        <!-- UNIT I -->
+        <section class="unit-card" id="unit-1">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                <span class="unit-badge unit-badge-1">UNIT - I</span>
+                <a href="cpu_schedule.html" class="btn btn-sm btn-glass-primary">
+                    <i class="bi bi-play-circle-fill me-1"></i> Launch CPU Scheduling Simulator
+                </a>
+            </div>
+            <h3 class="fw-bold text-dark mb-2">Introduction and Process Management</h3>
+            <div class="p-3 bg-light rounded-4 border mb-3">
+                <div class="text-primary fw-bold small text-uppercase mb-1"><i class="bi bi-cpu-fill me-1"></i>Mapped Outcome: CO 1</div>
+                <div class="text-muted small">Covers OS fundamentals, user interface, system call dispatching, thread architectures, and uniprocessor/multiprocessor scheduling heuristics.</div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="h-100 p-3 rounded-4 bg-white border">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-layers-fill text-primary me-1"></i>OS Overview & Interfaces</h6>
+                        <ul class="text-muted small mb-0 ps-3" style="line-height: 1.7;">
+                            <li>Operating System Functionalities</li>
+                            <li>Types of Operating Systems</li>
+                            <li>User Operating System Interface (CLI vs GUI)</li>
+                            <li>System Calls & System Boot Sequence</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="h-100 p-3 rounded-4 bg-white border">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-arrow-repeat text-primary me-1"></i>Process Concept & Scheduling</h6>
+                        <ul class="text-muted small mb-0 ps-3" style="line-height: 1.7;">
+                            <li>Process Concept: Overview, PCB, State Model</li>
+                            <li>Threads (User-level & Kernel-level threads)</li>
+                            <li><strong>Uniprocessor Scheduling:</strong> FCFS, SJF, SRTF, Priority, Round Robin</li>
+                            <li>Multiprocessor & Real-Time Scheduling Algorithms</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UNIT II -->
+        <section class="unit-card" id="unit-2">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                <span class="unit-badge unit-badge-2">UNIT - II</span>
+                <a href="page_replacement.html" class="btn btn-sm btn-glass-primary" style="background: linear-gradient(145deg, #38cf9b, #2ec491);">
+                    <i class="bi bi-memory me-1"></i> Launch Page Replacement Simulator
+                </a>
+            </div>
+            <h3 class="fw-bold text-dark mb-2">Memory Management & Virtual Memory</h3>
+            <div class="p-3 bg-light rounded-4 border mb-3">
+                <div class="text-success fw-bold small text-uppercase mb-1"><i class="bi bi-diagram-3-fill me-1"></i>Mapped Outcome: CO 2</div>
+                <div class="text-muted small">Addresses main memory allocation, address binding, segmentation, paging tables, demand paging, and page replacement strategies.</div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="h-100 p-3 rounded-4 bg-white border">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-hdd-stack text-success me-1"></i>Main Memory Management</h6>
+                        <ul class="text-muted small mb-0 ps-3" style="line-height: 1.7;">
+                            <li>Memory Background & Address Binding</li>
+                            <li>Swapping Mechanisms</li>
+                            <li>Contiguous Memory Allocation (Fixed & Variable Partitioning)</li>
+                            <li>Paging Architecture & Translation Lookaside Buffers (TLB)</li>
+                            <li>Segmentation & Segment Tables</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="h-100 p-3 rounded-4 bg-white border">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-cloud-arrow-down-fill text-success me-1"></i>Virtual Memory Management</h6>
+                        <ul class="text-muted small mb-0 ps-3" style="line-height: 1.7;">
+                            <li>Demand Paging & Page Fault Handling</li>
+                            <li><strong>Page Replacement Algorithms:</strong> FIFO, LRU, MRU, Optimal, LFU</li>
+                            <li>Thrashing, Working Set Model & Page Fault Frequency</li>
+                            <li>Allocating Kernel Memory (Buddy System, Slab Allocator)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UNIT III -->
+        <section class="unit-card" id="unit-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                <span class="unit-badge unit-badge-3">UNIT - III</span>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill font-monospace small">Deadlocks & Concurrency</span>
+            </div>
+            <h3 class="fw-bold text-dark mb-2">Process Synchronization & Deadlocks</h3>
+            <div class="p-3 bg-light rounded-4 border mb-3">
+                <div class="text-danger fw-bold small text-uppercase mb-1"><i class="bi bi-shield-lock-fill me-1"></i>Mapped Outcome: CO 3</div>
+                <div class="text-muted small">Inter-process communication, race conditions, hardware and software synchronization primitives, and deadlock prevention/avoidance.</div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="h-100 p-3 rounded-4 bg-white border">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-arrow-left-right text-danger me-1"></i>Process Synchronization</h6>
+                        <ul class="text-muted small mb-0 ps-3" style="line-height: 1.7;">
+                            <li>Inter-Process Communication (IPC)</li>
+                            <li>Critical Section Problem & Requirements</li>
+                            <li>Software Solutions: Peterson's Solution, Lamport's Bakery Algorithm</li>
+                            <li>Semaphores (Binary & Counting) & Mutexes</li>
+                            <li>Monitors & Condition Variables</li>
+                            <li>Classical Problems: Producer-Consumer, Readers-Writers, Dining Philosophers</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="h-100 p-3 rounded-4 bg-white border">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-exclamation-triangle-fill text-danger me-1"></i>Deadlocks</h6>
+                        <ul class="text-muted small mb-0 ps-3" style="line-height: 1.7;">
+                            <li>System Model & 4 Necessary Conditions for Deadlock</li>
+                            <li>Resource Allocation Graph (RAG)</li>
+                            <li>Deadlock Prevention & Deadlock Avoidance</li>
+                            <li><strong>Banker's Algorithm:</strong> Safety & Resource-Request Algorithms</li>
+                            <li>Deadlock Detection & Recovery Strategies</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UNIT IV -->
+        <section class="unit-card" id="unit-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                <span class="unit-badge unit-badge-4">UNIT - IV</span>
+                <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-pill font-monospace small">Storage & Security</span>
+            </div>
+            <h3 class="fw-bold text-dark mb-2">Storage and I/O Management</h3>
+            <div class="p-3 bg-light rounded-4 border mb-3">
+                <div class="text-warning fw-bold small text-uppercase mb-1"><i class="bi bi-folder-fill me-1"></i>Mapped Outcome: CO 4</div>
+                <div class="text-muted small">File system interfaces and internal structures, secondary disk scheduling, RAID redundancy levels, and protection domains.</div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="h-100 p-3 rounded-4 bg-white border">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-folder2-open text-warning me-1"></i>File System Concepts & Structures</h6>
+                        <ul class="text-muted small mb-0 ps-3" style="line-height: 1.7;">
+                            <li>File System: Basic Concepts & Attributes</li>
+                            <li>File System Structure & Mounting</li>
+                            <li>Directory Structure (Single, Two-level, Tree, Acyclic)</li>
+                            <li>Allocation Methods: Contiguous, Linked, Indexed</li>
+                            <li>Free Space Management (Bit vector, Linked list, Grouping)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="h-100 p-3 rounded-4 bg-white border">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-shield-check text-warning me-1"></i>I/O Management & Protection</h6>
+                        <ul class="text-muted small mb-0 ps-3" style="line-height: 1.7;">
+                            <li>Disk Structure & Disk Scheduling (FCFS, SSTF, SCAN, C-SCAN)</li>
+                            <li>RAID Structures & Levels (RAID 0 through 6)</li>
+                            <li>Goals and Principles of Protection</li>
+                            <li>Domain of Protection & Access Matrix Model</li>
+                            <li>Implementation of Access Matrix (Access lists, Capability lists)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UNIT V -->
+        <section class="unit-card" id="unit-5">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                <span class="unit-badge unit-badge-5">UNIT - V</span>
+                <span class="badge bg-purple-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill font-monospace small">Comparative Systems</span>
+            </div>
+            <h3 class="fw-bold text-dark mb-2">Case Studies: Windows 10, Linux, and Android OS</h3>
+            <div class="p-3 bg-light rounded-4 border mb-3">
+                <div class="fw-bold small text-uppercase mb-1" style="color: var(--accent-purple);"><i class="bi bi-window-sidebar me-1"></i>Mapped Outcome: CO 5</div>
+                <div class="text-muted small">Architectural deep dive into production modern operating systems across enterprise desktop, server/cloud kernel, and mobile paradigms.</div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12 col-md-4">
+                    <div class="h-100 p-3 rounded-4 bg-white border">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-microsoft text-primary me-1"></i>Case Study: Windows 10</h6>
+                        <ul class="text-muted small mb-0 ps-3" style="line-height: 1.7;">
+                            <li>Design Principles & System Architecture</li>
+                            <li>Executive & Kernel Subsystems</li>
+                            <li>Terminal Services & Fast User Switching</li>
+                            <li>NTFS File System & Networking Stack</li>
+                            <li>Win32 / Universal Windows Platform (UWP) Interface</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="h-100 p-3 rounded-4 bg-white border">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-ubuntu text-danger me-1"></i>Case Study: The Linux System</h6>
+                        <ul class="text-muted small mb-0 ps-3" style="line-height: 1.7;">
+                            <li>Design Principles & Monolithic Modular Kernel</li>
+                            <li>Loadable Kernel Modules (LKM)</li>
+                            <li>Process Management & Completely Fair Scheduler (CFS)</li>
+                            <li>Virtual Memory Architecture in Linux</li>
+                            <li>Ext4 File System & Virtual File System (VFS)</li>
+                            <li>Input/Output & IPC (Pipes, Message queues, Shared memory)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="h-100 p-3 rounded-4 bg-white border">
+                        <h6 class="fw-bold text-dark"><i class="bi bi-android2 text-success me-1"></i>Case Study: Android OS</h6>
+                        <ul class="text-muted small mb-0 ps-3" style="line-height: 1.7;">
+                            <li>Introduction to Android OS & Software Stack</li>
+                            <li>Android Application Architecture & Components</li>
+                            <li>Activity Lifecycle & State Management</li>
+                            <li>Implicit and Explicit Intents</li>
+                            <li><strong>UI in Android:</strong> Controls, Menus, Navigation, Styles, Material Design</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- CIE & SEE EVALUATION SCHEME                    -->
+        <!-- ============================================== -->
+        <section class="glass-panel p-4 p-md-5 mb-5" id="evaluation-scheme">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                <div>
+                    <h3 class="fw-bold text-dark mb-1"><i class="bi bi-pie-chart-fill text-primary me-2"></i>Evaluation Scheme (CIE & SEE)</h3>
+                    <p class="text-muted mb-0">Break-up of Continuous Internal Evaluation and Semester End Examination.</p>
+                </div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill font-monospace fw-bold">
+                    Total: 100 Marks (CIE: 40 + SEE: 60)
+                </span>
+            </div>
+
+            <!-- CIE Component Cards -->
+            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-check2-square text-primary me-1"></i>Break-up of CIE (Continuous Internal Evaluation: 40 Marks)</h5>
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-4">
+                    <div class="cie-metric-box">
+                        <span class="badge bg-primary-subtle text-primary mb-2 font-monospace">Internal Tests</span>
+                        <div class="cie-val">30 M</div>
+                        <div class="fw-bold text-dark mb-1">2 Internal Tests</div>
+                        <div class="text-muted small">Max Marks each: 30 Marks</div>
+                        <div class="badge bg-light text-dark border mt-2">Duration: 90 Minutes</div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="cie-metric-box">
+                        <span class="badge bg-success-subtle text-success mb-2 font-monospace">Assignments</span>
+                        <div class="cie-val text-success">05 M</div>
+                        <div class="fw-bold text-dark mb-1">3 Assignments</div>
+                        <div class="text-muted small">Max Marks each: 05 Marks</div>
+                        <div class="badge bg-light text-dark border mt-2">Coding & Problem Sets</div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="cie-metric-box">
+                        <span class="badge bg-warning-subtle text-warning mb-2 font-monospace">Quiz Assessments</span>
+                        <div class="cie-val text-warning">05 M</div>
+                        <div class="fw-bold text-dark mb-1">3 Quizzes</div>
+                        <div class="text-muted small">Max Marks each: 05 Marks</div>
+                        <div class="badge bg-light text-dark border mt-2">Objective & Conceptual</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEE Component -->
+            <div class="p-3 rounded-4 bg-light border d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="course-card-icon icon-blue mb-0">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold text-dark mb-0">SEE: Semester End Examination</h6>
+                        <div class="text-muted small">Comprehensive university evaluation covering all five modules.</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-3">
+                    <div class="text-end">
+                        <div class="fw-bold text-primary fs-5">60 Marks</div>
+                        <div class="small text-muted">Duration: 3 Hours</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- LEARNING RESOURCES & TEXTBOOKS                 -->
+        <!-- ============================================== -->
+        <section class="glass-panel p-4 p-md-5" id="learning-resources">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                <div>
+                    <h3 class="fw-bold text-dark mb-1"><i class="bi bi-book-half text-primary me-2"></i>Learning Resources & Textbooks</h3>
+                    <p class="text-muted mb-0">Prescribed textbooks, reference treatises, and accredited online course portals.</p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Textbooks (1 to 7) -->
+                <div class="col-12 col-lg-7">
+                    <h6 class="fw-bold text-dark mb-3"><i class="bi bi-bookmark-fill text-primary me-1"></i>Prescribed Textbooks & References</h6>
+                    
+                    <div class="resource-item">
+                        <div class="resource-num">1</div>
+                        <div>
+                            <div class="fw-bold text-dark">Operating System Concepts (Tenth Edition)</div>
+                            <div class="text-muted small">Abraham Silberschatz, Peter Baer Galvin, Greg Gagne — John Wiley & Sons Inc.</div>
+                        </div>
+                    </div>
+
+                    <div class="resource-item">
+                        <div class="resource-num">2</div>
+                        <div>
+                            <div class="fw-bold text-dark">Modern Operating Systems</div>
+                            <div class="text-muted small">Andrew S. Tanenbaum — Prentice Hall</div>
+                        </div>
+                    </div>
+
+                    <div class="resource-item">
+                        <div class="resource-num">3</div>
+                        <div>
+                            <div class="fw-bold text-dark">Operating Systems: Internals and Design Principles</div>
+                            <div class="text-muted small">William Stallings — Pearson Education</div>
+                        </div>
+                    </div>
+
+                    <div class="resource-item">
+                        <div class="resource-num">4</div>
+                        <div>
+                            <div class="fw-bold text-dark">System Programming and Operating Systems</div>
+                            <div class="text-muted small">D. M. Dhamdhere — Tata McGraw Hill</div>
+                        </div>
+                    </div>
+
+                    <div class="resource-item">
+                        <div class="resource-num">5</div>
+                        <div>
+                            <div class="fw-bold text-dark">Operating Systems: A Modern Perspective</div>
+                            <div class="text-muted small">Gary Nutt — Addison Wesley</div>
+                        </div>
+                    </div>
+
+                    <div class="resource-item">
+                        <div class="resource-num">6</div>
+                        <div>
+                            <div class="fw-bold text-dark">Operating Systems</div>
+                            <div class="text-muted small">Achyut S. Godbole — Tata McGraw Hill</div>
+                        </div>
+                    </div>
+
+                    <div class="resource-item">
+                        <div class="resource-num">7</div>
+                        <div>
+                            <div class="fw-bold text-dark">Design of the Unix Operating System</div>
+                            <div class="text-muted small">Maurice J. Bach — Prentice Hall</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital & Online Web Resources (8 to 10) -->
+                <div class="col-12 col-lg-5">
+                    <h6 class="fw-bold text-dark mb-3"><i class="bi bi-globe2 text-success me-1"></i>Interactive & Digital Web Resources</h6>
+                    
+                    <a href="https://developer.android.com/studio/" target="_blank" rel="noopener noreferrer" class="resource-item">
+                        <div class="resource-num" style="background: var(--accent-green-soft); color: var(--accent-green);">8</div>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold text-dark d-flex align-items-center justify-content-between">
+                                Android Studio Developer Portal
+                                <i class="bi bi-box-arrow-up-right small text-muted"></i>
+                            </div>
+                            <div class="text-muted small">developer.android.com/studio</div>
+                            <div class="small text-success mt-1 fw-semibold"><i class="bi bi-android2 me-1"></i>Android Stack & Material Design</div>
+                        </div>
+                    </a>
+
+                    <a href="https://nptel.ac.in/courses/106108101/" target="_blank" rel="noopener noreferrer" class="resource-item">
+                        <div class="resource-num" style="background: var(--primary-blue-soft); color: var(--primary-blue);">9</div>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold text-dark d-flex align-items-center justify-content-between">
+                                NPTEL Operating Systems Course
+                                <i class="bi bi-box-arrow-up-right small text-muted"></i>
+                            </div>
+                            <div class="text-muted small">nptel.ac.in/courses/106108101</div>
+                            <div class="small text-primary mt-1 fw-semibold"><i class="bi bi-mortarboard me-1"></i>IIT Video Lectures & Certifications</div>
+                        </div>
+                    </a>
+
+                    <a href="https://www.classcentral.com/course/udacity-introduction-to-operatingsystems-3419" target="_blank" rel="noopener noreferrer" class="resource-item">
+                        <div class="resource-num" style="background: var(--accent-pink-soft); color: var(--accent-pink);">10</div>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold text-dark d-flex align-items-center justify-content-between">
+                                Udacity: Intro to Operating Systems
+                                <i class="bi bi-box-arrow-up-right small text-muted"></i>
+                            </div>
+                            <div class="text-muted small">Georgia Tech / Udacity CS 6200</div>
+                            <div class="small text-danger mt-1 fw-semibold"><i class="bi bi-play-circle me-1"></i>Interactive Virtualization & Threads</div>
+                        </div>
+                    </a>
+
+                    <!-- Interactive Simulators Callout -->
+                    <div class="p-3 rounded-4 bg-light border mt-3">
+                        <div class="fw-bold text-dark mb-1"><i class="bi bi-laptop text-primary me-1"></i>Interactive Laboratory Simulators</div>
+                        <p class="text-muted small mb-2">Practice CPU scheduling and page replacement algorithms directly in this portal:</p>
+                        <div class="d-flex gap-2">
+                            <a href="cpu_schedule.html" class="btn btn-sm btn-outline-primary">CPU Scheduler</a>
+                            <a href="page_replacement.html" class="btn btn-sm btn-outline-primary">Page Replacement</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-4 text-center text-muted small border-top bg-white no-print">
+        <div class="container">
+            <p class="mb-1"><strong>OS EduHub</strong> • Course Code: U24PC540IT • Operating Systems Core Curriculum</p>
+            <p class="mb-0 text-muted">Designed with Claymorphism Theme • Seamless Interactive Systems Education</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

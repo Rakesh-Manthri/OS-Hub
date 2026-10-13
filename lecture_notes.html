@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>OS EduHub — Lecture 01 Slide Deck (1.1.0 Introduction)</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- PDF.js Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- Pre-embedded PDF Data for instant zero-CORS file:// loading -->
+    <script src="lecture/pdfData.js"></script>
+    <script src="lecture/unit1_data.js"></script>
+
+    <style>
+        :root {
+            --clay-bg: #eef2f7;
+            --clay-surface: #ffffff;
+            --clay-surface-soft: #f8fafc;
+            --primary-blue: #004b87;
+            --primary-accent: #436cf5;
+            --primary-light: #e8f0fe;
+            --accent-pink: #f75583;
+            --accent-pink-soft: #fef0f4;
+            --accent-green: #2ec491;
+            --accent-green-soft: #edfbf5;
+            --accent-amber: #f59e0b;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Tactile Clay Shadows */
+            --clay-shadow-card:
+                0 14px 35px rgba(30, 40, 80, 0.12),
+                0 4px 10px rgba(30, 40, 80, 0.06),
+                inset 3px 3px 6px rgba(255, 255, 255, 0.95),
+                inset -3px -3px 8px rgba(170, 185, 215, 0.18);
+
+            --clay-shadow-floating:
+                0 10px 28px rgba(20, 35, 75, 0.16),
+                0 2px 8px rgba(20, 35, 75, 0.08),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: var(--font-sans);
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            touch-action: pan-x pan-y;
+        }
+
+        /* Ambient Dynamic Light Orbs */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.4;
+        }
+
+        .orb-blue {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, #60a5fa 0%, rgba(96, 165, 250, 0) 70%);
+            top: -120px;
+            right: -80px;
+        }
+
+        .orb-pink {
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, #f472b6 0%, rgba(244, 114, 182, 0) 70%);
+            bottom: -100px;
+            left: -80px;
+        }
+
+        .orb-green {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, #34d399 0%, rgba(52, 211, 153, 0) 70%);
+            bottom: 30%;
+            right: 15%;
+            opacity: 0.3;
+        }
+
+        /* Discreet Floating Corner Navigation Pills (Replacing bulky header) */
+        .floating-pill-corner-left {
+            position: fixed;
+            top: 10px;
+            left: 12px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .floating-pill-corner-right {
+            position: fixed;
+            top: 10px;
+            right: 12px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .floating-pill-btn {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            color: #1e293b;
+            border-radius: 16px;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            box-shadow: 0 4px 14px rgba(30, 40, 80, 0.10);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .floating-pill-btn:hover {
+            background: #ffffff;
+            color: var(--primary-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(67, 108, 245, 0.2);
+        }
+
+        .deck-badge-pill {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #475569;
+            box-shadow: 0 4px 14px rgba(30, 40, 80, 0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        /* Slide Stage Container: Maximized 100% full screen area */
+        .stage-container {
+            position: absolute;
+            top: 0;
+            bottom: 58px;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            overflow: hidden;
+            z-index: 10;
+            cursor: default;
+        }
+
+        .stage-container.panning-active {
+            cursor: grab;
+        }
+        .stage-container.panning-active:active {
+            cursor: grabbing;
+        }
+
+        /* Slide Frame Card (Scales & transforms with Zoom & Pan) */
+        .slide-frame-card {
+            position: relative;
+            background: #ffffff;
+            border-radius: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.95);
+            box-shadow: var(--clay-shadow-card);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.08s ease-out;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        /* Canvas Layers */
+        #pdfCanvas {
+            display: block;
+            background: #ffffff;
+            border-radius: 14px;
+        }
+
+        #scribbleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            cursor: default;
+            pointer-events: none;
+            border-radius: 14px;
+        }
+
+        #scribbleCanvas.drawing-active {
+            pointer-events: auto;
+            cursor: crosshair;
+        }
+
+        /* Slide Navigation Side Click Arrows */
+        .nav-side-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.88);
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            color: #1e293b;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            box-shadow: 0 6px 18px rgba(30, 40, 80, 0.12);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .nav-side-btn:hover {
+            background: #ffffff;
+            color: var(--primary-accent);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 10px 24px rgba(67, 108, 245, 0.25);
+        }
+
+        .nav-side-btn:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .nav-side-btn.btn-prev {
+            left: 14px;
+        }
+
+        .nav-side-btn.btn-next {
+            right: 14px;
+        }
+
+        .nav-side-btn:disabled {
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        /* Bottom Floating Action Bar */
+        .bottom-action-bar {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            box-shadow: var(--clay-shadow-floating);
+            border-radius: 22px;
+            padding: 0.35rem 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.3s ease;
+            max-width: 98vw;
+        }
+
+        .bottom-action-btn {
+            background: #f1f5f9;
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            color: #334155;
+            border-radius: 14px;
+            padding: 0.4rem 0.65rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .bottom-action-btn:hover {
+            background: #ffffff;
+            color: var(--primary-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 108, 245, 0.2);
+        }
+
+        .bottom-action-btn.active {
+            background: linear-gradient(145deg, #628efb, #436cf5);
+            color: white;
+            box-shadow: 0 4px 12px rgba(67, 108, 245, 0.3);
+            border-color: transparent;
+        }
+
+        .slide-counter-pill {
+            background: #eef2f7;
+            border-radius: 14px;
+            padding: 0.35rem 0.75rem;
+            font-weight: 800;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: #1e293b;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .slide-counter-pill:hover {
+            background: #e2e8f0;
+            color: var(--primary-accent);
+        }
+
+        /* Zoom Control Group */
+        .zoom-control-group {
+            display: inline-flex;
+            align-items: center;
+            background: #eef2f7;
+            border-radius: 14px;
+            padding: 2px;
+            gap: 1px;
+        }
+
+        .zoom-btn {
+            background: transparent;
+            border: none;
+            color: #334155;
+            border-radius: 12px;
+            padding: 0.35rem 0.55rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .zoom-btn:hover {
+            background: #ffffff;
+            color: var(--primary-accent);
+        }
+
+        .zoom-label-btn {
+            background: transparent;
+            border: none;
+            color: #1e293b;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 0.35rem 0.45rem;
+            min-width: 44px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        .zoom-label-btn:hover {
+            background: #ffffff;
+            color: var(--primary-accent);
+        }
+
+        /* Scribble Floating Palette Bar */
+        .scribble-palette-bar {
+            position: fixed;
+            bottom: 66px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 120;
+            background: #ffffff;
+            border: 2px solid rgba(67, 108, 245, 0.25);
+            border-radius: 20px;
+            padding: 0.4rem 0.85rem;
+            box-shadow: 0 12px 35px rgba(30, 40, 80, 0.18);
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            animation: slideUpPalette 0.25s ease-out;
+            max-width: 96vw;
+        }
+
+        @keyframes slideUpPalette {
+            from { opacity: 0; transform: translate(-50%, 15px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        .scribble-palette-bar.show {
+            display: flex;
+        }
+
+        .action-tool-btn {
+            background: #f1f5f9;
+            border: none;
+            color: #475569;
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .action-tool-btn:hover {
+            background: #e2e8f0;
+            color: var(--primary-accent);
+            transform: translateY(-2px);
+        }
+
+        .action-tool-btn.active {
+            background: #436cf5;
+            color: white;
+            box-shadow: 0 3px 8px rgba(67, 108, 245, 0.35);
+        }
+
+        .color-dot-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease;
+        }
+
+        .color-dot-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .color-dot-btn.active {
+            transform: scale(1.25);
+            box-shadow: 0 0 0 3px var(--primary-accent);
+        }
+
+        /* Study Notes Drawer */
+        .notes-drawer {
+            position: fixed;
+            top: 0;
+            right: -460px;
+            width: 420px;
+            max-width: 92vw;
+            height: 100vh;
+            background: #ffffff;
+            z-index: 200;
+            box-shadow: -10px 0 40px rgba(30, 40, 80, 0.2);
+            transition: right 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 1.25rem;
+        }
+
+        .notes-drawer.open {
+            right: 0;
+        }
+
+        .notes-textarea-box {
+            width: 100%;
+            flex-grow: 1;
+            border: 2px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 1rem;
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: #f8fafc;
+            resize: none;
+            outline: none;
+            margin-top: 0.75rem;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        .notes-textarea-box:focus {
+            border-color: var(--primary-accent);
+            background: #ffffff;
+        }
+
+        /* Slide Outline / Thumbnails Drawer */
+        .menu-drawer {
+            position: fixed;
+            top: 0;
+            left: -420px;
+            width: 380px;
+            max-width: 90vw;
+            height: 100vh;
+            background: #ffffff;
+            z-index: 200;
+            box-shadow: 10px 0 40px rgba(30, 40, 80, 0.2);
+            transition: left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 1.25rem;
+        }
+
+        .menu-drawer.open {
+            left: 0;
+        }
+
+        .thumbnail-scroll-grid {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            padding-right: 0.25rem;
+            margin-top: 0.75rem;
+        }
+
+        .thumb-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .thumb-card:hover {
+            border-color: var(--primary-accent);
+            background: #ffffff;
+            transform: translateX(4px);
+            box-shadow: 0 4px 14px rgba(67, 108, 245, 0.15);
+        }
+
+        .thumb-card.active {
+            border-color: var(--primary-accent);
+            background: #edf3fe;
+            box-shadow: 0 4px 14px rgba(67, 108, 245, 0.2);
+        }
+
+        .thumb-canvas-box {
+            width: 100%;
+            height: 120px;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .thumb-canvas-box canvas {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
+
+        /* Backdrop */
+        .drawer-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.35);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 190;
+            display: none;
+        }
+
+        .drawer-backdrop.show {
+            display: block;
+        }
+
+        /* Global Progress Bar */
+        .progress-bar-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100vw;
+            height: 4px;
+            background: rgba(67, 108, 245, 0.12);
+            z-index: 100;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #436cf5, #2ec491);
+            transition: width 0.3s ease;
+        }
+
+        /* Loading Spinner */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.88);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 40;
+            border-radius: 16px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Tag Chip */
+        .tag-insert-chip {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.25rem 0.65rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tag-insert-chip:hover {
+            background: #e2e8f0;
+            color: var(--primary-accent);
+        }
+
+        /* Jump Modal */
+        .jump-input-box {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            width: 120px;
+            padding: 0.5rem;
+            outline: none;
+            font-family: var(--font-mono);
+        }
+
+        .jump-input-box:focus {
+            border-color: var(--primary-accent);
+        }
+
+        /* ======================================================== */
+        /* RESPONSIVE DESIGN: MOBILE HORIZONTAL (LANDSCAPE)         */
+        /* ======================================================== */
+        @media (max-height: 520px) {
+            .stage-container {
+                top: 0;
+                bottom: 46px;
+                padding: 4px 6px;
+            }
+            .floating-pill-corner-left, .floating-pill-corner-right {
+                top: 6px;
+                gap: 0.25rem;
+            }
+            .floating-pill-btn {
+                padding: 0.25rem 0.55rem;
+                font-size: 0.75rem;
+                border-radius: 12px;
+            }
+            .deck-badge-pill {
+                display: none !important;
+            }
+            .nav-side-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 1rem;
+            }
+            .nav-side-btn.btn-prev { left: 6px; }
+            .nav-side-btn.btn-next { right: 6px; }
+
+            .bottom-action-bar {
+                bottom: 5px;
+                padding: 0.25rem 0.55rem;
+                gap: 0.25rem;
+                border-radius: 18px;
+            }
+            .bottom-action-btn {
+                padding: 0.25rem 0.45rem;
+                font-size: 0.78rem;
+                border-radius: 10px;
+            }
+            .bottom-action-btn span {
+                display: none !important;
+            }
+            .slide-counter-pill {
+                padding: 0.2rem 0.5rem;
+                font-size: 0.75rem;
+            }
+            .zoom-btn {
+                padding: 0.25rem 0.4rem;
+                font-size: 0.75rem;
+            }
+            .zoom-label-btn {
+                font-size: 0.7rem;
+                min-width: 36px;
+                padding: 0.25rem 0.35rem;
+            }
+            .scribble-palette-bar {
+                bottom: 48px;
+                padding: 0.25rem 0.6rem;
+                gap: 0.35rem;
+            }
+            .action-tool-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
+            }
+            .color-dot-btn {
+                width: 18px;
+                height: 18px;
+            }
+            .menu-drawer, .notes-drawer {
+                width: min(340px, 85vw);
+                padding: 0.85rem;
+            }
+        }
+
+        /* ======================================================== */
+        /* RESPONSIVE DESIGN: MOBILE VERTICAL (PORTRAIT)           */
+        /* ======================================================== */
+        @media (max-width: 575.98px) {
+            .stage-container {
+                top: 0;
+                bottom: 54px;
+                padding: 6px;
+            }
+            .floating-pill-corner-left, .floating-pill-corner-right {
+                top: 8px;
+            }
+            .floating-pill-btn {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+                border-radius: 14px;
+            }
+            .deck-badge-pill {
+                display: none !important;
+            }
+            .nav-side-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 1.1rem;
+                opacity: 0.85;
+            }
+            .nav-side-btn.btn-prev { left: 6px; }
+            .nav-side-btn.btn-next { right: 6px; }
+
+            .bottom-action-bar {
+                bottom: 8px;
+                width: calc(100vw - 16px);
+                max-width: 100vw;
+                padding: 0.3rem 0.45rem;
+                gap: 0.2rem;
+                justify-content: space-between;
+                border-radius: 20px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .bottom-action-bar::-webkit-scrollbar {
+                display: none;
+            }
+            .bottom-action-btn {
+                padding: 0.3rem 0.45rem;
+                font-size: 0.8rem;
+                border-radius: 10px;
+                flex-shrink: 0;
+            }
+            .bottom-action-btn span {
+                display: none !important;
+            }
+            .slide-counter-pill {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.78rem;
+                flex-shrink: 0;
+            }
+            .zoom-btn {
+                padding: 0.25rem 0.4rem;
+                font-size: 0.75rem;
+            }
+            .zoom-label-btn {
+                font-size: 0.7rem;
+                min-width: 36px;
+                padding: 0.25rem 0.3rem;
+            }
+            .scribble-palette-bar {
+                bottom: 60px;
+                width: calc(100vw - 20px);
+                padding: 0.35rem 0.55rem;
+                gap: 0.35rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .menu-drawer, .notes-drawer {
+                width: 92vw;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Ambient Background Light Orbs -->
+    <div class="ambient-bg">
+        <div class="ambient-orb orb-blue"></div>
+        <div class="ambient-orb orb-pink"></div>
+        <div class="ambient-orb orb-green"></div>
+    </div>
+
+    <!-- Backdrop for Drawers -->
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+    <!-- ============================================== -->
+    <!-- FLOATING CORNER BUTTONS (No bulky top bar)     -->
+    <!-- ============================================== -->
+    <div class="floating-pill-corner-left">
+        <a href="lectures.html" class="floating-pill-btn" title="Back to Lectures Overview">
+            <i class="bi bi-arrow-left"></i> <span>Lectures</span>
+        </a>
+        <a href="index.html" class="floating-pill-btn" title="Back to OS EduHub Home">
+            <i class="bi bi-house-door"></i> <span class="d-none d-sm-inline">Home</span>
+        </a>
+    </div>
+
+    <div class="floating-pill-corner-right">
+        <span class="deck-badge-pill d-none d-md-inline-flex" id="deckLabelBadge">
+            <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> 1.1.0-Introduction.pdf
+        </span>
+        <label class="floating-pill-btn mb-0" style="cursor: pointer;" title="Import PDF notes">
+            <i class="bi bi-upload text-danger"></i> <span class="d-none d-sm-inline">Import</span>
+            <input type="file" id="pdfFileInput" accept="application/pdf" style="display: none;">
+        </label>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- SLIDE STAGE & CANVAS DISPLAY (Full Height)     -->
+    <!-- ============================================== -->
+    <div class="stage-container" id="stageContainer">
+        <!-- Floating Left Navigation Arrow -->
+        <button class="nav-side-btn btn-prev" id="btnPrevSlide" title="Previous Slide (Left Arrow / Swipe Right)">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <!-- Slide Frame Card -->
+        <div class="slide-frame-card" id="slideFrameCard">
+            <!-- Loading Indicator -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner-border text-primary mb-2" role="status"></div>
+                <div class="small fw-bold text-muted" id="loadingLabel">Rendering Slide...</div>
+            </div>
+
+            <!-- PDF Page Canvas Layer -->
+            <canvas id="pdfCanvas"></canvas>
+
+            <!-- Live Scribble Overlay Canvas Layer -->
+            <canvas id="scribbleCanvas"></canvas>
+        </div>
+
+        <!-- Floating Right Navigation Arrow -->
+        <button class="nav-side-btn btn-next" id="btnNextSlide" title="Next Slide (Right Arrow / Space / Swipe Left)">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- FLOATING SCRIBBLE PALETTE TOOLBAR              -->
+    <!-- ============================================== -->
+    <div class="scribble-palette-bar" id="scribblePaletteBar">
+        <span class="small fw-bold text-muted me-1 d-none d-sm-inline"><i class="bi bi-palette2 text-primary me-1"></i>Tools:</span>
+        <button class="action-tool-btn active" id="toolPen" title="Pen"><i class="bi bi-pen"></i></button>
+        <button class="action-tool-btn" id="toolHighlighter" title="Highlighter"><i class="bi bi-highlighter"></i></button>
+        <button class="action-tool-btn" id="toolEraser" title="Eraser"><i class="bi bi-eraser"></i></button>
+
+        <!-- Stroke Width Selectors -->
+        <div class="btn-group btn-group-sm mx-1" role="group">
+            <button type="button" class="btn btn-outline-secondary py-0 px-2 fw-bold active" id="strokeSizeThin" title="Thin">S</button>
+            <button type="button" class="btn btn-outline-secondary py-0 px-2 fw-bold" id="strokeSizeMed" title="Medium">M</button>
+            <button type="button" class="btn btn-outline-secondary py-0 px-2 fw-bold" id="strokeSizeThick" title="Thick">L</button>
+        </div>
+
+        <!-- Color Palette -->
+        <div class="d-flex align-items-center gap-1 mx-1">
+            <span class="color-dot-btn active" data-color="#436cf5" style="background: #436cf5;" title="Cornflower Blue"></span>
+            <span class="color-dot-btn" data-color="#f75583" style="background: #f75583;" title="Pastel Rose"></span>
+            <span class="color-dot-btn" data-color="#2ec491" style="background: #2ec491;" title="Mint Green"></span>
+            <span class="color-dot-btn" data-color="#f59e0b" style="background: #f59e0b;" title="Amber Yellow"></span>
+            <span class="color-dot-btn" data-color="#0f172a" style="background: #0f172a;" title="Dark Ink"></span>
+            <span class="color-dot-btn" data-color="#ffffff" style="background: #ffffff; border: 1px solid #ccc;" title="White Chalk"></span>
+        </div>
+
+        <button class="action-tool-btn text-danger" id="btnClearScribbles" title="Clear page annotations"><i class="bi bi-trash3"></i></button>
+        <button class="action-tool-btn text-success" id="btnDownloadAnnotated" title="Download annotated slide PNG"><i class="bi bi-download"></i></button>
+        <button class="action-tool-btn text-secondary" id="btnCloseScribble" title="Close scribble mode"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- BOTTOM FLOATING ACTION BAR                     -->
+    <!-- ============================================== -->
+    <div class="bottom-action-bar">
+        <!-- 1. Slide Outline Menu -->
+        <button class="bottom-action-btn" id="btnToggleMenu" title="Slide Outline & Thumbnails (M)">
+            <i class="bi bi-grid-3x3-gap-fill text-primary"></i> <span>Slides</span>
+        </button>
+
+        <!-- 2. Prev Slide Button -->
+        <button class="bottom-action-btn px-2" id="btnBottomPrev" title="Previous Slide (←)">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <!-- 3. Slide Counter Pill -->
+        <div class="slide-counter-pill" id="slideCounterPill" title="Click to jump to a slide">
+            <span id="currentSlideNum">1</span> / <span id="totalSlidesNum">35</span>
+        </div>
+
+        <!-- 4. Next Slide Button -->
+        <button class="bottom-action-btn px-2" id="btnBottomNext" title="Next Slide (→ / Space)">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+
+        <!-- 5. Interactive Zoom Controls Group -->
+        <div class="zoom-control-group">
+            <button class="zoom-btn" id="btnZoomOut" title="Zoom Out (-)">
+                <i class="bi bi-zoom-out"></i>
+            </button>
+            <button class="zoom-label-btn" id="btnZoomReset" title="Reset to Fit (0)">
+                <span id="zoomLevelLabel">Fit</span>
+            </button>
+            <button class="zoom-btn" id="btnZoomIn" title="Zoom In (+)">
+                <i class="bi bi-zoom-in"></i>
+            </button>
+        </div>
+
+        <!-- 6. Chalkboard / Live Scribble -->
+        <button class="bottom-action-btn" id="btnToggleScribble" title="Live Scribble Canvas (C)">
+            <i class="bi bi-pencil-fill text-danger"></i> <span>Scribble</span>
+        </button>
+
+        <!-- 7. Study Notes Drawer -->
+        <button class="bottom-action-btn" id="btnToggleNotes" title="Study Notes (N)">
+            <i class="bi bi-sticky-fill text-success"></i> <span>Notes</span>
+        </button>
+
+        <!-- 8. Fullscreen -->
+        <button class="bottom-action-btn" id="btnToggleFullscreen" title="Toggle Fullscreen (F)">
+            <i class="bi bi-fullscreen text-secondary"></i>
+        </button>
+    </div>
+
+    <!-- Global Progress Bar at Bottom Screen Edge -->
+    <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- SLIDE OUTLINE / THUMBNAILS DRAWER              -->
+    <!-- ============================================== -->
+    <div class="menu-drawer" id="slideMenuDrawer">
+        <div class="d-flex align-items-center justify-content-between pb-3 border-bottom">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-grid-3x3-gap-fill text-primary fs-5"></i>
+                <h5 class="fw-bold mb-0">Slide Outline</h5>
+            </div>
+            <button class="btn btn-sm btn-light rounded-circle" id="btnCloseMenu"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <div class="thumbnail-scroll-grid" id="thumbnailList">
+            <!-- Dynamically populated page thumbnails -->
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- STUDY NOTES DRAWER                             -->
+    <!-- ============================================== -->
+    <div class="notes-drawer" id="notesDrawer">
+        <div class="d-flex align-items-center justify-content-between pb-3 border-bottom">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-journal-text text-primary fs-5"></i>
+                <h5 class="fw-bold mb-0">Study Notes</h5>
+            </div>
+            <button class="btn btn-sm btn-light rounded-circle" id="btnCloseNotes"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <!-- Note Scope Tabs -->
+        <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-sm btn-primary rounded-pill px-3 fw-bold active" id="tabSlideNotes">
+                <i class="bi bi-bookmark-fill me-1"></i> Slide <span id="notesSlideNumberLabel">1</span>
+            </button>
+            <button class="btn btn-sm btn-light rounded-pill px-3 fw-bold text-muted" id="tabGlobalNotes">
+                <i class="bi bi-collection me-1"></i> Entire Deck
+            </button>
+        </div>
+
+        <!-- Quick Tags -->
+        <div class="d-flex flex-wrap gap-1 mt-3">
+            <span class="tag-insert-chip" data-tag="📌 [Key Point]: ">+ Key Point</span>
+            <span class="tag-insert-chip" data-tag="💡 [Exam Tip]: ">+ Exam Tip</span>
+            <span class="tag-insert-chip" data-tag="❓ [Question]: ">+ Question</span>
+            <span class="tag-insert-chip" data-tag="• ">+ Bullet</span>
+        </div>
+
+        <!-- Notes Textarea -->
+        <textarea class="notes-textarea-box" id="studyNotesArea" placeholder="Type personal study notes for this slide... (Auto-saved)"></textarea>
+
+        <!-- Notes Footer Tools -->
+        <div class="pt-3 border-top mt-3">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="small text-muted" id="notesStatusLabel"><i class="bi bi-check-circle-fill text-success me-1"></i>Saved</span>
+                <span class="small text-muted font-monospace" id="notesWordCountLabel">0 words &bull; 0 chars</span>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-primary rounded-pill flex-grow-1" id="btnExportNotesMd">
+                    <i class="bi bi-markdown me-1"></i> .md
+                </button>
+                <button class="btn btn-sm btn-outline-secondary rounded-pill flex-grow-1" id="btnExportNotesTxt">
+                    <i class="bi bi-file-earmark-text me-1"></i> .txt
+                </button>
+                <button class="btn btn-sm btn-outline-danger rounded-pill" id="btnClearNotes" title="Clear notes">
+                    <i class="bi bi-trash3"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- QUICK JUMP MODAL                               -->
+    <!-- ============================================== -->
+    <div class="modal fade" id="jumpModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content rounded-4 border-0 shadow-lg p-3 text-center">
+                <h6 class="fw-bold mb-3">Jump to Slide</h6>
+                <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+                    <input type="number" class="jump-input-box" id="jumpPageInput" min="1" max="35" value="1">
+                    <span class="fs-4 text-muted fw-bold">/ <span id="jumpMaxPageLabel">35</span></span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-light rounded-pill flex-grow-1 fw-bold" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary rounded-pill flex-grow-1 fw-bold" id="btnConfirmJump">Jump</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ============================================== -->
+    <!-- SLIDE DECK ENGINE JAVASCRIPT                   -->
+    <!-- ============================================== -->
+    <script>
+        // PDF.js Worker Configuration
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // Core Presentation State
+        let pdfDoc = null;
+        let currentPage = 1;
+        let totalPages = 35;
+        let isRendering = false;
+        let renderPendingPage = null;
+
+        // Interactive Zoom & Pan State
+        let userZoom = 1.0;
+        let panX = 0;
+        let panY = 0;
+        const MIN_ZOOM = 0.5;
+        const MAX_ZOOM = 3.5;
+        const ZOOM_STEP = 0.25;
+
+        let isPanning = false;
+        let startPanX = 0;
+        let startPanY = 0;
+        let initialPinchDist = null;
+        let initialZoom = 1.0;
+
+        // Touch Swipe State
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        // Scribble State
+        let isScribbleActive = false;
+        let currentTool = 'pen'; // 'pen', 'highlighter', 'eraser'
+        let currentColor = '#436cf5';
+        let strokeSize = 3;
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Notes State
+        let currentNoteScope = 'slide';
+
+        // DOM Elements
+        const stageContainer = document.getElementById('stageContainer');
+        const slideFrameCard = document.getElementById('slideFrameCard');
+        const pdfCanvas = document.getElementById('pdfCanvas');
+        const pdfCtx = pdfCanvas.getContext('2d');
+        const scribbleCanvas = document.getElementById('scribbleCanvas');
+        const scribbleCtx = scribbleCanvas.getContext('2d');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingLabel = document.getElementById('loadingLabel');
+
+        const currentSlideNum = document.getElementById('currentSlideNum');
+        const totalSlidesNum = document.getElementById('totalSlidesNum');
+        const progressBarFill = document.getElementById('progressBarFill');
+        const btnPrevSlide = document.getElementById('btnPrevSlide');
+        const btnNextSlide = document.getElementById('btnNextSlide');
+        const btnBottomPrev = document.getElementById('btnBottomPrev');
+        const btnBottomNext = document.getElementById('btnBottomNext');
+
+        const btnZoomIn = document.getElementById('btnZoomIn');
+        const btnZoomOut = document.getElementById('btnZoomOut');
+        const btnZoomReset = document.getElementById('btnZoomReset');
+        const zoomLevelLabel = document.getElementById('zoomLevelLabel');
+
+        const scribblePaletteBar = document.getElementById('scribblePaletteBar');
+        const btnToggleScribble = document.getElementById('btnToggleScribble');
+        const btnToggleMenu = document.getElementById('btnToggleMenu');
+        const btnToggleNotes = document.getElementById('btnToggleNotes');
+        const slideMenuDrawer = document.getElementById('slideMenuDrawer');
+        const notesDrawer = document.getElementById('notesDrawer');
+        const drawerBackdrop = document.getElementById('drawerBackdrop');
+        const studyNotesArea = document.getElementById('studyNotesArea');
+        const notesSlideNumberLabel = document.getElementById('notesSlideNumberLabel');
+        const jumpModal = new bootstrap.Modal(document.getElementById('jumpModal'));
+
+        // Initialize Engine
+        window.addEventListener('DOMContentLoaded', () => {
+            initPdfDeck();
+            setupEventListeners();
+            setupZoomAndPan();
+            setupScribbleCanvas();
+        });
+
+        let activePdfName = '1.1.0-Introduction.pdf';
+
+        function getStorageKey(prefix, pageNum) {
+            const safeName = (activePdfName || 'default').replace(/[^a-zA-Z0-9]/g, '_');
+            return `os_pdf_${prefix}_${safeName}_p${pageNum}`;
+        }
+
+        // 1. PDF Loading Engine (Triple-Robust: Base64 offline -> Fetch relative -> File upload fallback)
+        async function initPdfDeck() {
+            showLoading("Loading Lecture Slides...");
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                let targetParam = urlParams.get('file') || urlParams.get('pdf') || '1.1.0-Introduction.pdf';
+                activePdfName = decodeURIComponent(targetParam).split('/').pop().split('\\').pop();
+
+                const badge = document.getElementById('deckLabelBadge');
+                if (badge) badge.innerHTML = `<i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> ${activePdfName}`;
+                document.title = `OS EduHub — ${activePdfName.replace('.pdf', '')}`;
+
+                // Strategy A: Pre-embedded Base64 in window.UNIT1_PDF_DATA or window.DEFAULT_PDF_BASE64
+                if (window.UNIT1_PDF_DATA && window.UNIT1_PDF_DATA[activePdfName]) {
+                    const binaryString = atob(window.UNIT1_PDF_DATA[activePdfName]);
+                    const len = binaryString.length;
+                    const bytes = new Uint8Array(len);
+                    for (let i = 0; i < len; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    pdfDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
+                } else if (window.DEFAULT_PDF_BASE64 && activePdfName === '1.1.0-Introduction.pdf') {
+                    const binaryString = atob(window.DEFAULT_PDF_BASE64);
+                    const len = binaryString.length;
+                    const bytes = new Uint8Array(len);
+                    for (let i = 0; i < len; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    pdfDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
+                } else {
+                    // Strategy B: Fetch relative PDF file
+                    pdfDoc = await pdfjsLib.getDocument(`lecture/unit-1/${activePdfName}`).promise;
+                }
+
+                totalPages = pdfDoc.numPages;
+                totalSlidesNum.textContent = totalPages;
+                document.getElementById('jumpMaxPageLabel').textContent = totalPages;
+                document.getElementById('jumpPageInput').max = totalPages;
+
+                renderSlide(currentPage);
+                generateThumbnails();
+            } catch (err) {
+                console.warn("Auto-load failed, trying fallback:", err);
+                try {
+                    if (window.DEFAULT_PDF_BASE64) {
+                        activePdfName = '1.1.0-Introduction.pdf';
+                        const binaryString = atob(window.DEFAULT_PDF_BASE64);
+                        const bytes = new Uint8Array(binaryString.length);
+                        for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+                        pdfDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
+                        totalPages = pdfDoc.numPages;
+                        totalSlidesNum.textContent = totalPages;
+                        renderSlide(1);
+                        generateThumbnails();
+                        return;
+                    }
+                } catch (e2) {}
+                hideLoading();
+                loadingLabel.textContent = "Please select or drop PDF file";
+                showLoading("Upload / Import PDF to start");
+            }
+        }
+
+        // Custom File Upload
+        document.getElementById('pdfFileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            loadPdfFromFile(file);
+        });
+
+        // Drag and drop PDF onto stage
+        window.addEventListener('dragover', (e) => e.preventDefault());
+        window.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                const file = e.dataTransfer.files[0];
+                if (file.name.endsWith('.pdf')) {
+                    loadPdfFromFile(file);
+                }
+            }
+        });
+
+        async function loadPdfFromFile(file) {
+            showLoading(`Loading ${file.name}...`);
+            const reader = new FileReader();
+            reader.onload = async function() {
+                try {
+                    const typedarray = new Uint8Array(this.result);
+                    pdfDoc = await pdfjsLib.getDocument({ data: typedarray }).promise;
+                    activePdfName = file.name;
+                    totalPages = pdfDoc.numPages;
+                    totalSlidesNum.textContent = totalPages;
+                    document.getElementById('jumpMaxPageLabel').textContent = totalPages;
+                    document.getElementById('jumpPageInput').max = totalPages;
+                    const badge = document.getElementById('deckLabelBadge');
+                    if (badge) badge.innerHTML = `<i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> ${file.name}`;
+                    document.title = `OS EduHub — ${file.name.replace('.pdf', '')}`;
+                    currentPage = 1;
+                    resetZoom();
+                    renderSlide(1);
+                    generateThumbnails();
+                } catch (err) {
+                    alert("Error loading PDF: " + err.message);
+                    hideLoading();
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // 2. High-DPI Crisp Slide Renderer (Mobile Responsive: Vertical & Horizontal)
+        async function renderSlide(num) {
+            if (isRendering) {
+                renderPendingPage = num;
+                return;
+            }
+            if (!pdfDoc || num < 1 || num > totalPages) return;
+
+            isRendering = true;
+            showLoading(`Rendering Slide ${num}...`);
+
+            // Save active scribble strokes before switching away
+            saveScribbleStrokes(currentPage);
+
+            currentPage = num;
+            currentSlideNum.textContent = currentPage;
+            notesSlideNumberLabel.textContent = currentPage;
+            updateProgressBar();
+
+            btnPrevSlide.disabled = (currentPage === 1);
+            btnNextSlide.disabled = (currentPage === totalPages);
+            btnBottomPrev.disabled = (currentPage === 1);
+            btnBottomNext.disabled = (currentPage === totalPages);
+
+            try {
+                const page = await pdfDoc.getPage(num);
+                const unscaledViewport = page.getViewport({ scale: 1.0 });
+
+                // Responsive sizing calculations (Mobile horizontal & vertical)
+                const isMobile = window.innerWidth < 768;
+                const isLandscape = window.innerHeight < 520;
+
+                const paddingX = isMobile ? (isLandscape ? 12 : 12) : 50;
+                const paddingY = isMobile ? (isLandscape ? 8 : 16) : 30;
+
+                const availW = Math.max(280, stageContainer.clientWidth - paddingX);
+                const availH = Math.max(200, stageContainer.clientHeight - paddingY);
+
+                // Fit slide within viewport aspect ratio
+                const scale = Math.min(availW / unscaledViewport.width, availH / unscaledViewport.height);
+
+                const dpr = Math.min(window.devicePixelRatio || 1, 2.5); // Retina sharpness
+                const viewport = page.getViewport({ scale: scale * dpr });
+
+                const displayW = Math.round(viewport.width / dpr);
+                const displayH = Math.round(viewport.height / dpr);
+
+                pdfCanvas.width = viewport.width;
+                pdfCanvas.height = viewport.height;
+                pdfCanvas.style.width = `${displayW}px`;
+                pdfCanvas.style.height = `${displayH}px`;
+
+                scribbleCanvas.width = viewport.width;
+                scribbleCanvas.height = viewport.height;
+                scribbleCanvas.style.width = `${displayW}px`;
+                scribbleCanvas.style.height = `${displayH}px`;
+
+                slideFrameCard.style.width = `${displayW}px`;
+                slideFrameCard.style.height = `${displayH}px`;
+
+                const renderContext = {
+                    canvasContext: pdfCtx,
+                    viewport: viewport
+                };
+
+                await page.render(renderContext).promise;
+
+                // Restore scribbles for this slide
+                restoreScribbleStrokes(currentPage);
+
+                // Update Study Notes Area
+                loadNotesForSlide(currentPage);
+
+                // Highlight active thumbnail in outline drawer
+                highlightActiveThumbnail(currentPage);
+
+            } catch (err) {
+                console.error("Render error:", err);
+            } finally {
+                isRendering = false;
+                hideLoading();
+
+                if (renderPendingPage !== null) {
+                    const next = renderPendingPage;
+                    renderPendingPage = null;
+                    renderSlide(next);
+                }
+            }
+        }
+
+        function showLoading(msg = "Loading...") {
+            loadingLabel.textContent = msg;
+            loadingOverlay.classList.add('active');
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.remove('active');
+        }
+
+        function updateProgressBar() {
+            const pct = ((currentPage) / totalPages) * 100;
+            progressBarFill.style.width = `${pct}%`;
+        }
+
+        function goToPage(n) {
+            if (n < 1) n = 1;
+            if (n > totalPages) n = totalPages;
+            resetZoom();
+            renderSlide(n);
+        }
+
+        // 3. Interactive Zoom & Pan Engine
+        function setupZoomAndPan() {
+            btnZoomIn.addEventListener('click', () => setZoom(userZoom + ZOOM_STEP));
+            btnZoomOut.addEventListener('click', () => setZoom(userZoom - ZOOM_STEP));
+            btnZoomReset.addEventListener('click', resetZoom);
+
+            // Mouse wheel zoom with Ctrl/Cmd key
+            stageContainer.addEventListener('wheel', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    const delta = e.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP;
+                    setZoom(userZoom + delta);
+                }
+            }, { passive: false });
+
+            // Mouse Drag Panning (when zoomed in & not scribbling)
+            stageContainer.addEventListener('mousedown', (e) => {
+                if (userZoom > 1.0 && !isScribbleActive && e.button === 0) {
+                    isPanning = true;
+                    startPanX = e.clientX - panX;
+                    startPanY = e.clientY - panY;
+                    stageContainer.classList.add('panning-active');
+                }
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (isPanning) {
+                    panX = e.clientX - startPanX;
+                    panY = e.clientY - startPanY;
+                    updateZoomTransform();
+                }
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isPanning) {
+                    isPanning = false;
+                    stageContainer.classList.remove('panning-active');
+                }
+            });
+
+            // Touch Gestures: Pinch-to-Zoom, Touch Pan & Swipe Navigation
+            stageContainer.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2) {
+                    // Pinch-to-zoom start
+                    initialPinchDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    initialZoom = userZoom;
+                } else if (e.touches.length === 1) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+
+                    if (userZoom > 1.0 && !isScribbleActive) {
+                        isPanning = true;
+                        startPanX = e.touches[0].clientX - panX;
+                        startPanY = e.touches[0].clientY - panY;
+                    }
+                }
+            }, { passive: true });
+
+            stageContainer.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2 && initialPinchDist) {
+                    // Pinch zoom update
+                    const currentDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    const factor = currentDist / initialPinchDist;
+                    setZoom(initialZoom * factor);
+                } else if (e.touches.length === 1 && isPanning) {
+                    // Touch Pan update
+                    panX = e.touches[0].clientX - startPanX;
+                    panY = e.touches[0].clientY - startPanY;
+                    updateZoomTransform();
+                }
+            }, { passive: true });
+
+            stageContainer.addEventListener('touchend', (e) => {
+                if (e.touches.length < 2) initialPinchDist = null;
+                if (e.touches.length === 0) {
+                    isPanning = false;
+
+                    // Swipe Navigation (only when at 1.0x fit zoom and not drawing)
+                    if (userZoom <= 1.05 && !isScribbleActive && e.changedTouches && e.changedTouches[0]) {
+                        const deltaX = e.changedTouches[0].clientX - touchStartX;
+                        const deltaY = e.changedTouches[0].clientY - touchStartY;
+                        if (Math.abs(deltaX) > 48 && Math.abs(deltaY) < 65) {
+                            if (deltaX < 0) goToPage(currentPage + 1); // Swipe left -> Next
+                            else goToPage(currentPage - 1); // Swipe right -> Prev
+                        }
+                    }
+                }
+            });
+        }
+
+        function setZoom(newZoom) {
+            userZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Math.round(newZoom * 100) / 100));
+            if (userZoom <= 1.05) {
+                userZoom = 1.0;
+                panX = 0;
+                panY = 0;
+                stageContainer.classList.remove('panning-active');
+            } else if (!isScribbleActive) {
+                stageContainer.classList.add('panning-active');
+            }
+            updateZoomTransform();
+        }
+
+        function resetZoom() {
+            userZoom = 1.0;
+            panX = 0;
+            panY = 0;
+            stageContainer.classList.remove('panning-active');
+            updateZoomTransform();
+        }
+
+        function updateZoomTransform() {
+            slideFrameCard.style.transform = `translate(${panX}px, ${panY}px) scale(${userZoom})`;
+            if (zoomLevelLabel) {
+                zoomLevelLabel.textContent = (userZoom === 1.0) ? 'Fit' : `${Math.round(userZoom * 100)}%`;
+            }
+        }
+
+        // 4. Scribble & Chalkboard Engine (Zoom-Aware Coordinates)
+        function setupScribbleCanvas() {
+            const getCoords = (e) => {
+                const rect = scribbleCanvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const scaleX = scribbleCanvas.width / rect.width;
+                const scaleY = scribbleCanvas.height / rect.height;
+                return {
+                    x: (clientX - rect.left) * scaleX,
+                    y: (clientY - rect.top) * scaleY
+                };
+            };
+
+            const startDraw = (e) => {
+                if (!isScribbleActive) return;
+                isDrawing = true;
+                const pt = getCoords(e);
+                lastX = pt.x;
+                lastY = pt.y;
+            };
+
+            const drawMove = (e) => {
+                if (!isDrawing || !isScribbleActive) return;
+                const pt = getCoords(e);
+
+                scribbleCtx.lineJoin = 'round';
+                scribbleCtx.lineCap = 'round';
+
+                if (currentTool === 'eraser') {
+                    scribbleCtx.globalCompositeOperation = 'destination-out';
+                    scribbleCtx.lineWidth = strokeSize * 6;
+                    scribbleCtx.beginPath();
+                    scribbleCtx.moveTo(lastX, lastY);
+                    scribbleCtx.lineTo(pt.x, pt.y);
+                    scribbleCtx.stroke();
+                } else if (currentTool === 'highlighter') {
+                    scribbleCtx.globalCompositeOperation = 'source-over';
+                    scribbleCtx.strokeStyle = hexToRgba(currentColor, 0.35);
+                    scribbleCtx.lineWidth = strokeSize * 5;
+                    scribbleCtx.beginPath();
+                    scribbleCtx.moveTo(lastX, lastY);
+                    scribbleCtx.lineTo(pt.x, pt.y);
+                    scribbleCtx.stroke();
+                } else {
+                    scribbleCtx.globalCompositeOperation = 'source-over';
+                    scribbleCtx.strokeStyle = currentColor;
+                    scribbleCtx.lineWidth = strokeSize;
+                    scribbleCtx.beginPath();
+                    scribbleCtx.moveTo(lastX, lastY);
+                    scribbleCtx.lineTo(pt.x, pt.y);
+                    scribbleCtx.stroke();
+                }
+
+                lastX = pt.x;
+                lastY = pt.y;
+            };
+
+            const stopDraw = () => {
+                if (isDrawing) {
+                    isDrawing = false;
+                    saveScribbleStrokes(currentPage);
+                }
+            };
+
+            scribbleCanvas.addEventListener('mousedown', startDraw);
+            scribbleCanvas.addEventListener('mousemove', drawMove);
+            window.addEventListener('mouseup', stopDraw);
+
+            scribbleCanvas.addEventListener('touchstart', startDraw, { passive: true });
+            scribbleCanvas.addEventListener('touchmove', drawMove, { passive: true });
+            window.addEventListener('touchend', stopDraw);
+        }
+
+        function hexToRgba(hex, alpha) {
+            let c;
+            if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+                c = hex.substring(1).split('');
+                if (c.length === 3) c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+                c = '0x' + c.join('');
+                return 'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',' + alpha + ')';
+            }
+            return hex;
+        }
+
+        function toggleScribbleMode() {
+            isScribbleActive = !isScribbleActive;
+            btnToggleScribble.classList.toggle('active', isScribbleActive);
+            scribblePaletteBar.classList.toggle('show', isScribbleActive);
+            scribbleCanvas.classList.toggle('drawing-active', isScribbleActive);
+            if (isScribbleActive) {
+                stageContainer.classList.remove('panning-active');
+            } else if (userZoom > 1.05) {
+                stageContainer.classList.add('panning-active');
+            }
+        }
+
+        function saveScribbleStrokes(pageNum) {
+            try {
+                const dataUrl = scribbleCanvas.toDataURL();
+                const pixelBuffer = new Uint32Array(
+                    scribbleCtx.getImageData(0, 0, scribbleCanvas.width, scribbleCanvas.height).data.buffer
+                );
+                const hasStrokes = pixelBuffer.some(color => color !== 0);
+                const key = getStorageKey('scribble', pageNum);
+
+                if (hasStrokes) {
+                    localStorage.setItem(key, dataUrl);
+                } else {
+                    localStorage.removeItem(key);
+                }
+            } catch (e) {}
+        }
+
+        function restoreScribbleStrokes(pageNum) {
+            scribbleCtx.clearRect(0, 0, scribbleCanvas.width, scribbleCanvas.height);
+            const key = getStorageKey('scribble', pageNum);
+            const saved = localStorage.getItem(key) || (activePdfName === '1.1.0-Introduction.pdf' ? localStorage.getItem(`os_pdf_scribble_p${pageNum}`) : null);
+            if (saved) {
+                const img = new Image();
+                img.onload = () => {
+                    scribbleCtx.drawImage(img, 0, 0, scribbleCanvas.width, scribbleCanvas.height);
+                };
+                img.src = saved;
+            }
+        }
+
+        function clearCurrentSlideScribbles() {
+            if (confirm("Clear all drawings on this slide?")) {
+                scribbleCtx.clearRect(0, 0, scribbleCanvas.width, scribbleCanvas.height);
+                localStorage.removeItem(getStorageKey('scribble', currentPage));
+                if (activePdfName === '1.1.0-Introduction.pdf') localStorage.removeItem(`os_pdf_scribble_p${currentPage}`);
+            }
+        }
+
+        function downloadAnnotatedSlide() {
+            const offscreen = document.createElement('canvas');
+            offscreen.width = pdfCanvas.width;
+            offscreen.height = pdfCanvas.height;
+            const oCtx = offscreen.getContext('2d');
+
+            oCtx.drawImage(pdfCanvas, 0, 0);
+            oCtx.drawImage(scribbleCanvas, 0, 0);
+
+            const a = document.createElement('a');
+            const safeName = activePdfName.replace('.pdf', '');
+            a.download = `${safeName}_Slide_${currentPage}_Annotated.png`;
+            a.href = offscreen.toDataURL('image/png');
+            a.click();
+        }
+
+        // 5. Study Notes Engine
+        function loadNotesForSlide(pageNum) {
+            if (currentNoteScope === 'slide') {
+                const key = getStorageKey('note', pageNum);
+                const note = localStorage.getItem(key) || (activePdfName === '1.1.0-Introduction.pdf' ? localStorage.getItem(`os_pdf_note_p${pageNum}`) : '') || '';
+                studyNotesArea.value = note;
+                updateNotesStats(note);
+            }
+        }
+
+        studyNotesArea.addEventListener('input', () => {
+            const text = studyNotesArea.value;
+            if (currentNoteScope === 'slide') {
+                localStorage.setItem(getStorageKey('note', currentPage), text);
+            } else {
+                localStorage.setItem(`os_pdf_note_global_${activePdfName.replace(/[^a-zA-Z0-9]/g, '_')}`, text);
+            }
+            updateNotesStats(text);
+        });
+
+        function updateNotesStats(text) {
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const chars = text.length;
+            document.getElementById('notesWordCountLabel').textContent = `${words} words • ${chars} chars`;
+            const status = document.getElementById('notesStatusLabel');
+            status.innerHTML = `<i class="bi bi-check-circle-fill text-success me-1"></i>Saved`;
+        }
+
+        // Tag insertions
+        document.querySelectorAll('.tag-insert-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const tag = chip.getAttribute('data-tag');
+                const start = studyNotesArea.selectionStart;
+                const end = studyNotesArea.selectionEnd;
+                studyNotesArea.value = studyNotesArea.value.substring(0, start) + "\n" + tag + studyNotesArea.value.substring(end);
+                studyNotesArea.focus();
+                studyNotesArea.dispatchEvent(new Event('input'));
+            });
+        });
+
+        // 6. Thumbnail Grid Generator for Slide Menu Drawer
+        async function generateThumbnails() {
+            const container = document.getElementById('thumbnailList');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const card = document.createElement('div');
+                card.className = `thumb-card ${i === currentPage ? 'active' : ''}`;
+                card.id = `thumbCard-${i}`;
+                card.innerHTML = `
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <span class="small fw-bold text-dark">Slide ${i}</span>
+                        <div class="d-flex gap-1" id="thumbBadges-${i}"></div>
+                    </div>
+                    <div class="thumb-canvas-box">
+                        <canvas id="thumbCanvas-${i}"></canvas>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    goToPage(i);
+                    closeAllDrawers();
+                });
+                container.appendChild(card);
+            }
+
+            renderThumbnailsInBackground();
+        }
+
+        async function renderThumbnailsInBackground() {
+            for (let i = 1; i <= totalPages; i++) {
+                try {
+                    const page = await pdfDoc.getPage(i);
+                    const canvas = document.getElementById(`thumbCanvas-${i}`);
+                    if (!canvas) continue;
+                    const ctx = canvas.getContext('2d');
+                    const unscaled = page.getViewport({ scale: 1.0 });
+                    const scale = 110 / unscaled.height;
+                    const viewport = page.getViewport({ scale: scale });
+
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+                    // Update badges
+                    const badgeBox = document.getElementById(`thumbBadges-${i}`);
+                    if (localStorage.getItem(`os_pdf_scribble_p${i}`)) {
+                        badgeBox.innerHTML += `<i class="bi bi-pencil-fill text-danger" style="font-size: 0.7rem;" title="Has Annotations"></i>`;
+                    }
+                    if (localStorage.getItem(`os_pdf_note_p${i}`)) {
+                        badgeBox.innerHTML += `<i class="bi bi-sticky-fill text-success" style="font-size: 0.7rem;" title="Has Notes"></i>`;
+                    }
+                } catch (e) {}
+            }
+        }
+
+        function highlightActiveThumbnail(num) {
+            document.querySelectorAll('.thumb-card').forEach(c => c.classList.remove('active'));
+            const active = document.getElementById(`thumbCard-${num}`);
+            if (active) {
+                active.classList.add('active');
+                active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+
+        // 7. Event Listeners & Shortcuts
+        function setupEventListeners() {
+            // Next / Prev side & bottom buttons
+            btnPrevSlide.addEventListener('click', () => goToPage(currentPage - 1));
+            btnNextSlide.addEventListener('click', () => goToPage(currentPage + 1));
+            btnBottomPrev.addEventListener('click', () => goToPage(currentPage - 1));
+            btnBottomNext.addEventListener('click', () => goToPage(currentPage + 1));
+
+            // Keyboard Shortcuts
+            window.addEventListener('keydown', (e) => {
+                if (document.activeElement === studyNotesArea || document.activeElement.tagName === 'INPUT') return;
+
+                if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                    e.preventDefault();
+                    goToPage(currentPage + 1);
+                } else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'Backspace') {
+                    e.preventDefault();
+                    goToPage(currentPage - 1);
+                } else if (e.key === 'Home') {
+                    e.preventDefault();
+                    goToPage(1);
+                } else if (e.key === 'End') {
+                    e.preventDefault();
+                    goToPage(totalPages);
+                } else if (e.key === '+' || e.key === '=') {
+                    setZoom(userZoom + ZOOM_STEP);
+                } else if (e.key === '-' || e.key === '_') {
+                    setZoom(userZoom - ZOOM_STEP);
+                } else if (e.key === '0') {
+                    resetZoom();
+                } else if (e.key === 'c' || e.key === 'C') {
+                    toggleScribbleMode();
+                } else if (e.key === 'n' || e.key === 'N') {
+                    toggleNotesDrawer();
+                } else if (e.key === 'm' || e.key === 'M') {
+                    toggleMenuDrawer();
+                } else if (e.key === 'f' || e.key === 'F') {
+                    toggleFullscreen();
+                } else if (e.key === 'Escape') {
+                    closeAllDrawers();
+                    if (isScribbleActive) toggleScribbleMode();
+                    if (userZoom > 1.0) resetZoom();
+                }
+            });
+
+            // Scribble Tool Buttons
+            btnToggleScribble.addEventListener('click', toggleScribbleMode);
+            document.getElementById('btnCloseScribble').addEventListener('click', toggleScribbleMode);
+
+            document.getElementById('toolPen').addEventListener('click', () => setTool('pen'));
+            document.getElementById('toolHighlighter').addEventListener('click', () => setTool('highlighter'));
+            document.getElementById('toolEraser').addEventListener('click', () => setTool('eraser'));
+
+            document.getElementById('strokeSizeThin').addEventListener('click', (e) => setStrokeSize(2, e.target));
+            document.getElementById('strokeSizeMed').addEventListener('click', (e) => setStrokeSize(4, e.target));
+            document.getElementById('strokeSizeThick').addEventListener('click', (e) => setStrokeSize(8, e.target));
+
+            document.querySelectorAll('.color-dot-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.color-dot-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentColor = btn.getAttribute('data-color');
+                    if (currentTool === 'eraser') setTool('pen');
+                });
+            });
+
+            document.getElementById('btnClearScribbles').addEventListener('click', clearCurrentSlideScribbles);
+            document.getElementById('btnDownloadAnnotated').addEventListener('click', downloadAnnotatedSlide);
+
+            // Drawers Toggles
+            btnToggleMenu.addEventListener('click', toggleMenuDrawer);
+            document.getElementById('btnCloseMenu').addEventListener('click', toggleMenuDrawer);
+
+            btnToggleNotes.addEventListener('click', toggleNotesDrawer);
+            document.getElementById('btnCloseNotes').addEventListener('click', toggleNotesDrawer);
+            drawerBackdrop.addEventListener('click', closeAllDrawers);
+
+            // Note Scope Tabs
+            const tabSlideNotes = document.getElementById('tabSlideNotes');
+            const tabGlobalNotes = document.getElementById('tabGlobalNotes');
+
+            tabSlideNotes.addEventListener('click', () => {
+                currentNoteScope = 'slide';
+                tabSlideNotes.classList.add('btn-primary', 'active');
+                tabSlideNotes.classList.remove('btn-light', 'text-muted');
+                tabGlobalNotes.classList.remove('btn-primary', 'active');
+                tabGlobalNotes.classList.add('btn-light', 'text-muted');
+                loadNotesForSlide(currentPage);
+            });
+
+            tabGlobalNotes.addEventListener('click', () => {
+                currentNoteScope = 'global';
+                tabGlobalNotes.classList.add('btn-primary', 'active');
+                tabGlobalNotes.classList.remove('btn-primary', 'active');
+                tabSlideNotes.classList.remove('btn-primary', 'active');
+                tabSlideNotes.classList.add('btn-light', 'text-muted');
+                const globalNotes = localStorage.getItem('os_pdf_note_global') || '';
+                studyNotesArea.value = globalNotes;
+                updateNotesStats(globalNotes);
+            });
+
+            // Note Exports
+            document.getElementById('btnExportNotesMd').addEventListener('click', () => {
+                downloadFile(`# OS Lecture 01 Notes (Slide ${currentPage})\n\n${studyNotesArea.value}`, `OS_Notes_Slide_${currentPage}.md`, 'text/markdown');
+            });
+            document.getElementById('btnExportNotesTxt').addEventListener('click', () => {
+                downloadFile(studyNotesArea.value, `OS_Notes_Slide_${currentPage}.txt`, 'text/plain');
+            });
+            document.getElementById('btnClearNotes').addEventListener('click', () => {
+                if (confirm("Clear these notes?")) {
+                    studyNotesArea.value = '';
+                    if (currentNoteScope === 'slide') {
+                        localStorage.removeItem(`os_pdf_note_p${currentPage}`);
+                    } else {
+                        localStorage.removeItem('os_pdf_note_global');
+                    }
+                    updateNotesStats('');
+                }
+            });
+
+            // Quick Jump Counter Pill
+            document.getElementById('slideCounterPill').addEventListener('click', () => {
+                document.getElementById('jumpPageInput').value = currentPage;
+                jumpModal.show();
+            });
+
+            document.getElementById('btnConfirmJump').addEventListener('click', () => {
+                const val = parseInt(document.getElementById('jumpPageInput').value, 10);
+                if (val >= 1 && val <= totalPages) {
+                    goToPage(val);
+                    jumpModal.hide();
+                }
+            });
+
+            document.getElementById('btnToggleFullscreen').addEventListener('click', toggleFullscreen);
+
+            // Responsive Window & Orientation Change
+            let resizeTimeout;
+            const handleResize = () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    resetZoom();
+                    renderSlide(currentPage);
+                }, 120);
+            };
+
+            window.addEventListener('resize', handleResize);
+            if (screen.orientation) {
+                screen.orientation.addEventListener('change', handleResize);
+            }
+        }
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.getElementById('toolPen').classList.toggle('active', tool === 'pen');
+            document.getElementById('toolHighlighter').classList.toggle('active', tool === 'highlighter');
+            document.getElementById('toolEraser').classList.toggle('active', tool === 'eraser');
+        }
+
+        function setStrokeSize(size, targetBtn) {
+            strokeSize = size;
+            document.querySelectorAll('#strokeSizeThin, #strokeSizeMed, #strokeSizeThick').forEach(b => b.classList.remove('active'));
+            if (targetBtn) targetBtn.classList.add('active');
+        }
+
+        function toggleMenuDrawer() {
+            closeNotesDrawer();
+            slideMenuDrawer.classList.toggle('open');
+            drawerBackdrop.classList.toggle('show', slideMenuDrawer.classList.contains('open'));
+        }
+
+        function toggleNotesDrawer() {
+            closeMenuDrawer();
+            notesDrawer.classList.toggle('open');
+            drawerBackdrop.classList.toggle('show', notesDrawer.classList.contains('open'));
+        }
+
+        function closeAllDrawers() {
+            slideMenuDrawer.classList.remove('open');
+            notesDrawer.classList.remove('open');
+            drawerBackdrop.classList.remove('show');
+        }
+
+        function closeMenuDrawer() {
+            slideMenuDrawer.classList.remove('open');
+        }
+
+        function closeNotesDrawer() {
+            notesDrawer.classList.remove('open');
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+
+</html>

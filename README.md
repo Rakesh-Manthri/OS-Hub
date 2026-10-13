@@ -59,6 +59,49 @@ Styled with a **Tactile Claymorphism** design language, the interface delivers p
 
 ---
 
+### 4. 📖 OS Curriculum & Syllabus (`syllabus.html`)
+- **Full Course Specification**: Complete academic breakdown for **Operating Systems (Course Code: U24PC540IT)**, 3 Credits, 3:0:0 Hrs/week.
+- **5 Core Syllabus Units**:
+  - **Unit I**: Introduction & Process Management (Types, System Calls, Process Concept, Threads, Uniprocessor & Multiprocessor/RT Scheduling).
+  - **Unit II**: Memory Management & Virtual Memory (Swapping, Paging, Segmentation, Demand Paging, Page Replacement, Thrashing).
+  - **Unit III**: Process Synchronization & Deadlocks (IPC, Peterson's Solution, Bakery Algorithm, Semaphores, Monitors, Banker's Algorithm).
+  - **Unit IV**: Storage & I/O Management (File Systems, Directory Structures, Disk Scheduling, RAID, Protection Access Matrix).
+  - **Unit V**: Case Studies (Windows 10, The Linux System Kernel & IPC, Android OS Architecture & Activity Life Cycle).
+- **Course Outcomes & Objectives**: Mapped CO1–CO5 outcomes with interactive status badges.
+- **Evaluation Scheme**: Full breakdown of CIE (Internal Tests, Assignments, Quizzes = 40 Marks) and SEE (60 Marks, 3 Hours).
+- **Textbooks & Web References**: 10 recommended academic books (Silberschatz 10th Ed, Tanenbaum, Stallings, Dhamdhere, Gary Nutt, Godbole, Bach) and official web resources.
+
+---
+
+### 5. 🎓 Pure PDF Slide Deck & Interactive Scribbler (`lecture_notes.html`)
+- **Authentic PDF Page-by-Page Presentation Engine**: Directly renders the authentic 35-page lecture deck (`lecture/1.1.0-Introduction.pdf`) by Dr. S Arun Kumar (Vasavi College of Engineering) with high-DPI retina sharpness.
+- **Single Page Step-by-Step Navigation**: Smooth slide transitions with floating tactile arrows, keyboard arrows (`←`/`→`, `Space`, `PageUp`/`PageDown`, `Home`/`End`), slide counter pill (`1 / 35`), and progress bar.
+- **🎨 Live Chalkboard & Scribble Overlay**:
+  - Full-screen drawing layer directly overlaid on the PDF page with Pen, Highlighter, and Eraser.
+  - Multi-color palette swatches (Blue, Rose, Mint, Amber, Dark Ink, White Chalk) and 3 stroke sizes.
+  - Per-slide stroke persistence saved automatically in `localStorage` (`os_pdf_scribble_p{N}`).
+  - Instant annotated slide download as PNG merging the PDF page and scribbles.
+  - Keyboard shortcut (`C`).
+- **📝 Student Study Notes Drawer**:
+  - Persistent slide-by-slide notes and deck-wide summary notes.
+  - Automatic `localStorage` saving with tag insert chips (`#KeyPoint`, `#ExamTip`, `#Question`, bullet points).
+  - Export notes as Markdown (`.md`) or Plain Text (`.txt`).
+  - Keyboard shortcut (`N`).
+- **📑 Visual Slide Outline & Thumbnail Drawer**: Background rendering of miniature visual thumbnails for all 35 pages with instant slide jumping and search filter (`M` key).
+- **📂 Custom PDF Upload & Drag-and-Drop**: Easily upload or drag-and-drop any external `.pdf` file to annotate and study in the same engine.
+- **🔍 Interactive Zoom & Panning Engine**:
+  - Smooth Zoom In (`+`), Zoom Out (`-`), and Reset to Fit (`Fit` / `0` key).
+  - Multi-touch pinch-to-zoom on mobile and `Ctrl + Mouse Wheel` zooming.
+  - Smooth pan/drag around zoomed slides via touch drag or mouse grab.
+  - Coordinate-precise drawing support: Scribble canvas automatically scales and maps 1:1 with zoomed coordinates.
+- **📱 Full Mobile Responsiveness (Horizontal & Vertical)**:
+  - **Portrait (Vertical)**: Optimized single-handed navigation, responsive bottom toolbar, compact side arrows, and natural touch swipe gestures (Swipe Left: Next, Swipe Right: Prev).
+  - **Landscape (Horizontal)**: 100% full-screen presentation stage with zero top obstruction, compact action bar, and responsive height adaptation.
+- **Minimalist Full-Stage Layout**: Top OSHub banner removed to maximize presentation viewport, with subtle floating corner pills for Home navigation and PDF uploads.
+- **Offline & File-Protocol Ready**: Pre-compiled with `lecture/pdfData.js` for zero-CORS instant loading when opening directly via `file:///`.
+
+---
+
 ## 🎨 Design & Claymorphism Theme
 
 The entire platform is styled using a unified **Tactile Claymorphism** design language:
@@ -113,9 +156,13 @@ $$\text{Fault Ratio } (\%) = \left( \frac{\text{Total Page Faults}}{\text{Total 
 ```
 CPU-Scheduler/
 │
-├── index.html              # OS EduHub main SPA portal & module hub
+├── index.html              # OS EduHub main SPA portal & academic course hub
+├── lectures.html           # Unit-wise Lecture Decks Catalog (View Slides & Download PDF)
+├── lecture_notes.html      # High-DPI Interactive Slide Reader, Zoom & Scribble Canvas
 ├── cpu_schedule.html       # Visual CPU Scheduling Simulator & C Code
 ├── page_replacement.html   # Page Replacement Algorithms Simulator & C Code
+├── syllabus.html           # Full Operating Systems Syllabus (U24PC540IT)
+├── lecture/                # PDF lecture courseware (Unit-1 slide decks & data)
 └── README.md               # Comprehensive platform documentation
 ```
 
@@ -123,12 +170,14 @@ CPU-Scheduler/
 
 ## 🛠️ Built With
 
-- **HTML5 & CSS3** (Custom Glassmorphic Styling & CSS Grid/Flexbox)
-- **[Bootstrap 5.3](https://getbootstrap.com/)** (Responsive UI components & icons)
-- **[Vanilla JavaScript (ES6+)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)** (Simulation engines, ready queue state manager, frame visualizers)
+- **HTML5 & CSS3** (Tactile Claymorphism Styling & CSS Grid/Flexbox)
+- **[Bootstrap 5.3](https://getbootstrap.com/)** (Responsive layout components & UI utilities)
+- **[Vanilla JavaScript (ES6+)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)** (Simulation engines, canvas chalkboard, state management)
+- **[Reveal.js 4.6.1](https://revealjs.com/)** (Interactive HTML presentation framework with Quarto styling)
+- **[PDF.js 3.11](https://mozilla.github.io/pdf.js/)** (Client-side PDF rendering engine for custom lecture decks)
 - **[KaTeX](https://katex.org/)** (Fast mathematical LaTeX typesetting)
 - **[Prism.js](https://prismjs.com/)** (C code syntax highlighting)
-- **[Bootstrap Icons](https://icons.getbootstrap.com/)** (Vector icons)
+- **[Bootstrap Icons](https://icons.getbootstrap.com/)** (Modern vector icon set)
 
 ---
 
