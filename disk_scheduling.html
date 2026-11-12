@@ -1,0 +1,2296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS EduHub - Disk Scheduling Simulator</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <!-- Shared claymorphism theme -->
+    <link href="simulator-theme.css" rel="stylesheet">
+
+    <style>
+        /* Disk Lane */
+        .disk-lane {
+            background: #f0f4fa;
+            border-radius: 24px;
+            padding: 1.15rem 1.2rem 0.9rem;
+            box-shadow: inset 3px 3px 8px rgba(160, 175, 205, 0.28), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+        }
+
+        .disk-track-wrap {
+            position: relative;
+            height: 84px;
+            margin: 0 18px;
+        }
+
+        .disk-track-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50px;
+            height: 11px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #dbe4f0, #eef3fa 50%, #dbe4f0);
+            box-shadow: inset 2px 2px 5px rgba(160, 175, 205, 0.38), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+        }
+
+        .disk-request-dot {
+            position: absolute;
+            top: 55px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px solid #ffffff;
+            background: #f59e0b;
+            box-shadow: 0 3px 8px rgba(245, 158, 11, 0.35);
+            z-index: 2;
+            transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+        }
+
+        .disk-request-dot.served {
+            background: #2ec491;
+            box-shadow: 0 3px 8px rgba(46, 196, 145, 0.32);
+            transform: translate(-50%, -50%) scale(0.85);
+        }
+
+        .disk-request-dot.current {
+            background: #436cf5;
+            box-shadow: 0 0 0 6px rgba(67, 108, 245, 0.22), 0 4px 10px rgba(67, 108, 245, 0.4);
+            transform: translate(-50%, -50%) scale(1.15);
+            z-index: 4;
+        }
+
+        .disk-head-marker {
+            position: absolute;
+            top: 14px;
+            width: 3px;
+            height: 54px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #436cf5, #2b55df);
+            transform: translateX(-50%);
+            z-index: 5;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.75), 0 4px 10px rgba(67, 108, 245, 0.3);
+            transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .disk-head-marker::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -7px;
+            width: 0;
+            height: 0;
+            transform: translateX(-50%);
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-top: 9px solid #2b55df;
+        }
+
+        .disk-head-label {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #436cf5;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 1px 7px;
+            font-family: var(--font-mono);
+            font-size: 0.66rem;
+            font-weight: 800;
+            white-space: nowrap;
+            box-shadow: 0 3px 7px rgba(67, 108, 245, 0.3);
+        }
+
+        .disk-scale {
+            display: flex;
+            justify-content: space-between;
+            margin: 0 12px;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .disk-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .disk-legend .legend-chip {
+            font-size: 0.74rem;
+        }
+
+        .legend-dot-round {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 2px solid #ffffff;
+            box-shadow: 0 1px 3px rgba(30, 40, 80, 0.2);
+        }
+
+        /* Seek Chart */
+        .seek-panel {
+            background: #f0f4fa;
+            border-radius: 22px;
+            padding: 0.9rem;
+            box-shadow: inset 3px 3px 8px rgba(160, 175, 205, 0.25), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+        }
+
+        #seekChart {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        /* Sequence Strip */
+        .sequence-scroll {
+            overflow-x: auto;
+            padding: 0.3rem 0 0.55rem;
+        }
+
+        .sequence-flow {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            gap: 0.35rem;
+            min-width: max-content;
+        }
+
+        .seq-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 36px;
+            padding: 0 0.55rem;
+            border-radius: 11px;
+            background: linear-gradient(145deg, #38cf9b, #2ec491);
+            color: #ffffff;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            font-weight: 800;
+            box-shadow: 0 3px 8px rgba(46, 196, 145, 0.25), inset 1px 1px 2px rgba(255, 255, 255, 0.55);
+            white-space: nowrap;
+        }
+
+        .seq-chip.pending {
+            background: #eef3f8;
+            color: #94a3b8;
+            border: 1px dashed #cbd5e1;
+            box-shadow: none;
+        }
+
+        .seq-chip.current {
+            background: linear-gradient(145deg, #628efb, #436cf5);
+            box-shadow: 0 4px 11px rgba(67, 108, 245, 0.35), inset 1px 1px 2px rgba(255, 255, 255, 0.55);
+        }
+
+        .seq-chip.start {
+            background: #334155;
+            box-shadow: 0 3px 8px rgba(51, 65, 85, 0.3);
+        }
+
+        .seq-chip.boundary {
+            background: linear-gradient(145deg, #fbbf24, #f59e0b);
+            box-shadow: 0 3px 8px rgba(245, 158, 11, 0.28);
+        }
+
+        .seq-chip.jump {
+            background: linear-gradient(145deg, #fb6d93, #f75583);
+            box-shadow: 0 3px 8px rgba(247, 85, 131, 0.28);
+            border: 2px dashed rgba(255, 255, 255, 0.8);
+        }
+
+        .seq-arrow {
+            color: #94a3b8;
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .seq-arrow.jump-arrow {
+            color: var(--accent-pink);
+            font-size: 0.9rem;
+        }
+
+        /* Movement Table */
+        .current-move-row td {
+            background: #edf3fe !important;
+        }
+
+        .current-move-row td:first-child {
+            box-shadow: inset 4px 0 0 var(--primary-blue);
+        }
+
+        .result-pending {
+            opacity: 0.5;
+        }
+
+        /* Resource choice rows */
+        .resource-summary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .resource-summary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.72);
+            border-radius: 12px;
+            padding: 0.38rem 0.55rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .resource-summary-row strong {
+            font-family: var(--font-mono);
+            color: var(--text-main);
+        }
+
+        /* Comparison */
+        .mini-path {
+            display: block;
+            width: 100%;
+            height: 82px;
+            background: #f0f4fa;
+            border-radius: 14px;
+            box-shadow: inset 2px 2px 6px rgba(160, 175, 205, 0.24), inset -2px -2px 6px rgba(255, 255, 255, 0.9);
+        }
+
+        .mini-path-line {
+            fill: none;
+            stroke: #436cf5;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .algo-mini-card {
+            border-radius: 18px;
+            background: #f7f9fd;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            padding: 0.7rem;
+        }
+
+        /* Algorithm icon tints */
+        .disk-icon-blue { color: #436cf5; }
+        .disk-icon-green { color: #2ec491; }
+        .disk-icon-pink { color: #f75583; }
+        .disk-icon-purple { color: #8b5cf6; }
+        .disk-icon-amber { color: #f59e0b; }
+        .disk-icon-cyan { color: #06b6d4; }
+
+        @media (max-width: 767.98px) {
+            .disk-track-wrap {
+                margin: 0 10px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .disk-lane {
+                padding: 1rem 0.75rem 0.8rem;
+            }
+
+            .disk-track-wrap {
+                height: 78px;
+            }
+
+            .disk-scale {
+                font-size: 0.62rem;
+            }
+
+            .seek-panel {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-bg">
+        <div class="ambient-orb orb-blue"></div>
+        <div class="ambient-orb orb-pink"></div>
+        <div class="ambient-orb orb-green"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-xl glass-nav sticky-top py-2 px-3 mb-4">
+        <div class="container-fluid max-w-7xl">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="brand-icon" style="background: linear-gradient(145deg, #22d3ee, #06b6d4); box-shadow: 0 4px 12px rgba(6, 182, 212, 0.35), inset 2px 2px 4px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(8, 90, 110, 0.3);">
+                    <i class="bi bi-hdd-stack-fill"></i>
+                </div>
+                <div>
+                    <span class="brand-text fs-4">OS EduHub</span>
+                    <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle ms-2 font-monospace" style="font-size: 0.7rem;">Disk</span>
+                </div>
+            </a>
+
+            <button class="navbar-toggler glass-nav-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list fs-2 text-primary"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="nav nav-pills ms-auto my-2 my-lg-0" id="mainNav" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab-simulator" data-bs-toggle="pill" data-bs-target="#section-simulator" type="button" role="tab">
+                            <i class="bi bi-play-circle-fill me-1"></i> Simulation
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-compare" data-bs-toggle="pill" data-bs-target="#section-compare" type="button" role="tab">
+                            <i class="bi bi-bar-chart-fill me-1"></i> Compare
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-theory" data-bs-toggle="pill" data-bs-target="#section-theory" type="button" role="tab">
+                            <i class="bi bi-book-half me-1"></i> Algorithms
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-code" data-bs-toggle="pill" data-bs-target="#section-code" type="button" role="tab">
+                            <i class="bi bi-code-slash me-1"></i> Code in C
+                        </button>
+                    </li>
+                    <li class="nav-item ms-xl-2">
+                        <a href="lectures.html" class="btn btn-sm btn-glass-outline nav-resource-btn d-inline-flex align-items-center mt-1 mt-xl-0" title="Open lecture decks">
+                            <i class="bi bi-collection-play-fill me-1"></i><span class="btn-label"> Lectures</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-xl-1">
+                        <a href="syllabus.html" class="btn btn-sm btn-glass-outline nav-resource-btn d-inline-flex align-items-center mt-1 mt-xl-0" title="Open syllabus">
+                            <i class="bi bi-book-half me-1"></i><span class="btn-label"> Syllabus</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-xl-1">
+                        <a href="index.html" class="btn btn-sm btn-glass-outline nav-resource-btn d-inline-flex align-items-center mt-1 mt-xl-0" title="Back to hub home">
+                            <i class="bi bi-house-door-fill me-1"></i><span class="btn-label"> Hub Home</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid px-3 px-md-4 max-w-7xl pb-5 position-relative" style="z-index: 1;">
+        <div class="tab-content" id="mainTabContent">
+
+            <!-- ========================================== -->
+            <!-- 1. SIMULATION                              -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade show active" id="section-simulator" role="tabpanel">
+
+                <div class="glass-panel controls-bar-panel p-3 p-md-4 mb-4">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="algoSelect">
+                                <i class="bi bi-diagram-3-fill text-primary me-1"></i> Disk Algorithm
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="algoSelect">
+                                <option value="FCFS" selected>FCFS</option>
+                                <option value="SSTF">SSTF</option>
+                                <option value="SCAN">SCAN</option>
+                                <option value="CSCAN">C-SCAN</option>
+                                <option value="LOOK">LOOK</option>
+                                <option value="CLOOK">C-LOOK</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="headInput">
+                                <i class="bi bi-record-circle-fill text-primary me-1"></i> Initial Head
+                            </label>
+                            <input type="number" min="0" step="1" class="form-control form-control-glass" id="headInput" value="53">
+                        </div>
+
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="diskSizeInput">
+                                <i class="bi bi-hdd-fill text-success me-1"></i> Cylinders
+                            </label>
+                            <input type="number" min="10" max="9999" step="1" class="form-control form-control-glass" id="diskSizeInput" value="200">
+                            <div class="input-hint" id="diskSizeHint">Tracks 0 – 199</div>
+                        </div>
+
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="directionSelect">
+                                <i class="bi bi-arrow-left-right text-primary me-1"></i> Direction
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="directionSelect">
+                                <option value="right" selected>Higher cylinders</option>
+                                <option value="left">Lower cylinders</option>
+                            </select>
+                            <div class="input-hint" id="directionHint">Used by SCAN family</div>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1">
+                                <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Presets
+                            </label>
+                            <div class="dropdown">
+                                <button class="btn btn-glass-outline btn-sm dropdown-toggle w-100" type="button" id="presetsDropdown" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                                    <i class="bi bi-journal-text text-primary me-1"></i> Load Presets
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-glass border-0" aria-labelledby="presetsDropdown">
+                                    <li>
+                                        <button class="dropdown-item" type="button" onclick="loadPreset('classic')">
+                                            <i class="bi bi-journal-text text-primary me-2"></i>Classic Textbook (FCFS)
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item" type="button" onclick="loadPreset('scan')">
+                                            <i class="bi bi-arrow-left-right text-success me-2"></i>Elevator Sweep (SCAN)
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item" type="button" onclick="loadPreset('circular')">
+                                            <i class="bi bi-arrow-repeat text-info me-2"></i>Circular Sweep (C-SCAN)
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item" type="button" onclick="loadPreset('edge')">
+                                            <i class="bi bi-bounding-box text-warning me-2"></i>Edge Tracks (LOOK)
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-12 col-lg-9">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="requestsInput">
+                                <i class="bi bi-list-ol text-success me-1"></i> Request Queue (cylinders)
+                            </label>
+                            <input type="text" class="form-control form-control-glass" id="requestsInput" value="98, 183, 37, 122, 14, 124, 65, 67" placeholder="e.g. 98, 183, 37, 122, 14, 124, 65, 67">
+                            <div class="input-hint" id="requestsHint">8 requests · 0 to 199</div>
+                        </div>
+
+                        <div class="col-12 col-lg-3 d-flex align-items-end">
+                            <div class="d-flex flex-wrap gap-2 w-100">
+                                <button class="btn btn-glass-outline btn-sm" type="button" onclick="randomizeRequests()" title="Generate random requests">
+                                    <i class="bi bi-shuffle me-1"></i> Random
+                                </button>
+                                <button class="btn btn-glass-primary flex-grow-1" type="button" onclick="runSimulation()">
+                                    <i class="bi bi-play-fill me-1"></i> Simulate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="small text-muted fw-semibold mt-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        The head moves between cylinders; total seek time is the sum of absolute cylinder distances. SCAN family algorithms use the selected direction and the disk boundary.
+                    </div>
+
+                    <div id="inputError" class="input-error d-none">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span id="inputErrorText"></span>
+                    </div>
+                </div>
+
+                <!-- KPI -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-blue">
+                            <div class="kpi-label">Total Head Movement</div>
+                            <div class="kpi-value text-primary mt-1" id="kpiMovement">0 <span class="fs-6 fw-normal text-muted">cyl</span></div>
+                            <small class="text-muted d-block mt-1" id="kpiMovementSub">Cumulative seek distance</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-green">
+                            <div class="kpi-label">Average Seek</div>
+                            <div class="kpi-value text-success mt-1" id="kpiAverage">0 <span class="fs-6 fw-normal text-muted">cyl</span></div>
+                            <small class="text-muted d-block mt-1" id="kpiAverageSub">Per served request</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-purple">
+                            <div class="kpi-label">Requests Served</div>
+                            <div class="kpi-value mt-1" id="kpiServed" style="color: var(--accent-purple);">0 <span class="fs-6 fw-normal text-muted">/ 0</span></div>
+                            <small class="text-muted d-block mt-1" id="kpiServedSub">At the current step</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-amber">
+                            <div class="kpi-label">Head Direction</div>
+                            <div class="kpi-value mt-1" id="kpiDirection" style="color: var(--accent-amber); font-size: 1.55rem;">Higher</div>
+                            <small class="text-muted d-block mt-1" id="kpiDirectionSub">Initial head: 53</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualization + Playback -->
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-2">
+                        <div>
+                            <h5 class="fw-bold mb-0 text-dark d-flex align-items-center">
+                                <i class="bi bi-hdd-stack-fill text-primary me-2"></i>Disk Head Movement
+                            </h5>
+                            <small class="text-muted">Seek step <strong class="text-primary font-monospace" id="stepCounterLabel">0 / 0</strong> of the service sequence</small>
+                        </div>
+
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <div class="bg-white px-3 py-1.5 rounded-3 border d-flex align-items-center gap-2 shadow-sm">
+                                <button class="btn btn-sm btn-link text-secondary p-0" id="btnStepPrev" onclick="stepSimulation('prev')" title="Previous seek" aria-label="Previous seek">
+                                    <i class="bi bi-skip-start-fill fs-5"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-primary p-0" id="btnPlay" onclick="togglePlay()" title="Play / Pause" aria-label="Play or pause">
+                                    <i class="bi bi-play-fill fs-4" id="playIcon"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-secondary p-0" id="btnStepNext" onclick="stepSimulation('next')" title="Next seek" aria-label="Next seek">
+                                    <i class="bi bi-skip-end-fill fs-5"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-danger p-0" id="btnReset" onclick="resetPlayback()" title="Reset playback" aria-label="Reset playback">
+                                    <i class="bi bi-arrow-counterclockwise fs-5"></i>
+                                </button>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 bg-white px-3 py-1 rounded-3 border">
+                                <label for="stepScrubber" class="small fw-bold text-muted mb-0 font-monospace">Step:</label>
+                                <input type="range" class="form-range" id="stepScrubber" min="0" max="0" value="0" style="width: 120px;" oninput="scrubStep(this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="decision-banner" id="decisionBanner">
+                        <span class="banner-icon" id="decisionIcon"><i class="bi bi-info-circle-fill"></i></span>
+                        <div>
+                            <div class="banner-title" id="decisionTitle">Disk head is ready</div>
+                            <div class="banner-text" id="decisionText">Run the simulation or step through each seek decision.</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                        <div class="disk-legend">
+                            <span class="legend-chip"><span class="legend-dot-round" style="background: #f59e0b;"></span>Pending request</span>
+                            <span class="legend-chip"><span class="legend-dot-round" style="background: #2ec491;"></span>Served request</span>
+                            <span class="legend-chip"><span class="legend-dot-round" style="background: #436cf5;"></span>Head position</span>
+                        </div>
+                        <span class="badge bg-light text-dark border font-monospace" id="headBadge">Current head: 53</span>
+                    </div>
+
+                    <div class="disk-lane mb-3">
+                        <div class="disk-track-wrap" id="diskTrack">
+                            <div class="disk-track-line"></div>
+                            <!-- Dots and head marker generated here -->
+                        </div>
+                        <div class="disk-scale" id="diskScale"></div>
+                    </div>
+
+                    <div class="seek-panel mb-3">
+                        <svg id="seekChart" viewBox="0 0 900 320" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Seek path chart"></svg>
+                    </div>
+
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-3 mb-1">
+                        <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-signpost-split-fill text-success me-2"></i>Seek Sequence</h6>
+                        <small class="text-muted">Orange = disk boundary · pink = circular jump</small>
+                    </div>
+                    <div class="sequence-scroll">
+                        <div class="sequence-flow" id="sequenceFlow"></div>
+                    </div>
+
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-4 mb-2">
+                        <div>
+                            <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-table text-success me-2"></i>Movement Log</h6>
+                            <small class="text-muted">Each row is one head movement in the service order.</small>
+                            <small class="text-muted d-block d-md-none mt-1"><i class="bi bi-arrows-move me-1"></i>Swipe the log sideways to see cumulative totals and movement type.</small>
+                        </div>
+                        <span class="badge bg-light text-dark border font-monospace" id="movesBadge">0 moves</span>
+                    </div>
+
+                    <div class="table-matrix-wrapper">
+                        <table class="table table-clay align-middle mb-0" id="movesTable">
+                            <thead id="movesHead"></thead>
+                            <tbody id="movesBody"></tbody>
+                            <tfoot id="movesFoot"></tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 2. COMPARE ALL ALGORITHMS                  -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-compare" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                        <div>
+                            <h4 class="fw-bold mb-1 brand-text">
+                                <i class="bi bi-intersect me-2"></i>FCFS vs SSTF vs SCAN vs C-SCAN vs LOOK vs C-LOOK
+                            </h4>
+                            <p class="text-muted mb-0">Runs every algorithm on the current request queue, initial head, disk size, and direction. The lowest total movement is highlighted in green.</p>
+                        </div>
+                        <button class="btn btn-glass-primary" onclick="generateComparison()">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Recompute Benchmark
+                        </button>
+                    </div>
+
+                    <div class="row g-4 mb-4" id="comparisonCardsRow">
+                        <!-- Dynamic comparison cards -->
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-lg-6">
+                            <div class="glass-panel p-4 h-100">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <h5 class="fw-bold mb-0 text-dark">
+                                        <i class="bi bi-arrows-move text-primary me-2"></i>Total Head Movement
+                                    </h5>
+                                    <small class="text-muted fw-bold">Lower is better</small>
+                                </div>
+                                <div id="chartMovement" class="d-flex flex-column gap-3">
+                                    <!-- Dynamic bars -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="glass-panel p-4 h-100">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <h5 class="fw-bold mb-0 text-dark">
+                                        <i class="bi bi-speedometer2 text-success me-2"></i>Average Seek per Request
+                                    </h5>
+                                    <small class="text-muted fw-bold">Lower is better</small>
+                                </div>
+                                <div id="chartAverage" class="d-flex flex-column gap-3">
+                                    <!-- Dynamic bars -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="small text-muted fw-semibold mt-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        SCAN and C-SCAN include travel to the disk edge when requests remain on the other side. C-SCAN and C-LOOK include the circular return jump; LOOK and C-LOOK stop at the last request instead of the disk boundary.
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 3. ALGORITHMS & THEORY                     -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-theory" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="text-center mx-auto mb-5" style="max-width: 780px;">
+                        <span class="badge rounded-pill bg-info-subtle text-info-emphasis px-3 py-2 fw-bold text-uppercase mb-2">Disk Scheduling</span>
+                        <h2 class="fw-bold brand-text mb-3">Disk Scheduling Algorithms Guide</h2>
+                        <p class="text-muted">Disk scheduling decides the order in which pending I/O requests are serviced. Moving the head fewer cylinders usually means lower seek time, so every algorithm here is judged by its total head movement.</p>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold text-primary mb-1">FCFS</h4>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">First Come, First Served</span>
+                                    </div>
+                                    <i class="bi bi-list-ol fs-2 disk-icon-blue"></i>
+                                </div>
+                                <p class="text-muted">Serve requests in the exact order they arrive. The head may sweep back and forth across the disk.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Pros:</strong> Fair, simple, and starvation-free.</li>
+                                    <li><strong>Cons:</strong> Often produces very large total movement.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold text-success mb-1">SSTF</h4>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">Shortest Seek First</span>
+                                    </div>
+                                    <i class="bi bi-bullseye fs-2 disk-icon-green"></i>
+                                </div>
+                                <p class="text-muted">Always serve the pending request closest to the current head position. This is greedy nearest-neighbour scheduling.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Pros:</strong> Usually much better than FCFS.</li>
+                                    <li><strong>Cons:</strong> Can starve far-away requests; not globally optimal.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-1" style="color: var(--accent-purple);">SCAN</h4>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Elevator Algorithm</span>
+                                    </div>
+                                    <i class="bi bi-arrow-left-right fs-2 disk-icon-purple"></i>
+                                </div>
+                                <p class="text-muted">Move in one direction serving requests, reach the disk edge, then reverse and serve the remaining requests.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Pros:</strong> Bounded waiting and steady throughput.</li>
+                                    <li><strong>Cons:</strong> Travel to the edge may be wasted if no request lies there.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-1" style="color: var(--accent-pink);">C-SCAN</h4>
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Circular SCAN</span>
+                                    </div>
+                                    <i class="bi bi-arrow-repeat fs-2 disk-icon-pink"></i>
+                                </div>
+                                <p class="text-muted">Sweep in one direction to the disk edge, jump back to the opposite edge, and continue sweeping in the same direction.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Pros:</strong> More uniform wait times than SCAN.</li>
+                                    <li><strong>Cons:</strong> The return jump adds seek distance.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-1" style="color: var(--accent-amber);">LOOK</h4>
+                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Look Ahead SCAN</span>
+                                    </div>
+                                    <i class="bi bi-search fs-2 disk-icon-amber"></i>
+                                </div>
+                                <p class="text-muted">Like SCAN, but reverse as soon as no more requests lie ahead instead of travelling all the way to the disk edge.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Pros:</strong> Removes unnecessary travel to empty edges.</li>
+                                    <li><strong>Cons:</strong> Requests near the edge can still wait longer.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-1" style="color: var(--accent-cyan, #06b6d4);">C-LOOK</h4>
+                                        <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">Circular LOOK</span>
+                                    </div>
+                                    <i class="bi bi-arrow-90deg-right fs-2 disk-icon-cyan"></i>
+                                </div>
+                                <p class="text-muted">Serve requests in one direction, then jump directly to the farthest request on the opposite side and continue in the same direction.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Pros:</strong> Avoids travel to empty disk edges and keeps circular fairness.</li>
+                                    <li><strong>Cons:</strong> The wrap-around jump can still be expensive.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mt-1">
+                        <div class="col-12 col-lg-6">
+                            <div class="frag-tile">
+                                <h6 class="fw-bold text-dark mb-3"><i class="bi bi-calculator text-primary me-2"></i>Seek Metrics</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="formula-pill"><i class="bi bi-arrows-move"></i> Seek distance = |current track − next track|</span>
+                                    <span class="formula-pill"><i class="bi bi-plus-circle"></i> Total movement = Σ seek distances</span>
+                                    <span class="formula-pill"><i class="bi bi-divide"></i> Average seek = Total movement ÷ requests served</span>
+                                </div>
+                                <p class="text-muted small mt-3 mb-0">This simulator counts the circular return jump in C-SCAN and C-LOOK, which is why those totals can exceed their non-circular counterparts.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="frag-tile">
+                                <h6 class="fw-bold text-dark mb-3"><i class="bi bi-lightbulb-fill text-warning me-2"></i>How to Choose</h6>
+                                <div class="resource-summary-list">
+                                    <div class="resource-summary-row"><span>Simple &amp; fair</span><strong>FCFS</strong></div>
+                                    <div class="resource-summary-row"><span>Lowest local movement</span><strong>SSTF</strong></div>
+                                    <div class="resource-summary-row"><span>Bounded waiting</span><strong>SCAN / C-SCAN</strong></div>
+                                    <div class="resource-summary-row"><span>No edge travel</span><strong>LOOK / C-LOOK</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 4. C CODE                                  -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-code" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                        <div>
+                            <h4 class="fw-bold mb-1 brand-text">
+                                <i class="bi bi-code-slash me-2"></i>C Implementation Code
+                            </h4>
+                            <p class="text-muted mb-0">Reference implementations of all six disk scheduling algorithms.</p>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <select class="form-select form-select-glass form-select-sm" id="codeAlgoSelect" onchange="updateCodeDisplay()" style="min-width: 220px; width: auto;">
+                                <option value="FCFS">FCFS Code</option>
+                                <option value="SSTF">SSTF Code</option>
+                                <option value="SCAN">SCAN Code</option>
+                                <option value="CSCAN">C-SCAN Code</option>
+                                <option value="LOOK">LOOK Code</option>
+                                <option value="CLOOK">C-LOOK Code</option>
+                            </select>
+                            <button class="btn btn-glass-outline btn-sm" onclick="copyCode()">
+                                <i class="bi bi-clipboard me-1"></i> Copy Code
+                            </button>
+                            <button class="btn btn-glass-outline btn-sm" onclick="downloadCode()">
+                                <i class="bi bi-download me-1"></i> Download
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="code-container">
+                        <div class="code-header">
+                            <div class="code-dots">
+                                <span style="background: #ef4444;"></span>
+                                <span style="background: #f59e0b;"></span>
+                                <span style="background: #10b981;"></span>
+                            </div>
+                            <span class="text-light small font-monospace" id="codeFileName">disk_scheduling_fcfs.c</span>
+                        </div>
+                        <pre><code class="language-c" id="codeBlock">/* Disk Scheduling - FCFS */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+
+    <script>
+        // =========================================================
+        // Constants & State
+        // =========================================================
+        const ALGO_LABELS = {
+            FCFS: 'FCFS',
+            SSTF: 'SSTF',
+            SCAN: 'SCAN',
+            CSCAN: 'C-SCAN',
+            LOOK: 'LOOK',
+            CLOOK: 'C-LOOK'
+        };
+
+        const DIRECTIONAL_ALGOS = new Set(['SCAN', 'CSCAN', 'LOOK', 'CLOOK']);
+
+        const ALGO_COLORS = {
+            FCFS: '#436cf5',
+            SSTF: '#2ec491',
+            SCAN: '#8b5cf6',
+            CSCAN: '#f75583',
+            LOOK: '#f59e0b',
+            CLOOK: '#06b6d4'
+        };
+
+        const presets = {
+            classic: {
+                algorithm: 'FCFS',
+                head: 53,
+                diskSize: 200,
+                direction: 'right',
+                requests: '98, 183, 37, 122, 14, 124, 65, 67'
+            },
+            scan: {
+                algorithm: 'SCAN',
+                head: 53,
+                diskSize: 200,
+                direction: 'right',
+                requests: '98, 183, 37, 122, 14, 124, 65, 67'
+            },
+            circular: {
+                algorithm: 'CSCAN',
+                head: 53,
+                diskSize: 200,
+                direction: 'right',
+                requests: '98, 183, 37, 122, 14, 124, 65, 67'
+            },
+            edge: {
+                algorithm: 'LOOK',
+                head: 100,
+                diskSize: 200,
+                direction: 'right',
+                requests: '0, 199, 1, 198, 50, 150, 25, 175'
+            }
+        };
+
+        let simulation = null;
+        let currentStep = 0;
+        let playTimer = null;
+
+        // =========================================================
+        // Utilities & Validation
+        // =========================================================
+        function fmt(value) {
+            return Number(value || 0).toLocaleString('en-US');
+        }
+
+        function sum(values) {
+            return values.reduce((total, value) => total + Number(value || 0), 0);
+        }
+
+        function showInputError(message) {
+            document.getElementById('inputErrorText').textContent = message;
+            document.getElementById('inputError').classList.remove('d-none');
+        }
+
+        function hideInputError() {
+            document.getElementById('inputError').classList.add('d-none');
+        }
+
+        function parseRequestQueue(text, diskSize) {
+            const tokens = text.split(/[\s,;]+/).map(token => token.trim()).filter(Boolean);
+            if (!tokens.length) {
+                return { error: 'Enter at least one disk request.' };
+            }
+
+            if (tokens.length > 30) {
+                return { error: 'Use at most 30 requests so the movement chart stays readable.' };
+            }
+
+            const requests = [];
+            const invalid = [];
+
+            tokens.forEach(token => {
+                const value = Number(token);
+                if (!Number.isInteger(value) || value < 0 || value >= diskSize) {
+                    invalid.push(token);
+                } else {
+                    requests.push(value);
+                }
+            });
+
+            if (invalid.length) {
+                return { error: `Invalid request${invalid.length > 1 ? 's' : ''}: ${invalid.join(', ')}. Use whole numbers from 0 to ${diskSize - 1}.` };
+            }
+
+            return { requests };
+        }
+
+        function readInputs() {
+            const algorithm = document.getElementById('algoSelect').value;
+            const head = Number(document.getElementById('headInput').value);
+            const diskSize = Number(document.getElementById('diskSizeInput').value);
+            const direction = document.getElementById('directionSelect').value;
+
+            if (!Number.isInteger(diskSize) || diskSize < 10 || diskSize > 9999) {
+                showInputError('Cylinder count must be a whole number between 10 and 9,999.');
+                return null;
+            }
+
+            if (!Number.isInteger(head) || head < 0 || head >= diskSize) {
+                showInputError(`Initial head must be a whole number from 0 to ${diskSize - 1}.`);
+                return null;
+            }
+
+            const parsed = parseRequestQueue(document.getElementById('requestsInput').value, diskSize);
+            if (parsed.error) {
+                showInputError(parsed.error);
+                return null;
+            }
+
+            hideInputError();
+
+            return {
+                algorithm,
+                head,
+                diskSize,
+                direction,
+                requests: parsed.requests
+            };
+        }
+
+        function updateHints() {
+            const diskSize = Math.max(10, Math.floor(Number(document.getElementById('diskSizeInput').value) || 200));
+            document.getElementById('diskSizeHint').textContent = `Tracks 0 – ${fmt(diskSize - 1)}`;
+
+            const tokens = document.getElementById('requestsInput').value.split(/[\s,;]+/).filter(Boolean);
+            document.getElementById('requestsHint').textContent = tokens.length
+                ? `${tokens.length} request${tokens.length === 1 ? '' : 's'} · valid range 0 to ${fmt(diskSize - 1)}`
+                : 'Enter positive cylinder numbers separated by commas.';
+
+            const directional = DIRECTIONAL_ALGOS.has(document.getElementById('algoSelect').value);
+            document.getElementById('directionHint').textContent = directional
+                ? 'Used by this algorithm'
+                : 'FCFS and SSTF ignore direction';
+        }
+
+        function updateDirectionUI() {
+            const directional = DIRECTIONAL_ALGOS.has(document.getElementById('algoSelect').value);
+            document.getElementById('directionSelect').disabled = !directional;
+            updateHints();
+        }
+
+        // =========================================================
+        // Disk Scheduling Engine
+        // =========================================================
+        function simulateDisk({ algorithm, head, diskSize, direction, requests }) {
+            const points = [{ cyl: head, kind: 'start', jump: false }];
+            const add = (cyl, kind = 'request', jump = false) => {
+                points.push({ cyl, kind, jump });
+            };
+            const lastCylinder = () => points[points.length - 1].cyl;
+            const sortedAscending = [...requests].sort((a, b) => a - b);
+            const sortedDescending = [...requests].sort((a, b) => b - a);
+
+            if (algorithm === 'FCFS') {
+                requests.forEach(cylinder => add(cylinder, 'request'));
+
+            } else if (algorithm === 'SSTF') {
+                const pending = requests.map((cylinder, index) => ({ cylinder, index }));
+
+                while (pending.length) {
+                    let bestIndex = 0;
+                    let bestDistance = Number.POSITIVE_INFINITY;
+
+                    for (let index = 0; index < pending.length; index++) {
+                        const distance = Math.abs(pending[index].cylinder - lastCylinder());
+                        if (distance < bestDistance
+                            || (distance === bestDistance && pending[index].cylinder < pending[bestIndex].cylinder)) {
+                            bestDistance = distance;
+                            bestIndex = index;
+                        }
+                    }
+
+                    const chosen = pending.splice(bestIndex, 1)[0];
+                    add(chosen.cylinder, 'request');
+                }
+
+            } else if (algorithm === 'SCAN') {
+                if (direction === 'right') {
+                    const ahead = sortedAscending.filter(cylinder => cylinder >= head);
+                    const behind = sortedAscending.filter(cylinder => cylinder < head).sort((a, b) => b - a);
+
+                    ahead.forEach(cylinder => add(cylinder, 'request'));
+
+                    if (behind.length) {
+                        if (lastCylinder() < diskSize - 1) add(diskSize - 1, 'boundary');
+                        behind.forEach(cylinder => add(cylinder, 'request'));
+                    }
+                } else {
+                    const behind = sortedAscending.filter(cylinder => cylinder <= head).sort((a, b) => b - a);
+                    const ahead = sortedAscending.filter(cylinder => cylinder > head);
+
+                    behind.forEach(cylinder => add(cylinder, 'request'));
+
+                    if (ahead.length) {
+                        if (lastCylinder() > 0) add(0, 'boundary');
+                        ahead.forEach(cylinder => add(cylinder, 'request'));
+                    }
+                }
+
+            } else if (algorithm === 'CSCAN') {
+                if (direction === 'right') {
+                    const ahead = sortedAscending.filter(cylinder => cylinder >= head);
+                    const behind = sortedAscending.filter(cylinder => cylinder < head);
+
+                    ahead.forEach(cylinder => add(cylinder, 'request'));
+
+                    if (behind.length) {
+                        if (lastCylinder() !== diskSize - 1) add(diskSize - 1, 'boundary');
+
+                        if (behind[0] === 0) {
+                            add(0, 'request', true);
+                            behind.shift();
+                        } else {
+                            add(0, 'jump', true);
+                        }
+
+                        behind.forEach(cylinder => add(cylinder, 'request'));
+                    }
+                } else {
+                    const behind = sortedAscending.filter(cylinder => cylinder <= head).sort((a, b) => b - a);
+                    const ahead = sortedAscending.filter(cylinder => cylinder > head).sort((a, b) => b - a);
+
+                    behind.forEach(cylinder => add(cylinder, 'request'));
+
+                    if (ahead.length) {
+                        if (lastCylinder() !== 0) add(0, 'boundary');
+
+                        if (ahead[0] === diskSize - 1) {
+                            add(diskSize - 1, 'request', true);
+                            ahead.shift();
+                        } else {
+                            add(diskSize - 1, 'jump', true);
+                        }
+
+                        ahead.forEach(cylinder => add(cylinder, 'request'));
+                    }
+                }
+
+            } else if (algorithm === 'LOOK') {
+                if (direction === 'right') {
+                    const ahead = sortedAscending.filter(cylinder => cylinder >= head);
+                    const behind = sortedAscending.filter(cylinder => cylinder < head).sort((a, b) => b - a);
+                    ahead.forEach(cylinder => add(cylinder, 'request'));
+                    behind.forEach(cylinder => add(cylinder, 'request'));
+                } else {
+                    const behind = sortedAscending.filter(cylinder => cylinder <= head).sort((a, b) => b - a);
+                    const ahead = sortedAscending.filter(cylinder => cylinder > head);
+                    behind.forEach(cylinder => add(cylinder, 'request'));
+                    ahead.forEach(cylinder => add(cylinder, 'request'));
+                }
+
+            } else if (algorithm === 'CLOOK') {
+                if (direction === 'right') {
+                    const ahead = sortedAscending.filter(cylinder => cylinder >= head);
+                    const behind = sortedAscending.filter(cylinder => cylinder < head);
+
+                    ahead.forEach(cylinder => add(cylinder, 'request'));
+
+                    if (behind.length) {
+                        add(behind[0], 'request', true);
+                        behind.shift();
+                        behind.forEach(cylinder => add(cylinder, 'request'));
+                    }
+                } else {
+                    const behind = sortedAscending.filter(cylinder => cylinder <= head).sort((a, b) => b - a);
+                    const ahead = sortedAscending.filter(cylinder => cylinder > head);
+
+                    behind.forEach(cylinder => add(cylinder, 'request'));
+
+                    if (ahead.length) {
+                        const target = ahead[ahead.length - 1];
+                        add(target, 'request', true);
+                        ahead.pop();
+                        ahead.sort((a, b) => b - a).forEach(cylinder => add(cylinder, 'request'));
+                    }
+                }
+            }
+
+            const moves = [];
+            let cumulative = 0;
+
+            for (let index = 1; index < points.length; index++) {
+                const from = points[index - 1].cyl;
+                const to = points[index].cyl;
+                const distance = Math.abs(to - from);
+                cumulative += distance;
+
+                moves.push({
+                    index: index - 1,
+                    from,
+                    to,
+                    distance,
+                    cumulative,
+                    kind: points[index].kind,
+                    jump: points[index].jump
+                });
+            }
+
+            return {
+                algorithm,
+                head,
+                diskSize,
+                direction,
+                requests: [...requests],
+                points,
+                moves,
+                total: cumulative
+            };
+        }
+
+        function runSimulation() {
+            const inputs = readInputs();
+            if (!inputs) return;
+
+            stopPlayback();
+            updateHints();
+            simulation = simulateDisk(inputs);
+            currentStep = simulation.moves.length;
+
+            renderAll();
+            generateComparison();
+        }
+
+        // =========================================================
+        // Rendering
+        // =========================================================
+        function renderAll() {
+            if (!simulation) return;
+
+            renderKPIs();
+            renderDiskLane();
+            renderSeekChart();
+            renderSequence();
+            renderMovesTable();
+            renderDecision();
+            renderPlayback();
+        }
+
+        function currentServedCount() {
+            return simulation.points
+                .slice(1, currentStep + 1)
+                .filter(point => point.kind === 'request')
+                .length;
+        }
+
+        function currentMovement() {
+            return currentStep > 0 ? simulation.moves[currentStep - 1].cumulative : 0;
+        }
+
+        function renderKPIs() {
+            const movement = currentMovement();
+            const served = currentServedCount();
+            const average = served > 0 ? movement / served : 0;
+            const directional = DIRECTIONAL_ALGOS.has(simulation.algorithm);
+
+            document.getElementById('kpiMovement').innerHTML =
+                `${fmt(movement)} <span class="fs-6 fw-normal text-muted">cyl</span>`;
+            document.getElementById('kpiMovementSub').textContent = currentStep === simulation.moves.length
+                ? `Final total for ${simulation.requests.length} requests`
+                : `Cumulative after ${served} served request${served === 1 ? '' : 's'}`;
+
+            document.getElementById('kpiAverage').innerHTML =
+                `${average.toFixed(1)} <span class="fs-6 fw-normal text-muted">cyl</span>`;
+            document.getElementById('kpiAverageSub').textContent = served > 0
+                ? `${fmt(movement)} ÷ ${served} served request${served === 1 ? '' : 's'}`
+                : 'No requests served yet';
+
+            document.getElementById('kpiServed').innerHTML =
+                `${served} <span class="fs-6 fw-normal text-muted">/ ${simulation.requests.length}</span>`;
+            document.getElementById('kpiServedSub').textContent = served === simulation.requests.length
+                ? 'Every request has been served'
+                : `${simulation.requests.length - served} request${simulation.requests.length - served === 1 ? '' : 's'} remaining`;
+
+            document.getElementById('kpiDirection').textContent = directional
+                ? (simulation.direction === 'right' ? 'Higher' : 'Lower')
+                : 'Not used';
+            document.getElementById('kpiDirectionSub').textContent = directional
+                ? `Initial head: ${fmt(simulation.head)} · ${ALGO_LABELS[simulation.algorithm]}`
+                : `Initial head: ${fmt(simulation.head)} · FCFS/SSTF`;
+        }
+
+        function renderDiskLane() {
+            const track = document.getElementById('diskTrack');
+            const maxCylinder = simulation.diskSize - 1;
+            const uniqueRequests = [...new Set(simulation.requests)].sort((a, b) => a - b);
+            const servedSet = new Set(
+                simulation.points
+                    .slice(1, currentStep + 1)
+                    .filter(point => point.kind === 'request')
+                    .map(point => point.cyl)
+            );
+            const currentPoint = simulation.points[currentStep];
+            const currentRequest = currentPoint && currentPoint.kind === 'request' ? currentPoint.cyl : null;
+            const percent = cylinder => maxCylinder > 0 ? (cylinder / maxCylinder) * 100 : 0;
+
+            const dots = uniqueRequests.map(cylinder => {
+                const isServed = servedSet.has(cylinder);
+                const isCurrent = currentRequest === cylinder;
+                const className = `disk-request-dot${isServed ? ' served' : ''}${isCurrent ? ' current' : ''}`;
+                return `<span class="${className}" style="left: ${percent(cylinder)}%;" title="Cylinder ${cylinder}${isServed ? ' · served' : ' · pending'}"></span>`;
+            }).join('');
+
+            const head = currentPoint ? currentPoint.cyl : simulation.head;
+            track.innerHTML = `
+                <div class="disk-track-line"></div>
+                ${dots}
+                <span class="disk-head-marker" style="left: ${percent(head)}%;">
+                    <span class="disk-head-label">${fmt(head)}</span>
+                </span>
+            `;
+
+            document.getElementById('diskScale').innerHTML = [0, 0.25, 0.5, 0.75, 1]
+                .map(fraction => `<span>${fmt(Math.round(maxCylinder * fraction))}</span>`)
+                .join('');
+
+            document.getElementById('headBadge').textContent = `Current head: ${fmt(head)} · ${ALGO_LABELS[simulation.algorithm]}`;
+        }
+
+        function renderSeekChart() {
+            const svg = document.getElementById('seekChart');
+            const width = 900;
+            const height = 320;
+            const padLeft = 62;
+            const padRight = 24;
+            const padTop = 22;
+            const padBottom = 46;
+            const maxCylinder = simulation.diskSize - 1;
+            const points = simulation.points;
+            const xFor = index => points.length <= 1
+                ? padLeft
+                : padLeft + (index / (points.length - 1)) * (width - padLeft - padRight);
+            const yFor = cylinder => padTop + (1 - cylinder / maxCylinder) * (height - padTop - padBottom);
+            const parts = [];
+
+            parts.push(`<rect x="0" y="0" width="${width}" height="${height}" fill="transparent"></rect>`);
+
+            [0, 0.25, 0.5, 0.75, 1].forEach(fraction => {
+                const value = Math.round(maxCylinder * fraction);
+                const y = yFor(value);
+                parts.push(`<line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="#dbe4f0" stroke-width="1.2" stroke-dasharray="4 5"></line>`);
+                parts.push(`<text x="${padLeft - 12}" y="${y + 4}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#94a3b8">${value}</text>`);
+            });
+
+            if (points.length <= 13) {
+                points.forEach((point, index) => {
+                    const x = xFor(index);
+                    parts.push(`<text x="${x}" y="${height - 18}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#94a3b8">${index === 0 ? 'H' : index}</text>`);
+                });
+            } else {
+                parts.push(`<text x="${(padLeft + width - padRight) / 2}" y="${height - 16}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="700" fill="#94a3b8">Service order →</text>`);
+            }
+
+            for (let index = 1; index < points.length; index++) {
+                const visited = index <= currentStep;
+                const jump = points[index].jump;
+                const x1 = xFor(index - 1);
+                const y1 = yFor(points[index - 1].cyl);
+                const x2 = xFor(index);
+                const y2 = yFor(points[index].cyl);
+                const color = visited ? (jump ? '#f75583' : '#436cf5') : '#cbd5e1';
+                const width = visited ? (jump ? 2.4 : 2.8) : 1.5;
+                const dash = jump ? '6 5' : (visited ? '' : '3 6');
+                const opacity = visited ? '1' : '0.55';
+                parts.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" stroke-linecap="round" stroke-dasharray="${dash}" opacity="${opacity}"></line>`);
+            }
+
+            points.forEach((point, index) => {
+                const visited = index <= currentStep;
+                const isCurrent = index === currentStep;
+                const x = xFor(index);
+                const y = yFor(point.cyl);
+                const jump = point.jump;
+                const isStart = point.kind === 'start';
+                const fill = isStart || visited
+                    ? (jump ? '#f75583' : (point.kind === 'boundary' ? '#f59e0b' : '#436cf5'))
+                    : '#ffffff';
+                const stroke = visited || isStart
+                    ? (jump ? '#f75583' : (point.kind === 'boundary' ? '#f59e0b' : '#436cf5'))
+                    : '#cbd5e1';
+                const radius = isCurrent ? 6 : (isStart ? 5.5 : 4);
+
+                if (isCurrent) {
+                    parts.push(`<circle cx="${x}" cy="${y}" r="13" fill="rgba(67, 108, 245, 0.16)"></circle>`);
+                }
+
+                parts.push(`<circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="2"><title>Cylinder ${point.cyl}${isStart ? ' (initial head)' : ''}</title></circle>`);
+
+                if (isStart || isCurrent) {
+                    const label = isStart ? `H ${point.cyl}` : `${point.cyl}`;
+                    const labelY = Math.max(16, y - 14);
+                    parts.push(`<text x="${x}" y="${labelY}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800" fill="#334155">${label}</text>`);
+                }
+            });
+
+            svg.innerHTML = parts.join('');
+        }
+
+        function renderSequence() {
+            const chips = [];
+
+            simulation.points.forEach((point, index) => {
+                if (index > 0) {
+                    const jump = point.jump;
+                    chips.push(`<span class="seq-arrow ${jump ? 'jump-arrow' : ''}">${jump ? '⇢' : '→'}</span>`);
+                }
+
+                let className = 'seq-chip';
+                let label = String(point.cyl);
+
+                if (point.kind === 'start') {
+                    className += ' start';
+                    label = `H ${point.cyl}`;
+                } else if (point.kind === 'boundary') {
+                    className += ' boundary';
+                } else if (point.jump) {
+                    className += ' jump';
+                }
+
+                if (index > currentStep) {
+                    className += ' pending';
+                } else if (index === currentStep) {
+                    className += ' current';
+                }
+
+                const title = point.kind === 'start'
+                    ? 'Initial head'
+                    : (point.kind === 'boundary'
+                        ? 'Disk boundary'
+                        : (point.jump ? 'Circular jump' : 'Serve request'));
+
+                chips.push(`<span class="${className}" title="${title}">${label}</span>`);
+            });
+
+            document.getElementById('sequenceFlow').innerHTML = chips.join('');
+        }
+
+        function renderMovesTable() {
+            document.getElementById('movesHead').innerHTML = `
+                <tr>
+                    <th>#</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Distance</th>
+                    <th>Cumulative</th>
+                    <th>Type</th>
+                </tr>
+            `;
+
+            const rows = [];
+
+            simulation.moves.forEach((move, index) => {
+                const isCurrent = index === currentStep - 1;
+                const isPending = index >= currentStep;
+                let type = '<span class="status-badge-alloc">Serve</span>';
+
+                if (move.jump) {
+                    type = '<span class="status-badge-fail">Jump</span>';
+                } else if (move.kind === 'boundary') {
+                    type = '<span class="status-badge-pending">Boundary</span>';
+                }
+
+                rows.push(`
+                    <tr class="${isCurrent ? 'current-move-row' : ''} ${isPending ? 'result-pending' : ''}">
+                        <td><span class="badge bg-light text-dark border font-monospace">${index + 1}</span></td>
+                        <td class="font-monospace fw-bold">${fmt(move.from)}</td>
+                        <td class="font-monospace fw-bold">${fmt(move.to)}</td>
+                        <td class="font-monospace">${fmt(move.distance)}</td>
+                        <td class="font-monospace">${fmt(move.cumulative)}</td>
+                        <td>${type}</td>
+                    </tr>
+                `);
+            });
+
+            document.getElementById('movesBody').innerHTML = rows.join('');
+
+            const served = currentServedCount();
+            const movement = currentMovement();
+            document.getElementById('movesFoot').innerHTML = `
+                <tr>
+                    <td colspan="2">${served} of ${simulation.requests.length} served</td>
+                    <td colspan="2" class="text-muted">${ALGO_LABELS[simulation.algorithm]} · ${simulation.points.length} sequence points</td>
+                    <td class="font-monospace">${fmt(movement)} cyl</td>
+                    <td>${served > 0 ? (movement / served).toFixed(1) : '0.0'} avg</td>
+                </tr>
+            `;
+
+            document.getElementById('movesBadge').textContent = `${simulation.moves.length} moves`;
+        }
+
+        function renderDecision() {
+            const banner = document.getElementById('decisionBanner');
+            const icon = document.getElementById('decisionIcon');
+            const title = document.getElementById('decisionTitle');
+            const text = document.getElementById('decisionText');
+            banner.classList.remove('is-success', 'is-failure');
+
+            if (currentStep === 0) {
+                icon.innerHTML = '<i class="bi bi-info-circle-fill"></i>';
+                title.textContent = `Head starts at cylinder ${fmt(simulation.head)}`;
+                text.textContent = `${ALGO_LABELS[simulation.algorithm]} has ${simulation.requests.length} request${simulation.requests.length === 1 ? '' : 's'} queued. ${DIRECTIONAL_ALGOS.has(simulation.algorithm) ? `Scanning towards ${simulation.direction === 'right' ? 'higher' : 'lower'} cylinders.` : 'Requests will be served using this algorithm\'s ordering rule.'}`;
+                return;
+            }
+
+            const move = simulation.moves[currentStep - 1];
+            const served = currentServedCount();
+            const final = currentStep === simulation.moves.length;
+
+            if (final && served === simulation.requests.length) {
+                banner.classList.add('is-success');
+                icon.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+                title.textContent = 'All requests served';
+                text.textContent = `${ALGO_LABELS[simulation.algorithm]} finished after ${fmt(simulation.total)} cylinders of movement. Average seek: ${(simulation.total / simulation.requests.length).toFixed(1)} cylinders per request.`;
+                return;
+            }
+
+            if (move.jump) {
+                icon.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
+                title.textContent = `Circular jump ${fmt(move.from)} → ${fmt(move.to)}`;
+                text.textContent = `${ALGO_LABELS[simulation.algorithm]} wraps around the disk for ${fmt(move.distance)} cylinders. Cumulative movement: ${fmt(move.cumulative)} cylinders.`;
+                return;
+            }
+
+            if (move.kind === 'boundary') {
+                icon.innerHTML = '<i class="bi bi-signpost-split-fill"></i>';
+                title.textContent = `Reach the disk boundary at ${fmt(move.to)}`;
+                text.textContent = `The head travels ${fmt(move.distance)} cylinders to the edge before reversing. Cumulative movement: ${fmt(move.cumulative)} cylinders.`;
+                return;
+            }
+
+            icon.innerHTML = '<i class="bi bi-arrow-right-circle-fill"></i>';
+            title.textContent = `Serve cylinder ${fmt(move.to)}`;
+            text.textContent = `Head moves ${fmt(move.from)} → ${fmt(move.to)} (${fmt(move.distance)} cylinders). ${served} of ${simulation.requests.length} requests served · cumulative ${fmt(move.cumulative)} cylinders.`;
+        }
+
+        function renderPlayback() {
+            if (!simulation) return;
+            const total = simulation.moves.length;
+            document.getElementById('stepCounterLabel').textContent = `${currentStep} / ${total}`;
+
+            const scrubber = document.getElementById('stepScrubber');
+            scrubber.max = total;
+            scrubber.value = currentStep;
+
+            document.getElementById('btnStepPrev').disabled = currentStep === 0;
+            document.getElementById('btnStepNext').disabled = currentStep >= total;
+            document.getElementById('playIcon').className = playTimer
+                ? 'bi bi-pause-fill fs-4'
+                : 'bi bi-play-fill fs-4';
+        }
+
+        function stopPlayback() {
+            if (playTimer) {
+                clearInterval(playTimer);
+                playTimer = null;
+            }
+            const icon = document.getElementById('playIcon');
+            if (icon) icon.className = 'bi bi-play-fill fs-4';
+        }
+
+        function togglePlay() {
+            if (!simulation) return;
+
+            if (playTimer) {
+                stopPlayback();
+                renderPlayback();
+                return;
+            }
+
+            if (currentStep >= simulation.moves.length) {
+                currentStep = 0;
+                renderAll();
+            }
+
+            document.getElementById('playIcon').className = 'bi bi-pause-fill fs-4';
+            playTimer = setInterval(() => {
+                if (currentStep < simulation.moves.length) {
+                    currentStep += 1;
+                    if (currentStep >= simulation.moves.length) stopPlayback();
+                    renderAll();
+                } else {
+                    stopPlayback();
+                    renderAll();
+                }
+            }, 850);
+        }
+
+        function stepSimulation(direction) {
+            if (!simulation) return;
+            stopPlayback();
+            currentStep = direction === 'next'
+                ? Math.min(currentStep + 1, simulation.moves.length)
+                : Math.max(currentStep - 1, 0);
+            renderAll();
+        }
+
+        function scrubStep(value) {
+            if (!simulation) return;
+            stopPlayback();
+            currentStep = Math.max(0, Math.min(Number(value), simulation.moves.length));
+            renderAll();
+        }
+
+        function resetPlayback() {
+            if (!simulation) return;
+            stopPlayback();
+            currentStep = 0;
+            renderAll();
+        }
+
+        // =========================================================
+        // Presets & Random Requests
+        // =========================================================
+        function loadPreset(key) {
+            const preset = presets[key];
+            if (!preset) return;
+
+            document.getElementById('algoSelect').value = preset.algorithm;
+            document.getElementById('headInput').value = preset.head;
+            document.getElementById('diskSizeInput').value = preset.diskSize;
+            document.getElementById('directionSelect').value = preset.direction;
+            document.getElementById('requestsInput').value = preset.requests;
+
+            updateDirectionUI();
+            runSimulation();
+
+            const dropdown = document.getElementById('presetsDropdown');
+            if (dropdown && window.bootstrap && window.bootstrap.Dropdown) {
+                window.bootstrap.Dropdown.getOrCreateInstance(dropdown).hide();
+            }
+        }
+
+        function randomizeRequests() {
+            const diskSize = Math.max(10, Math.floor(Number(document.getElementById('diskSizeInput').value) || 200));
+            const count = 6 + Math.floor(Math.random() * 5);
+            const values = [];
+            let guard = 0;
+
+            while (values.length < count && guard < 500) {
+                const cylinder = Math.floor(Math.random() * diskSize);
+                if (!values.includes(cylinder)) values.push(cylinder);
+                guard += 1;
+            }
+
+            document.getElementById('requestsInput').value = values.join(', ');
+            updateHints();
+            runSimulation();
+        }
+
+        // =========================================================
+        // Comparison
+        // =========================================================
+        const ALGO_ICONS = {
+            FCFS: 'bi-list-ol',
+            SSTF: 'bi-bullseye',
+            SCAN: 'bi-arrow-left-right',
+            CSCAN: 'bi-arrow-repeat',
+            LOOK: 'bi-search',
+            CLOOK: 'bi-arrow-90deg-right'
+        };
+
+        function miniPathHTML(sim) {
+            const width = 240;
+            const height = 82;
+            const padX = 12;
+            const padY = 12;
+            const maxCylinder = sim.diskSize - 1;
+            const points = sim.points;
+            const color = ALGO_COLORS[sim.algorithm];
+            const xFor = index => points.length <= 1
+                ? padX
+                : padX + (index / (points.length - 1)) * (width - 2 * padX);
+            const yFor = cylinder => padY + (1 - cylinder / maxCylinder) * (height - 2 * padY);
+            const parts = [];
+
+            for (let index = 1; index < points.length; index++) {
+                const jump = points[index].jump;
+                parts.push(`<line x1="${xFor(index - 1)}" y1="${yFor(points[index - 1].cyl)}" x2="${xFor(index)}" y2="${yFor(points[index].cyl)}" stroke="${color}" stroke-width="2.2" stroke-linecap="round" ${jump ? 'stroke-dasharray="4 3"' : ''} opacity="0.9"></line>`);
+            }
+
+            parts.push(`<circle cx="${xFor(0)}" cy="${yFor(points[0].cyl)}" r="3.2" fill="#334155" stroke="#ffffff" stroke-width="1.5"></circle>`);
+
+            if (points.length > 1) {
+                const end = points.length - 1;
+                parts.push(`<circle cx="${xFor(end)}" cy="${yFor(points[end].cyl)}" r="3.2" fill="${color}" stroke="#ffffff" stroke-width="1.5"></circle>`);
+            }
+
+            return `<svg class="mini-path" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">${parts.join('')}</svg>`;
+        }
+
+        function renderComparisonChart(containerId, items, valueFn, labelFn, maxValue, bestValue) {
+            const container = document.getElementById(containerId);
+
+            container.innerHTML = items.map(item => {
+                const value = valueFn(item);
+                const width = maxValue > 0 && value > 0
+                    ? Math.max(2, (value / maxValue) * 100)
+                    : 0;
+                const isBest = value === bestValue;
+                const barClass = isBest ? 'bar-best' : 'bar-first';
+
+                return `
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center small fw-bold mb-1">
+                            <span>${ALGO_LABELS[item.algorithm]}</span>
+                            <span class="text-muted font-monospace">${labelFn(item)}</span>
+                        </div>
+                        <div class="comp-bar-wrapper">
+                            <div class="comp-bar ${barClass}" style="width: ${width}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function generateComparison() {
+            const inputs = readInputs();
+            if (!inputs) return;
+
+            const items = Object.keys(ALGO_LABELS).map(algorithm => {
+                const sim = simulateDisk({ ...inputs, algorithm });
+                return {
+                    algorithm,
+                    sim,
+                    total: sim.total,
+                    average: sim.requests.length ? sim.total / sim.requests.length : 0
+                };
+            });
+
+            const bestTotal = Math.min(...items.map(item => item.total));
+            const bestAverage = Math.min(...items.map(item => item.average));
+            const maxTotal = Math.max(1, ...items.map(item => item.total));
+            const maxAverage = Math.max(1, ...items.map(item => item.average));
+
+            document.getElementById('comparisonCardsRow').innerHTML = items.map(item => {
+                const isBest = item.total === bestTotal;
+                const diff = item.total - bestTotal;
+                const color = ALGO_COLORS[item.algorithm];
+
+                return `
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="glass-panel compare-card p-3 p-md-4 h-100 ${isBest ? 'best' : ''}">
+                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                <div>
+                                    <span class="badge border rounded-pill font-monospace" style="background: ${color}1a; color: ${color}; border-color: ${color}55 !important;">${ALGO_LABELS[item.algorithm]}</span>
+                                    <h5 class="fw-bold mt-2 mb-0 text-dark">${ALGO_LABELS[item.algorithm]}</h5>
+                                </div>
+                                ${isBest
+                                    ? '<span class="best-badge">Lowest movement</span>'
+                                    : `<i class="bi ${ALGO_ICONS[item.algorithm]} fs-3" style="color: ${color};"></i>`}
+                            </div>
+
+                            ${miniPathHTML(item.sim)}
+
+                            <div class="row g-2 mt-2">
+                                <div class="col-6">
+                                    <div class="compare-metric">
+                                        <div class="val ${isBest ? 'text-success' : ''}">${fmt(item.total)}</div>
+                                        <div class="lbl">Total cyl</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="compare-metric">
+                                        <div class="val">${item.average.toFixed(1)}</div>
+                                        <div class="lbl">Avg seek</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center gap-2 mt-3">
+                                <span class="small text-muted fw-semibold">
+                                    ${isBest
+                                        ? '<i class="bi bi-trophy-fill text-warning me-1"></i>Lowest total movement'
+                                        : `${fmt(diff)} cyl more than best`}
+                                </span>
+                                <button type="button" class="btn btn-glass-outline btn-sm" onclick="applyComparison('${item.algorithm}')">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            renderComparisonChart(
+                'chartMovement',
+                items,
+                item => item.total,
+                item => `${fmt(item.total)} cyl`,
+                maxTotal,
+                bestTotal
+            );
+
+            renderComparisonChart(
+                'chartAverage',
+                items,
+                item => item.average,
+                item => `${item.average.toFixed(1)} cyl`,
+                maxAverage,
+                bestAverage
+            );
+        }
+
+        function applyComparison(algorithm) {
+            document.getElementById('algoSelect').value = algorithm;
+            updateDirectionUI();
+            runSimulation();
+
+            const simulatorTab = document.getElementById('tab-simulator');
+            if (simulatorTab) simulatorTab.click();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // =========================================================
+        // C Code Samples
+        // =========================================================
+        const cCodeSnippets = {
+            FCFS: `/* Disk Scheduling - First Come, First Served (FCFS) */
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void) {
+    int requests[] = {98, 183, 37, 122, 14, 124, 65, 67};
+    int n = sizeof(requests) / sizeof(requests[0]);
+    int head = 53;
+    int total = 0;
+
+    printf("Initial head: %d\\n\\n", head);
+
+    for (int i = 0; i < n; i++) {
+        int distance = abs(requests[i] - head);
+        total += distance;
+        printf("Head %3d -> %3d  |  %d cylinders\\n",
+               head, requests[i], distance);
+        head = requests[i];
+    }
+
+    printf("\\nTotal head movement: %d cylinders\\n", total);
+    printf("Average seek: %.2f cylinders/request\\n", (double)total / n);
+    return 0;
+}`,
+
+            SSTF: `/* Disk Scheduling - Shortest Seek Time First (SSTF) */
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <limits.h>
+
+int main(void) {
+    int requests[] = {98, 183, 37, 122, 14, 124, 65, 67};
+    int n = sizeof(requests) / sizeof(requests[0]);
+    int head = 53;
+    bool done[8] = {false};
+    int total = 0;
+
+    for (int served = 0; served < n; served++) {
+        int best = -1;
+        int bestDistance = INT_MAX;
+
+        for (int i = 0; i < n; i++) {
+            if (done[i]) continue;
+
+            int distance = abs(requests[i] - head);
+            if (distance < bestDistance) {
+                bestDistance = distance;
+                best = i;
+            }
+        }
+
+        done[best] = true;
+        total += bestDistance;
+        printf("Head %3d -> %3d  |  %d cylinders\\n",
+               head, requests[best], bestDistance);
+        head = requests[best];
+    }
+
+    printf("\\nTotal head movement: %d cylinders\\n", total);
+    printf("Average seek: %.2f cylinders/request\\n", (double)total / n);
+    return 0;
+}`,
+
+            SCAN: `/* Disk Scheduling - SCAN (Elevator Algorithm) */
+#include <stdio.h>
+#include <stdlib.h>
+
+int cmp(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+int main(void) {
+    int req[] = {98, 183, 37, 122, 14, 124, 65, 67};
+    int n = sizeof(req) / sizeof(req[0]);
+    int head = 53;
+    int diskSize = 200;
+    int dir = 1;                 /* 1 = higher, -1 = lower */
+    int initialHead = head;
+    int total = 0;
+    int hasLower = 0, hasHigher = 0;
+
+    qsort(req, n, sizeof(int), cmp);
+
+    for (int i = 0; i < n; i++) {
+        if (req[i] < initialHead) hasLower = 1;
+        if (req[i] > initialHead) hasHigher = 1;
+    }
+
+    if (dir == 1) {
+        /* Serve requests at or above the head, ascending */
+        for (int i = 0; i < n; i++) {
+            if (req[i] >= initialHead) {
+                total += req[i] - head;
+                printf("Head %3d -> %3d\\n", head, req[i]);
+                head = req[i];
+            }
+        }
+
+        /* Continue to the outer edge only if lower requests remain */
+        if (hasLower && head < diskSize - 1) {
+            total += (diskSize - 1) - head;
+            printf("Head %3d -> %3d  (disk edge)\\n", head, diskSize - 1);
+            head = diskSize - 1;
+        }
+
+        /* Reverse and serve lower requests, descending */
+        for (int i = n - 1; i >= 0; i--) {
+            if (req[i] < initialHead) {
+                total += head - req[i];
+                printf("Head %3d -> %3d\\n", head, req[i]);
+                head = req[i];
+            }
+        }
+    } else {
+        /* Serve requests at or below the head, descending */
+        for (int i = n - 1; i >= 0; i--) {
+            if (req[i] <= initialHead) {
+                total += head - req[i];
+                printf("Head %3d -> %3d\\n", head, req[i]);
+                head = req[i];
+            }
+        }
+
+        /* Continue to cylinder 0 only if higher requests remain */
+        if (hasHigher && head > 0) {
+            total += head;
+            printf("Head %3d ->   0  (disk edge)\\n", head);
+            head = 0;
+        }
+
+        /* Reverse and serve higher requests, ascending */
+        for (int i = 0; i < n; i++) {
+            if (req[i] > initialHead) {
+                total += req[i] - head;
+                printf("Head %3d -> %3d\\n", head, req[i]);
+                head = req[i];
+            }
+        }
+    }
+
+    printf("\\nTotal head movement: %d cylinders\\n", total);
+    printf("Average seek: %.2f cylinders/request\\n", (double)total / n);
+    return 0;
+}`,
+
+            CSCAN: `/* Disk Scheduling - Circular SCAN (C-SCAN) */
+#include <stdio.h>
+#include <stdlib.h>
+
+int cmp(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+int main(void) {
+    int req[] = {98, 183, 37, 122, 14, 124, 65, 67};
+    int n = sizeof(req) / sizeof(req[0]);
+    int head = 53;
+    int diskSize = 200;
+    int dir = 1;                 /* 1 = higher, -1 = lower */
+    int initialHead = head;
+    int total = 0;
+    int hasLower = 0, hasHigher = 0;
+
+    qsort(req, n, sizeof(int), cmp);
+
+    for (int i = 0; i < n; i++) {
+        if (req[i] < initialHead) hasLower = 1;
+        if (req[i] > initialHead) hasHigher = 1;
+    }
+
+    if (dir == 1) {
+        for (int i = 0; i < n; i++) {
+            if (req[i] >= initialHead) {
+                total += req[i] - head;
+                printf("Head %3d -> %3d\\n", head, req[i]);
+                head = req[i];
+            }
+        }
+
+        if (hasLower) {
+            if (head < diskSize - 1) {
+                total += (diskSize - 1) - head;
+                printf("Head %3d -> %3d  (disk edge)\\n", head, diskSize - 1);
+                head = diskSize - 1;
+            }
+
+            /* Jump back to cylinder 0 and keep scanning upward */
+            total += diskSize - 1;
+            printf("Head %3d ->   0  (circular jump)\\n", head);
+            head = 0;
+
+            for (int i = 0; i < n; i++) {
+                if (req[i] < initialHead) {
+                    total += req[i] - head;
+                    printf("Head %3d -> %3d\\n", head, req[i]);
+                    head = req[i];
+                }
+            }
+        }
+    } else {
+        for (int i = n - 1; i >= 0; i--) {
+            if (req[i] <= initialHead) {
+                total += head - req[i];
+                printf("Head %3d -> %3d\\n", head, req[i]);
+                head = req[i];
+            }
+        }
+
+        if (hasHigher) {
+            if (head > 0) {
+                total += head;
+                printf("Head %3d ->   0  (disk edge)\\n", head);
+                head = 0;
+            }
+
+            /* Jump to the highest cylinder and keep scanning downward */
+            total += diskSize - 1;
+            printf("Head   0 -> %3d  (circular jump)\\n", diskSize - 1);
+            head = diskSize - 1;
+
+            for (int i = n - 1; i >= 0; i--) {
+                if (req[i] > initialHead) {
+                    total += head - req[i];
+                    printf("Head %3d -> %3d\\n", head, req[i]);
+                    head = req[i];
+                }
+            }
+        }
+    }
+
+    printf("\\nTotal head movement: %d cylinders\\n", total);
+    printf("Average seek: %.2f cylinders/request\\n", (double)total / n);
+    return 0;
+}`,
+
+            LOOK: `/* Disk Scheduling - LOOK */
+#include <stdio.h>
+#include <stdlib.h>
+
+int cmp(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+int main(void) {
+    int req[] = {98, 183, 37, 122, 14, 124, 65, 67};
+    int n = sizeof(req) / sizeof(req[0]);
+    int head = 53;
+    int dir = 1;                 /* 1 = higher, -1 = lower */
+    int initialHead = head;
+    int total = 0;
+
+    qsort(req, n, sizeof(int), cmp);
+
+    if (dir == 1) {
+        /* Serve requests ahead, ascending */
+        for (int i = 0; i < n; i++) {
+            if (req[i] >= initialHead) {
+                total += req[i] - head;
+                printf("Head %3d -> %3d\\n", head, req[i]);
+                head = req[i];
+            }
+        }
+
+        /* Reverse at the last request, no edge travel */
+        for (int i = n - 1; i >= 0; i--) {
+            if (req[i] < initialHead) {
+                total += head - req[i];
+                printf("Head %3d -> %3d\\n", head, req[i]);
+                head = req[i];
+            }
+        }
+    } else {
+        /* Serve requests ahead, descending */
+        for (int i = n - 1; i >= 0; i--) {
+            if (req[i] <= initialHead) {
+                total += head - req[i];
+                printf("Head %3d -> %3d\\n", head, req[i]);
+                head = req[i];
+            }
+        }
+
+        /* Reverse at the last request, no edge travel */
+        for (int i = 0; i < n; i++) {
+            if (req[i] > initialHead) {
+                total += req[i] - head;
+                printf("Head %3d -> %3d\\n", head, req[i]);
+                head = req[i];
+            }
+        }
+    }
+
+    printf("\\nTotal head movement: %d cylinders\\n", total);
+    printf("Average seek: %.2f cylinders/request\\n", (double)total / n);
+    return 0;
+}`,
+
+            CLOOK: `/* Disk Scheduling - Circular LOOK (C-LOOK) */
+#include <stdio.h>
+#include <stdlib.h>
+
+int cmp(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+int main(void) {
+    int req[] = {98, 183, 37, 122, 14, 124, 65, 67};
+    int n = sizeof(req) / sizeof(req[0]);
+    int head = 53;
+    int dir = 1;                 /* 1 = higher, -1 = lower */
+    int initialHead = head;
+    int total = 0;
+
+    qsort(req, n, sizeof(int), cmp);
+
+    if (dir == 1) {
+        int split = 0;
+        while (split < n && req[split] < initialHead) split++;
+
+        /* Serve requests ahead, ascending */
+        for (int i = split; i < n; i++) {
+            total += req[i] - head;
+            printf("Head %3d -> %3d\\n", head, req[i]);
+            head = req[i];
+        }
+
+        if (split > 0) {
+            /* Jump directly to the lowest request */
+            total += head - req[0];
+            printf("Head %3d -> %3d  (circular jump)\\n", head, req[0]);
+            head = req[0];
+
+            for (int i = 0; i < split; i++) {
+                total += req[i] - head;
+                printf("Head %3d -> %3d\\n", head, req[i]);
+                head = req[i];
+            }
+        }
+    } else {
+        int split = n;
+        while (split > 0 && req[split - 1] > initialHead) split--;
+
+        /* Serve requests ahead, descending */
+        for (int i = split - 1; i >= 0; i--) {
+            total += head - req[i];
+            printf("Head %3d -> %3d\\n", head, req[i]);
+            head = req[i];
+        }
+
+        if (split < n) {
+            /* Jump directly to the highest request */
+            total += req[n - 1] - head;
+            printf("Head %3d -> %3d  (circular jump)\\n", head, req[n - 1]);
+            head = req[n - 1];
+
+            for (int i = n - 1; i >= split; i--) {
+                total += head - req[i];
+                printf("Head %3d -> %3d\\n", head, req[i]);
+                head = req[i];
+            }
+        }
+    }
+
+    printf("\\nTotal head movement: %d cylinders\\n", total);
+    printf("Average seek: %.2f cylinders/request\\n", (double)total / n);
+    return 0;
+}`
+        };
+
+        function updateCodeDisplay() {
+            const selector = document.getElementById('codeAlgoSelect');
+            const algorithm = selector ? selector.value : 'FCFS';
+            const codeBlock = document.getElementById('codeBlock');
+            const slugs = {
+                FCFS: 'fcfs',
+                SSTF: 'sstf',
+                SCAN: 'scan',
+                CSCAN: 'cscan',
+                LOOK: 'look',
+                CLOOK: 'clook'
+            };
+
+            codeBlock.textContent = cCodeSnippets[algorithm] || cCodeSnippets.FCFS;
+            document.getElementById('codeFileName').textContent = `disk_scheduling_${slugs[algorithm] || 'fcfs'}.c`;
+
+            if (window.Prism) Prism.highlightElement(codeBlock);
+        }
+
+        function fallbackCopyCode(text) {
+            const area = document.createElement('textarea');
+            area.value = text;
+            area.setAttribute('readonly', '');
+            area.style.position = 'fixed';
+            area.style.opacity = '0';
+            document.body.appendChild(area);
+            area.select();
+            document.execCommand('copy');
+            document.body.removeChild(area);
+            alert('C code copied to clipboard!');
+        }
+
+        function copyCode() {
+            const code = document.getElementById('codeBlock').textContent;
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(code)
+                    .then(() => alert('C code copied to clipboard!'))
+                    .catch(() => fallbackCopyCode(code));
+            } else {
+                fallbackCopyCode(code);
+            }
+        }
+
+        function downloadCode() {
+            const code = document.getElementById('codeBlock').textContent;
+            const fileName = document.getElementById('codeFileName').textContent;
+            const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // =========================================================
+        // Initialisation
+        // =========================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHints();
+            updateDirectionUI();
+            runSimulation();
+            updateCodeDisplay();
+
+            document.getElementById('algoSelect').addEventListener('change', () => {
+                updateDirectionUI();
+                runSimulation();
+            });
+
+            document.getElementById('directionSelect').addEventListener('change', runSimulation);
+            document.getElementById('headInput').addEventListener('change', runSimulation);
+            document.getElementById('diskSizeInput').addEventListener('change', () => {
+                updateHints();
+                runSimulation();
+            });
+
+            document.getElementById('requestsInput').addEventListener('input', updateHints);
+            document.getElementById('requestsInput').addEventListener('change', runSimulation);
+
+            ['headInput', 'diskSizeInput', 'requestsInput'].forEach(id => {
+                document.getElementById(id).addEventListener('keydown', event => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        runSimulation();
+                    }
+                });
+            });
+
+            document.querySelectorAll('[data-bs-toggle="pill"]').forEach(tab => {
+                tab.addEventListener('shown.bs.tab', event => {
+                    if (event.target.id === 'tab-compare') generateComparison();
+                    if (event.target.id === 'tab-code') updateCodeDisplay();
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

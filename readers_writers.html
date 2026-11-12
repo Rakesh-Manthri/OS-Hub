@@ -1,0 +1,2465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS EduHub - Readers &amp; Writers Simulator</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <!-- Shared claymorphism theme -->
+    <link href="simulator-theme.css" rel="stylesheet">
+
+    <style>
+        /* Resource stage */
+        .rw-stage {
+            background: #f0f4fa;
+            border-radius: 24px;
+            padding: 0.8rem;
+            box-shadow: inset 3px 3px 8px rgba(160, 175, 205, 0.28), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+        }
+
+        .resource-stage {
+            display: grid;
+            grid-template-columns: 1fr 1.05fr 1fr;
+            gap: 0.7rem;
+            align-items: stretch;
+        }
+
+        .resource-side {
+            background: #f8fafc;
+            border-radius: 18px;
+            padding: 0.7rem;
+            box-shadow: inset 2px 2px 6px rgba(160, 175, 205, 0.22), inset -2px -2px 6px rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            min-height: 148px;
+        }
+
+        .side-title {
+            font-size: 0.64rem;
+            letter-spacing: 0.45px;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .actor-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.38rem;
+            align-content: flex-start;
+            min-height: 84px;
+        }
+
+        .actor-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            border-radius: 12px;
+            padding: 0.34rem 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 800;
+            border: 1px solid transparent;
+            box-shadow: 0 3px 8px rgba(30, 40, 80, 0.09), inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+            animation: actorIn 0.25s ease-out;
+        }
+
+        @keyframes actorIn {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .actor-chip.reader {
+            background: linear-gradient(145deg, #eef3ff, #dbe7ff);
+            border-color: rgba(67, 108, 245, 0.28);
+            color: #3152c4;
+        }
+
+        .actor-chip.writer {
+            background: linear-gradient(145deg, #fff1f5, #ffe0e9);
+            border-color: rgba(247, 85, 131, 0.3);
+            color: #b4234b;
+        }
+
+        .actor-meta {
+            font-size: 0.6rem;
+            font-weight: 700;
+            opacity: 0.72;
+        }
+
+        .actor-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 70px;
+            border: 2px dashed rgba(203, 213, 225, 0.9);
+            border-radius: 13px;
+            color: #94a3b8;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        .resource-core {
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            text-align: center;
+            padding: 0.9rem 0.5rem;
+            background: linear-gradient(145deg, #ffffff, #eef3fb);
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 8px 18px rgba(30, 40, 80, 0.11), inset 3px 3px 6px rgba(255, 255, 255, 0.95), inset -3px -3px 7px rgba(170, 185, 215, 0.14);
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .resource-core > i {
+            font-size: 2rem;
+            color: #64748b;
+            line-height: 1;
+        }
+
+        .resource-core.is-read {
+            border-color: rgba(67, 108, 245, 0.45);
+            box-shadow: 0 8px 22px rgba(67, 108, 245, 0.2), inset 3px 3px 6px rgba(255, 255, 255, 0.95), inset -3px -3px 7px rgba(170, 185, 215, 0.14);
+        }
+
+        .resource-core.is-read > i { color: #436cf5; }
+
+        .resource-core.is-write {
+            border-color: rgba(247, 85, 131, 0.48);
+            box-shadow: 0 8px 22px rgba(247, 85, 131, 0.2), inset 3px 3px 6px rgba(255, 255, 255, 0.95), inset -3px -3px 7px rgba(170, 185, 215, 0.14);
+        }
+
+        .resource-core.is-write > i { color: #f75583; }
+
+        .resource-core-title {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #334155;
+            line-height: 1.2;
+        }
+
+        .resource-mode {
+            font-size: 0.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+            padding: 0.18rem 0.55rem;
+            border-radius: 999px;
+            background: #eef3f8;
+            color: #64748b;
+        }
+
+        .is-read .resource-mode { background: #edf3fe; color: #3152c4; }
+        .is-write .resource-mode { background: #fef0f4; color: #b4234b; }
+
+        .resource-caption {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            line-height: 1.35;
+            max-width: 160px;
+        }
+
+        /* Waiting queue */
+        .queue-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.42rem;
+            min-height: 52px;
+            padding: 0.55rem;
+            background: #f7f9fd;
+            border-radius: 16px;
+            box-shadow: inset 2px 2px 6px rgba(160, 175, 205, 0.18), inset -2px -2px 6px rgba(255, 255, 255, 0.95);
+            align-items: center;
+        }
+
+        .queue-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.38rem;
+            border-radius: 11px;
+            padding: 0.28rem 0.48rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            border: 1px solid rgba(203, 213, 225, 0.85);
+            background: #ffffff;
+            color: #475569;
+            box-shadow: 2px 3px 7px rgba(160, 175, 205, 0.12), inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+        }
+
+        .queue-chip.reader { border-color: rgba(67, 108, 245, 0.28); color: #3152c4; background: #f5f8ff; }
+        .queue-chip.writer { border-color: rgba(247, 85, 131, 0.28); color: #b4234b; background: #fff7fa; }
+        .queue-chip.starved { border-color: rgba(247, 85, 131, 0.55); background: #fef0f4; color: #b4234b; }
+        .queue-chip .queue-wait { font-family: var(--font-mono); font-size: 0.62rem; opacity: 0.75; }
+        .queue-empty { font-size: 0.74rem; font-weight: 700; color: #94a3b8; padding-left: 0.15rem; }
+
+        /* Process state chips */
+        .rw-state {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.28rem;
+            border-radius: 9px;
+            padding: 0.22rem 0.48rem;
+            font-size: 0.67rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .rw-reading { background: #edf3fe; color: #3152c4; }
+        .rw-writing { background: #fef0f4; color: #b4234b; }
+        .rw-waiting { background: #fef4df; color: #b45309; }
+        .rw-done { background: #edfbf5; color: #0f8a63; }
+        .rw-pending { background: #eef3f8; color: #64748b; }
+        .rw-starved { background: #fee2e2; color: #b91c1c; }
+
+        .process-table {
+            min-width: 540px;
+            font-size: 0.78rem;
+        }
+
+        .process-table th,
+        .process-table td {
+            vertical-align: middle;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+
+        .process-table td:first-child {
+            white-space: nowrap;
+        }
+
+        .starved-row td {
+            background: #fff8f0 !important;
+        }
+
+        .starved-row td:first-child {
+            box-shadow: inset 4px 0 0 var(--accent-amber);
+        }
+
+        /* Timeline */
+        .timeline-wrapper {
+            overflow-x: auto;
+            overflow-y: hidden;
+            border-radius: 16px;
+            padding-bottom: 0.2rem;
+        }
+
+        #timelineSvg {
+            display: block;
+            width: 100%;
+            height: auto;
+            min-width: 600px;
+            overflow: visible;
+        }
+
+        #timelineSvg text {
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .timeline-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 0.9rem;
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .timeline-legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.32rem;
+        }
+
+        .tl-swatch {
+            width: 14px;
+            height: 8px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .tl-swatch.wait { background: #fde68a; }
+        .tl-swatch.read { background: #628efb; }
+        .tl-swatch.write { background: #fb6d93; }
+
+        /* Summary rows */
+        .resource-summary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.72);
+            border-radius: 12px;
+            padding: 0.38rem 0.55rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .resource-summary-row strong {
+            font-family: var(--font-mono);
+            color: var(--text-main);
+            text-align: right;
+        }
+
+        /* Starvation alert */
+        .starvation-callout {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            background: #fff8ed;
+            border: 2px solid rgba(245, 158, 11, 0.45);
+            border-radius: 18px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.12), inset 2px 2px 4px rgba(255, 255, 255, 0.85);
+        }
+
+        .starvation-callout > i {
+            color: var(--accent-amber);
+            font-size: 1.35rem;
+            line-height: 1;
+            margin-top: 0.1rem;
+        }
+
+        .starvation-callout strong { color: #92400e; }
+        .starvation-callout .starvation-text { font-size: 0.8rem; font-weight: 600; color: #92400e; margin-top: 0.15rem; }
+
+        /* Event log */
+        .event-log {
+            max-height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            padding-right: 0.25rem;
+        }
+
+        .event-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.55rem;
+            background: #f7f9fd;
+            border-radius: 12px;
+            padding: 0.48rem 0.6rem;
+            font-size: 0.77rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .event-tick {
+            min-width: 34px;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: #94a3b8;
+            padding-top: 0.12rem;
+        }
+
+        .event-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            border: 2px dashed rgba(203, 213, 225, 0.9);
+            border-radius: 18px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .event-empty i { font-size: 1.9rem; color: #a5b4fc; }
+
+        /* Comparison extras */
+        .mini-dot-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            align-items: center;
+        }
+
+        .mini-dot {
+            width: 27px;
+            height: 27px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            font-family: var(--font-mono);
+            font-size: 0.56rem;
+            font-weight: 800;
+            box-shadow: 0 2px 6px rgba(30, 40, 80, 0.18);
+        }
+
+        .mini-dot.reader { background: #628efb; }
+        .mini-dot.writer { background: #fb6d93; }
+        .mini-dot.waiting { background: #f59e0b; }
+        .mini-dot.done { background: #2ec491; }
+        .mini-dot.starved { background: #b91c1c; }
+
+        .policy-note {
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .fairness-flag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #b4234b;
+        }
+
+        @media (max-width: 991.98px) {
+            .resource-stage {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .resource-core {
+                grid-column: 1 / -1;
+                order: -1;
+                min-height: 130px;
+            }
+
+            .resource-side { min-height: 120px; }
+        }
+
+        @media (max-width: 767.98px) {
+            .rw-stage { padding: 0.5rem; }
+            .resource-stage { grid-template-columns: 1fr; }
+            .resource-core { min-height: 118px; }
+            .resource-side { min-height: 100px; }
+            .actor-pool { min-height: 58px; }
+
+            #timelineSvg { min-width: 560px; }
+        }
+
+        @media (max-width: 575.98px) {
+            .event-row { font-size: 0.73rem; }
+            .process-table { font-size: 0.74rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-bg">
+        <div class="ambient-orb orb-blue"></div>
+        <div class="ambient-orb orb-pink"></div>
+        <div class="ambient-orb orb-green"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-xl glass-nav sticky-top py-2 px-3 mb-4">
+        <div class="container-fluid max-w-7xl">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="brand-icon" style="background: linear-gradient(145deg, #a78bfa, #8b5cf6); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35), inset 2px 2px 4px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(70, 40, 150, 0.3);">
+                    <i class="bi bi-arrow-left-right"></i>
+                </div>
+                <div>
+                    <span class="brand-text fs-4">OS EduHub</span>
+                    <span class="badge bg-primary-subtle text-primary-emphasis border border-primary-subtle ms-2 font-monospace" style="font-size: 0.7rem;">R/W</span>
+                </div>
+            </a>
+
+            <button class="navbar-toggler glass-nav-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list fs-2 text-primary"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="nav nav-pills ms-auto my-2 my-lg-0" id="mainNav" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab-simulator" data-bs-toggle="pill" data-bs-target="#section-simulator" type="button" role="tab">
+                            <i class="bi bi-play-circle-fill me-1"></i> Simulation
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-compare" data-bs-toggle="pill" data-bs-target="#section-compare" type="button" role="tab">
+                            <i class="bi bi-bar-chart-fill me-1"></i> Compare
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-theory" data-bs-toggle="pill" data-bs-target="#section-theory" type="button" role="tab">
+                            <i class="bi bi-book-half me-1"></i> Problem
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-code" data-bs-toggle="pill" data-bs-target="#section-code" type="button" role="tab">
+                            <i class="bi bi-code-slash me-1"></i> Code in C
+                        </button>
+                    </li>
+                    <li class="nav-item ms-xl-2">
+                        <a href="lectures.html" class="btn btn-sm btn-glass-outline nav-resource-btn d-inline-flex align-items-center mt-1 mt-xl-0" title="Open lecture decks">
+                            <i class="bi bi-collection-play-fill me-1"></i><span class="btn-label"> Lectures</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-xl-1">
+                        <a href="syllabus.html" class="btn btn-sm btn-glass-outline nav-resource-btn d-inline-flex align-items-center mt-1 mt-xl-0" title="Open syllabus">
+                            <i class="bi bi-book-half me-1"></i><span class="btn-label"> Syllabus</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-xl-1">
+                        <a href="index.html" class="btn btn-sm btn-glass-outline nav-resource-btn d-inline-flex align-items-center mt-1 mt-xl-0" title="Back to hub home">
+                            <i class="bi bi-house-door-fill me-1"></i><span class="btn-label"> Hub Home</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid px-3 px-md-4 max-w-7xl pb-5 position-relative" style="z-index: 1;">
+        <div class="tab-content" id="mainTabContent">
+
+            <!-- ========================================== -->
+            <!-- 1. SIMULATION                              -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade show active" id="section-simulator" role="tabpanel">
+
+                <div class="glass-panel controls-bar-panel p-3 p-md-4 mb-4">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="policySelect">
+                                <i class="bi bi-diagram-3-fill text-primary me-1"></i> Access Policy
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="policySelect">
+                                <option value="READERS_FIRST" selected>Readers preference</option>
+                                <option value="WRITERS_FIRST">Writers preference</option>
+                                <option value="FAIR">Fair / FIFO</option>
+                            </select>
+                            <div class="input-hint" id="policyHint">Readers admit while a writer waits</div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="workloadSelect">
+                                <i class="bi bi-people-fill text-success me-1"></i> Workload Mix
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="workloadSelect">
+                                <option value="READER_HEAVY" selected>Reader-heavy</option>
+                                <option value="BALANCED">Balanced</option>
+                                <option value="WRITER_HEAVY">Writer-heavy</option>
+                            </select>
+                            <div class="input-hint" id="workloadHint">3 readers : 1 writer arrival pattern</div>
+                        </div>
+
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="readerCount">
+                                <i class="bi bi-book-half text-primary me-1"></i> Readers
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="readerCount">
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option selected>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="writerCount">
+                                <i class="bi bi-pencil-square text-danger me-1"></i> Writers
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="writerCount">
+                                <option>1</option>
+                                <option>2</option>
+                                <option selected>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="arrivalGap">
+                                <i class="bi bi-clock-history text-warning me-1"></i> Arrival Gap
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="arrivalGap">
+                                <option>1</option>
+                                <option selected>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                            </select>
+                            <div class="input-hint">Ticks between arrivals</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="readTicks">
+                                <i class="bi bi-hourglass-split text-primary me-1"></i> Read Ticks
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="readTicks">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option selected>4</option>
+                                <option>5</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="writeTicks">
+                                <i class="bi bi-pencil-fill text-danger me-1"></i> Write Ticks
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="writeTicks">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option selected>4</option>
+                                <option>5</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="presetSelect">
+                                <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Load Presets
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="presetSelect" onchange="loadPreset(this.value)">
+                                <option value="">Choose a preset…</option>
+                                <option value="readerFlood">Reader Flood — Writer Starvation</option>
+                                <option value="writerFlood">Writer Flood — Reader Starvation</option>
+                                <option value="fair">Balanced FIFO — No Starvation</option>
+                                <option value="dense">High Contention — Mixed Arrivals</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-4 d-flex align-items-end">
+                            <div class="d-flex flex-wrap gap-2 w-100">
+                                <button class="btn btn-glass-outline btn-sm flex-grow-1" type="button" onclick="resetSimulation()">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                                </button>
+                                <button class="btn btn-glass-primary flex-grow-1" type="button" onclick="runSimulation()">
+                                    <i class="bi bi-play-fill me-1"></i> Simulate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="small text-muted fw-semibold mt-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Readers may share the resource with other readers. A writer requires exclusive access. A process is <strong>starved</strong> when a later arrival completes while it is still waiting.
+                    </div>
+
+                    <div id="inputError" class="input-error d-none">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span id="inputErrorText"></span>
+                    </div>
+                </div>
+
+                <!-- KPI -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-blue">
+                            <div class="kpi-label">Active Readers</div>
+                            <div class="kpi-value text-primary mt-1" id="kpiReaders">0 <span class="fs-6 fw-normal text-muted">/ 5</span></div>
+                            <small class="text-muted d-block mt-1" id="kpiReadersSub">No readers active</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-purple">
+                            <div class="kpi-label">Writer Slot</div>
+                            <div class="kpi-value mt-1" id="kpiWriter" style="color: var(--accent-purple);">Idle</div>
+                            <small class="text-muted d-block mt-1" id="kpiWriterSub">Exclusive access is free</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-amber">
+                            <div class="kpi-label">Waiting Queue</div>
+                            <div class="kpi-value mt-1" id="kpiWaiting" style="color: var(--accent-amber);">0</div>
+                            <small class="text-muted d-block mt-1" id="kpiWaitingSub">No processes waiting</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-green" id="fairnessKpiCard">
+                            <div class="kpi-label">Fairness</div>
+                            <div class="kpi-value mt-1" id="kpiFairness" style="font-size: 1.55rem; color: #0f8a63;">Ready</div>
+                            <small class="text-muted d-block mt-1" id="kpiFairnessSub">Run the simulation</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualization -->
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-2">
+                        <div>
+                            <h5 class="fw-bold mb-0 text-dark d-flex align-items-center">
+                                <i class="bi bi-arrow-left-right text-primary me-2"></i>Shared Resource
+                            </h5>
+                            <small class="text-muted">Simulation tick <strong class="text-primary font-monospace" id="stepCounterLabel">0 / 0</strong></small>
+                        </div>
+
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <div class="bg-white px-3 py-1.5 rounded-3 border d-flex align-items-center gap-2 shadow-sm">
+                                <button class="btn btn-sm btn-link text-secondary p-0" id="btnStepPrev" onclick="stepSimulation('prev')" title="Previous tick" aria-label="Previous tick">
+                                    <i class="bi bi-skip-start-fill fs-5"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-primary p-0" id="btnPlay" onclick="togglePlay()" title="Play / Pause" aria-label="Play or pause">
+                                    <i class="bi bi-play-fill fs-4" id="playIcon"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-secondary p-0" id="btnStepNext" onclick="stepSimulation('next')" title="Next tick" aria-label="Next tick">
+                                    <i class="bi bi-skip-end-fill fs-5"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-danger p-0" id="btnReset" onclick="resetPlayback()" title="Reset playback" aria-label="Reset playback">
+                                    <i class="bi bi-arrow-counterclockwise fs-5"></i>
+                                </button>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 bg-white px-3 py-1 rounded-3 border">
+                                <label for="stepScrubber" class="small fw-bold text-muted mb-0 font-monospace">Step:</label>
+                                <input type="range" class="form-range" id="stepScrubber" min="0" max="0" value="0" style="width: 120px;" oninput="scrubStep(this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="decision-banner" id="decisionBanner">
+                        <span class="banner-icon" id="decisionIcon"><i class="bi bi-info-circle-fill"></i></span>
+                        <div>
+                            <div class="banner-title" id="decisionTitle">Ready to simulate</div>
+                            <div class="banner-text" id="decisionText">Choose a policy and workload, then run the simulation or step through each tick.</div>
+                        </div>
+                    </div>
+
+                    <div class="starvation-callout d-none" id="starvationCallout">
+                        <i class="bi bi-hourglass-split"></i>
+                        <div>
+                            <strong id="starvationTitle">Starvation detected</strong>
+                            <div class="starvation-text" id="starvationText"></div>
+                        </div>
+                    </div>
+
+                    <div class="rw-stage mb-3">
+                        <div class="resource-stage">
+                            <div class="resource-side">
+                                <div class="side-title">
+                                    <i class="bi bi-book-half text-primary"></i> Reading Room
+                                </div>
+                                <div class="actor-pool" id="activeReaders"></div>
+                            </div>
+
+                            <div class="resource-core is-idle" id="resourceCore">
+                                <i class="bi bi-database-fill" id="resourceIcon"></i>
+                                <div class="resource-core-title">Shared Database</div>
+                                <div class="resource-mode" id="resourceMode">Idle</div>
+                                <div class="resource-caption" id="resourceHint">Readers share access · writers need exclusivity</div>
+                            </div>
+
+                            <div class="resource-side">
+                                <div class="side-title">
+                                    <i class="bi bi-pencil-square text-danger"></i> Writer Slot
+                                </div>
+                                <div class="actor-pool" id="activeWriter"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="frag-tile mb-3">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                            <h6 class="fw-bold mb-0 text-dark">
+                                <i class="bi bi-hourglass-bottom text-warning me-2"></i>Waiting Queue
+                            </h6>
+                            <span class="badge bg-light text-dark border font-monospace" id="queueBadge">0 waiting</span>
+                        </div>
+                        <div class="queue-strip" id="waitingQueue"></div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-lg-6">
+                            <div class="frag-tile h-100">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-dark">
+                                            <i class="bi bi-bar-chart-steps text-primary me-2"></i>Access Timeline
+                                        </h6>
+                                        <small class="text-muted">Arrival, waiting time, and service blocks.</small>
+                                    </div>
+                                    <span class="badge bg-light text-dark border font-monospace" id="timelineBadge">Tick 0</span>
+                                </div>
+                                <div class="timeline-wrapper">
+                                    <svg id="timelineSvg" viewBox="0 0 900 260" role="img" aria-label="Readers and writers access timeline"></svg>
+                                </div>
+                                <div class="timeline-legend">
+                                    <span><span class="tl-swatch wait"></span>Waiting</span>
+                                    <span><span class="tl-swatch read"></span>Reading</span>
+                                    <span><span class="tl-swatch write"></span>Writing</span>
+                                </div>
+                                <div class="small text-muted fw-semibold mt-2 d-lg-none">
+                                    <i class="bi bi-arrows-move me-1"></i>Swipe the timeline sideways to see every tick.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="frag-tile h-100">
+                                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                                    <h6 class="fw-bold mb-0 text-dark">
+                                        <i class="bi bi-table text-primary me-1"></i> Process Status
+                                    </h6>
+                                    <span class="badge bg-light text-dark border font-monospace" id="processBadge">0 processes</span>
+                                </div>
+
+                                <div class="table-matrix-wrapper">
+                                    <table class="table table-clay process-table align-middle mb-0" id="processTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Process</th>
+                                                <th>State</th>
+                                                <th>Arrival</th>
+                                                <th>Service Window</th>
+                                                <th>Max Wait</th>
+                                                <th>Fairness</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="processTableBody"></tbody>
+                                    </table>
+                                </div>
+
+                                <div class="small text-muted d-block d-lg-none mt-2">
+                                    <i class="bi bi-arrows-move me-1"></i>Swipe the table sideways to see all columns.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="frag-tile mt-4">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                            <div>
+                                <h6 class="fw-bold mb-0 text-dark">
+                                    <i class="bi bi-journal-text text-success me-2"></i>Event Log
+                                </h6>
+                                <small class="text-muted">Newest events are shown first.</small>
+                            </div>
+                            <span class="badge bg-light text-dark border font-monospace" id="eventBadge">0 events</span>
+                        </div>
+                        <div class="event-log" id="eventLog"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 2. COMPARE POLICIES                        -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-compare" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                        <div>
+                            <h4 class="fw-bold mb-1 brand-text">
+                                <i class="bi bi-intersect me-2"></i>Readers First vs Writers First vs Fair
+                            </h4>
+                            <p class="text-muted mb-0">Runs all three policies with the current workload and timing. The fairest result is highlighted in green; starvation and overtaking are reported explicitly.</p>
+                        </div>
+                        <button class="btn btn-glass-primary" onclick="generateComparison()">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Recompute Benchmark
+                        </button>
+                    </div>
+
+                    <div class="row g-4 mb-4" id="comparisonCardsRow">
+                        <!-- Dynamic comparison cards -->
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-lg-6">
+                            <div class="glass-panel p-4 h-100">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <h5 class="fw-bold mb-0 text-dark">
+                                        <i class="bi bi-hourglass-split text-warning me-2"></i>Longest Wait
+                                    </h5>
+                                    <small class="text-muted fw-bold">Lower is better</small>
+                                </div>
+                                <div id="chartWait" class="d-flex flex-column gap-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="glass-panel p-4 h-100">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <h5 class="fw-bold mb-0 text-dark">
+                                        <i class="bi bi-speedometer2 text-success me-2"></i>Throughput
+                                    </h5>
+                                    <small class="text-muted fw-bold">Higher is better</small>
+                                </div>
+                                <div id="chartThroughput" class="d-flex flex-column gap-3"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="policy-note mt-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        A process is starved when a later arrival completes before it gets access. Readers preference can starve writers; writers preference can starve readers; a FIFO policy admits processes in arrival order and avoids both.
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 3. PROBLEM & SOLUTIONS                     -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-theory" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="text-center mx-auto mb-5" style="max-width: 800px;">
+                        <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis px-3 py-2 fw-bold text-uppercase mb-2">Classic Synchronization</span>
+                        <h2 class="fw-bold brand-text mb-3">The Readers–Writers Problem</h2>
+                        <p class="text-muted">Multiple reader processes may access a shared resource at the same time, but a writer needs exclusive access. The synchronization challenge is to protect the critical section while deciding which waiting process gets in next — and to avoid starving either side.</p>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-1 text-primary">Readers First</h4>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Reader preference</span>
+                                    </div>
+                                    <i class="bi bi-book-half fs-2 text-primary"></i>
+                                </div>
+                                <p class="text-muted">A reader may enter whenever no writer is active, even if writers are already waiting. Writers wait until the last active reader leaves. Continuous reader arrivals can keep the writer waiting forever.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Pros:</strong> High reader concurrency and simple code.</li>
+                                    <li><strong>Cons:</strong> Writer starvation under a reader-heavy load.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-1" style="color: var(--accent-pink);">Writers First</h4>
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Writer preference</span>
+                                    </div>
+                                    <i class="bi bi-pencil-square fs-2" style="color: var(--accent-pink);"></i>
+                                </div>
+                                <p class="text-muted">Once a writer is waiting, new readers are held back. Active readers finish, the writer runs exclusively, and queued writers take priority. A steady stream of writers can starve readers.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Pros:</strong> Writers make progress and data stays fresh.</li>
+                                    <li><strong>Cons:</strong> Reader starvation under a writer-heavy load.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-1 text-success">Fair / FIFO</h4>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">FIFO</span>
+                                    </div>
+                                    <i class="bi bi-list-ol fs-2 text-success"></i>
+                                </div>
+                                <p class="text-muted">Processes are granted access in arrival order. A writer at the front waits for active readers to drain; a reader at the front enters immediately. Consecutive readers may still read together. Neither side can be overtaken indefinitely.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Pros:</strong> Bounded waiting and no starvation.</li>
+                                    <li><strong>Cons:</strong> Lower peak throughput than reader preference.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mt-1">
+                        <div class="col-12 col-lg-6">
+                            <div class="frag-tile">
+                                <h6 class="fw-bold text-dark mb-3"><i class="bi bi-shield-lock-fill text-primary me-2"></i>Critical-Section Rules</h6>
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="resource-summary-row"><span>Many readers</span><strong>Allowed together</strong></div>
+                                    <div class="resource-summary-row"><span>One writer</span><strong>Exclusive access</strong></div>
+                                    <div class="resource-summary-row"><span>Reader + writer</span><strong>Never together</strong></div>
+                                    <div class="resource-summary-row"><span>Waiting order</span><strong>Policy decides</strong></div>
+                                </div>
+                                <p class="text-muted small mt-3 mb-0">The resource is a database, file, or shared record. Readers only observe state, so concurrent reads are safe. Writers change state, so no other reader or writer may run at the same time.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="frag-tile">
+                                <h6 class="fw-bold text-dark mb-3"><i class="bi bi-calculator text-success me-2"></i>Metrics</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="formula-pill"><i class="bi bi-hourglass-split"></i> Wait = grant tick − arrival tick</span>
+                                    <span class="formula-pill"><i class="bi bi-speedometer2"></i> Throughput = completed ÷ ticks</span>
+                                    <span class="formula-pill"><i class="bi bi-people-fill"></i> Reader concurrency = active readers</span>
+                                    <span class="formula-pill"><i class="bi bi-shield-exclamation"></i> Starvation = a later arrival completes first</span>
+                                </div>
+                                <p class="text-muted small mt-3 mb-0">The simulator reports overtaking directly: a process is flagged when a process that arrived later reaches the done state while it is still waiting. This makes starvation visible even when the starved process eventually runs.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="frag-tile mt-4">
+                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Why Starvation Happens</h6>
+                        <div class="row g-3">
+                            <div class="col-12 col-md-4">
+                                <div class="p-3 rounded-4" style="background: #f5f8ff; border: 1px solid rgba(67, 108, 245, 0.18);">
+                                    <div class="fw-bold text-primary mb-1">Reader stream</div>
+                                    <div class="small text-muted">New readers keep joining while the writer waits. Writers preference blocks those readers; readers preference does not.</div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="p-3 rounded-4" style="background: #fff7fa; border: 1px solid rgba(247, 85, 131, 0.18);">
+                                    <div class="fw-bold mb-1" style="color: #b4234b;">Writer stream</div>
+                                    <div class="small text-muted">Queued writers keep replacing the active writer. Readers preference lets readers through; writers preference keeps admitting writers.</div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="p-3 rounded-4" style="background: #edfbf5; border: 1px solid rgba(46, 196, 145, 0.2);">
+                                    <div class="fw-bold text-success mb-1">FIFO fix</div>
+                                    <div class="small text-muted">Grant service in arrival order. Once a process is at the front, later arrivals cannot pass it, so waiting is bounded.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 4. C CODE                                  -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-code" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                        <div>
+                            <h4 class="fw-bold mb-1 brand-text">
+                                <i class="bi bi-code-slash me-2"></i>C Implementation Code
+                            </h4>
+                            <p class="text-muted mb-0">Pthreads reference implementations for readers preference, writers preference, and fair FIFO admission.</p>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <select class="form-select form-select-glass form-select-sm" id="codePolicySelect" onchange="updateCodeDisplay()" style="min-width: 220px; width: auto;">
+                                <option value="READERS_FIRST">Readers Preference</option>
+                                <option value="WRITERS_FIRST">Writers Preference</option>
+                                <option value="FAIR">Fair / FIFO</option>
+                            </select>
+                            <button class="btn btn-glass-outline btn-sm" onclick="copyCode()">
+                                <i class="bi bi-clipboard me-1"></i> Copy Code
+                            </button>
+                            <button class="btn btn-glass-outline btn-sm" onclick="downloadCode()">
+                                <i class="bi bi-download me-1"></i> Download
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="code-container">
+                        <div class="code-header">
+                            <div class="code-dots">
+                                <span style="background: #ef4444;"></span>
+                                <span style="background: #f59e0b;"></span>
+                                <span style="background: #10b981;"></span>
+                            </div>
+                            <span class="text-light small font-monospace" id="codeFileName">readers_first.c</span>
+                        </div>
+                        <pre><code class="language-c" id="codeBlock">/* Readers-Writers */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+
+    <script>
+        // =========================================================
+        // Constants & State
+        // =========================================================
+        const MAX_TICKS = 300;
+
+        const POLICY_META = {
+            READERS_FIRST: {
+                label: 'Readers First',
+                color: '#436cf5',
+                icon: 'bi-book-half',
+                badge: 'Reader preference',
+                hint: 'Readers admit while a writer waits',
+                description: 'Readers enter whenever no writer is active. A waiting writer does not block new readers, so a continuous reader stream can starve writers.'
+            },
+            WRITERS_FIRST: {
+                label: 'Writers First',
+                color: '#f75583',
+                icon: 'bi-pencil-square',
+                badge: 'Writer preference',
+                hint: 'Waiting writers block new readers',
+                description: 'As soon as a writer waits, new readers are held back. Active readers finish, then writers take turns with exclusive access. A continuous writer stream can starve readers.'
+            },
+            FAIR: {
+                label: 'Fair / FIFO',
+                color: '#2ec491',
+                icon: 'bi-list-ol',
+                badge: 'FIFO admission',
+                hint: 'Arrival order decides who enters',
+                description: 'Processes are admitted in arrival order. Consecutive readers may still run together, but a writer at the front of the queue cannot be overtaken. Waiting is bounded.'
+            }
+        };
+
+        const WORKLOAD_META = {
+            READER_HEAVY: { label: 'Reader-heavy', pattern: ['R', 'R', 'R', 'W'], hint: '3 readers : 1 writer arrival pattern' },
+            BALANCED: { label: 'Balanced', pattern: ['R', 'W'], hint: 'Alternating reader and writer arrivals' },
+            WRITER_HEAVY: { label: 'Writer-heavy', pattern: ['W', 'W', 'W', 'R'], hint: '3 writers : 1 reader arrival pattern' }
+        };
+
+        const RW_STATE = {
+            pending: { label: 'Not arrived', chip: 'rw-pending', icon: 'bi-clock' },
+            waiting: { label: 'Waiting', chip: 'rw-waiting', icon: 'bi-hourglass-split' },
+            reading: { label: 'Reading', chip: 'rw-reading', icon: 'bi-book-half' },
+            writing: { label: 'Writing', chip: 'rw-writing', icon: 'bi-pencil-square' },
+            done: { label: 'Done', chip: 'rw-done', icon: 'bi-check2-circle' },
+            starved: { label: 'Starved', chip: 'rw-starved', icon: 'bi-exclamation-triangle-fill' }
+        };
+
+        const presets = {
+            readerFlood: { policy: 'READERS_FIRST', workload: 'READER_HEAVY', readers: 6, writers: 3, readTicks: 4, writeTicks: 4, gap: 2 },
+            writerFlood: { policy: 'WRITERS_FIRST', workload: 'WRITER_HEAVY', readers: 3, writers: 5, readTicks: 4, writeTicks: 4, gap: 2 },
+            fair: { policy: 'FAIR', workload: 'BALANCED', readers: 5, writers: 3, readTicks: 4, writeTicks: 4, gap: 2 },
+            dense: { policy: 'READERS_FIRST', workload: 'BALANCED', readers: 8, writers: 6, readTicks: 3, writeTicks: 3, gap: 1 }
+        };
+
+        let simulation = null;
+        let currentStep = 0;
+        let playTimer = null;
+
+        // =========================================================
+        // Utilities & Validation
+        // =========================================================
+        function showInputError(message) {
+            document.getElementById('inputErrorText').textContent = message;
+            document.getElementById('inputError').classList.remove('d-none');
+        }
+
+        function hideInputError() {
+            document.getElementById('inputError').classList.add('d-none');
+        }
+
+        function readInputs() {
+            const policy = document.getElementById('policySelect').value;
+            const workload = document.getElementById('workloadSelect').value;
+            const readers = Number(document.getElementById('readerCount').value);
+            const writers = Number(document.getElementById('writerCount').value);
+            const readTicks = Number(document.getElementById('readTicks').value);
+            const writeTicks = Number(document.getElementById('writeTicks').value);
+            const gap = Number(document.getElementById('arrivalGap').value);
+
+            if (!POLICY_META[policy]) {
+                showInputError('Choose a valid access policy.');
+                return null;
+            }
+
+            if (!WORKLOAD_META[workload]) {
+                showInputError('Choose a valid workload mix.');
+                return null;
+            }
+
+            if (!Number.isInteger(readers) || readers < 1 || readers > 8 ||
+                !Number.isInteger(writers) || writers < 1 || writers > 6) {
+                showInputError('Use between 1–8 readers and 1–6 writers.');
+                return null;
+            }
+
+            if (!Number.isInteger(readTicks) || readTicks < 1 || readTicks > 5 ||
+                !Number.isInteger(writeTicks) || writeTicks < 1 || writeTicks > 5) {
+                showInputError('Read and write durations must be between 1 and 5 ticks.');
+                return null;
+            }
+
+            if (!Number.isInteger(gap) || gap < 1 || gap > 4) {
+                showInputError('Arrival gap must be between 1 and 4 ticks.');
+                return null;
+            }
+
+            hideInputError();
+            return { policy, workload, readers, writers, readTicks, writeTicks, gap };
+        }
+
+        function updateHints() {
+            const policy = document.getElementById('policySelect').value;
+            const workload = document.getElementById('workloadSelect').value;
+
+            if (POLICY_META[policy]) {
+                document.getElementById('policyHint').textContent = POLICY_META[policy].hint;
+            }
+
+            if (WORKLOAD_META[workload]) {
+                document.getElementById('workloadHint').textContent = WORKLOAD_META[workload].hint;
+            }
+        }
+
+        // =========================================================
+        // Workload Generation & Engine
+        // =========================================================
+        function buildProcesses(inputs) {
+            const pattern = WORKLOAD_META[inputs.workload].pattern;
+            const remaining = { reader: inputs.readers, writer: inputs.writers };
+            const types = [];
+            let patternIndex = 0;
+            let guard = 0;
+
+            while ((remaining.reader > 0 || remaining.writer > 0) && guard < 200) {
+                guard += 1;
+                const desiredType = pattern[patternIndex % pattern.length] === 'R' ? 'reader' : 'writer';
+                let chosenType = desiredType;
+
+                if (remaining[chosenType] === 0) {
+                    chosenType = chosenType === 'reader' ? 'writer' : 'reader';
+                }
+
+                if (remaining[chosenType] > 0) {
+                    types.push(chosenType);
+                    remaining[chosenType] -= 1;
+                }
+
+                patternIndex += 1;
+            }
+
+            const counts = { reader: 0, writer: 0 };
+
+            return types.map((type, index) => {
+                counts[type] += 1;
+                return {
+                    id: `${type === 'reader' ? 'R' : 'W'}${counts[type]}`,
+                    type,
+                    arrival: index * inputs.gap,
+                    duration: type === 'reader' ? inputs.readTicks : inputs.writeTicks,
+                    order: index
+                };
+            });
+        }
+
+        function simulateRW(inputs) {
+            const processes = buildProcesses(inputs).map(process => ({
+                ...process,
+                state: 'pending',
+                remaining: process.duration,
+                start: null,
+                end: null,
+                waitTicks: 0,
+                maxWait: 0,
+                overtaken: 0,
+                wasOvertaken: false,
+                starvationLogged: false
+            }));
+            const history = [];
+            const activeReaders = new Set();
+            let activeWriter = null;
+            let tick = 0;
+
+            const snapshot = (tickEvents) => {
+                const waiting = processes.filter(process => process.state === 'waiting');
+                const starving = waiting.filter(process => process.overtaken > 0);
+
+                history.push({
+                    tick,
+                    processes: processes.map(process => ({ ...process })),
+                    activeReaders: [...activeReaders],
+                    activeWriter,
+                    waitingIds: waiting.map(process => process.id),
+                    starvingIds: starving.map(process => process.id),
+                    events: tickEvents
+                });
+            };
+
+            snapshot([]);
+
+            while (processes.some(process => process.state !== 'done') && tick < MAX_TICKS) {
+                tick += 1;
+                const tickEvents = [];
+                const log = (text, icon) => tickEvents.push({ tick, text, icon });
+
+                processes
+                    .filter(process => process.state === 'pending' && process.arrival <= tick)
+                    .forEach(process => {
+                        process.state = 'waiting';
+                        process.waitTicks = 0;
+                        log(`${process.id} (${process.type}) arrives`, process.type === 'reader' ? 'bi-book-half' : 'bi-pencil-square');
+                    });
+
+                const startReader = process => {
+                    process.state = 'reading';
+                    process.start = tick;
+                    process.remaining = process.duration;
+                    activeReaders.add(process.id);
+                    log(`${process.id} starts reading`, 'bi-book-half');
+                };
+
+                const startWriter = process => {
+                    process.state = 'writing';
+                    process.start = tick;
+                    process.remaining = process.duration;
+                    activeWriter = process.id;
+                    log(`${process.id} starts writing — exclusive access`, 'bi-pencil-square');
+                };
+
+                const queued = processes
+                    .filter(process => process.state === 'waiting')
+                    .sort((a, b) => a.order - b.order);
+
+                if (inputs.policy === 'READERS_FIRST') {
+                    if (activeWriter === null) {
+                        queued.filter(process => process.type === 'reader').forEach(startReader);
+
+                        if (activeReaders.size === 0) {
+                            const writer = queued.find(process => process.type === 'writer' && process.state === 'waiting');
+                            if (writer) startWriter(writer);
+                        }
+                    }
+                } else if (inputs.policy === 'WRITERS_FIRST') {
+                    const writer = queued.find(process => process.type === 'writer');
+
+                    if (writer) {
+                        if (activeWriter === null && activeReaders.size === 0) {
+                            startWriter(writer);
+                        }
+                    } else if (activeWriter === null) {
+                        queued.filter(process => process.type === 'reader').forEach(startReader);
+                    }
+                } else {
+                    if (queued.length) {
+                        const front = queued[0];
+
+                        if (front.type === 'writer') {
+                            if (activeWriter === null && activeReaders.size === 0) {
+                                startWriter(front);
+                            }
+                        } else if (activeWriter === null) {
+                            for (const process of queued) {
+                                if (process.type !== 'reader') break;
+                                startReader(process);
+                            }
+                        }
+                    }
+                }
+
+                [...activeReaders].forEach(id => {
+                    const process = processes.find(item => item.id === id);
+                    process.remaining -= 1;
+
+                    if (process.remaining <= 0) {
+                        process.end = tick;
+                        process.state = 'done';
+                        activeReaders.delete(id);
+                        log(`${process.id} finishes reading`, 'bi-check-circle-fill');
+                    }
+                });
+
+                if (activeWriter !== null) {
+                    const process = processes.find(item => item.id === activeWriter);
+                    process.remaining -= 1;
+
+                    if (process.remaining <= 0) {
+                        process.end = tick;
+                        process.state = 'done';
+                        activeWriter = null;
+                        log(`${process.id} finishes writing`, 'bi-check-circle-fill');
+                    }
+                }
+
+                processes
+                    .filter(process => process.state === 'waiting')
+                    .forEach(process => {
+                        process.waitTicks += 1;
+                        process.maxWait = Math.max(process.maxWait, process.waitTicks);
+                    });
+
+                const doneProcesses = processes.filter(process => process.state === 'done');
+
+                processes
+                    .filter(process => process.state === 'waiting')
+                    .forEach(process => {
+                        process.overtaken = doneProcesses.filter(other => other.order > process.order).length;
+
+                        if (process.overtaken > 0) {
+                            process.wasOvertaken = true;
+
+                            if (!process.starvationLogged) {
+                                process.starvationLogged = true;
+                                log(`${process.id} is overtaken by later arrivals — starvation`, 'bi-exclamation-triangle-fill');
+                            }
+                        }
+                    });
+
+                snapshot(tickEvents);
+            }
+
+            const last = history[history.length - 1];
+            const starvedProcesses = last.processes.filter(process => process.wasOvertaken);
+            const allDone = last.processes.every(process => process.state === 'done');
+            const completed = last.processes.filter(process => process.state === 'done').length;
+            const maxWait = Math.max(0, ...last.processes.map(process => process.maxWait));
+            const avgWait = last.processes.length
+                ? last.processes.reduce((total, process) => total + process.maxWait, 0) / last.processes.length
+                : 0;
+
+            return {
+                inputs,
+                history,
+                ticks: last.tick,
+                processes: last.processes,
+                completed,
+                allDone,
+                starved: starvedProcesses.map(process => process.id),
+                starvedTypes: [...new Set(starvedProcesses.map(process => process.type))],
+                maxWait,
+                avgWait,
+                throughput: last.tick > 0 ? completed / last.tick : 0
+            };
+        }
+
+        // =========================================================
+        // Rendering
+        // =========================================================
+        function currentSnapshot() {
+            return simulation ? simulation.history[currentStep] : null;
+        }
+
+        function displayProcessState(process, snapshot) {
+            if (process.state === 'waiting' && process.overtaken > 0) {
+                return 'starved';
+            }
+            return process.state;
+        }
+
+        function renderAll() {
+            const snapshot = currentSnapshot();
+            if (!snapshot) return;
+
+            renderResourceStage(snapshot);
+            renderWaitingQueue(snapshot);
+            renderTimeline(snapshot);
+            renderProcessTable(snapshot);
+            renderKPIs(snapshot);
+            renderDecision(snapshot);
+            renderEventLog();
+            renderPlayback();
+        }
+
+        function renderResourceStage(snapshot) {
+            const readers = snapshot.activeReaders
+                .map(id => snapshot.processes.find(process => process.id === id))
+                .filter(Boolean);
+            const writer = snapshot.activeWriter
+                ? snapshot.processes.find(process => process.id === snapshot.activeWriter)
+                : null;
+
+            document.getElementById('activeReaders').innerHTML = readers.length
+                ? readers.map(process => `
+                    <span class="actor-chip reader" title="${process.id} reading · ${process.remaining} ticks remaining">
+                        <i class="bi bi-book-half"></i>${process.id}
+                        <span class="actor-meta">${process.remaining}t left</span>
+                    </span>
+                `).join('')
+                : '<div class="actor-empty"><i class="bi bi-moon-stars me-2"></i>No readers active</div>';
+
+            document.getElementById('activeWriter').innerHTML = writer
+                ? `
+                    <span class="actor-chip writer" title="${writer.id} writing · ${writer.remaining} ticks remaining">
+                        <i class="bi bi-pencil-square"></i>${writer.id}
+                        <span class="actor-meta">${writer.remaining}t left</span>
+                    </span>
+                `
+                : '<div class="actor-empty"><i class="bi bi-unlock me-2"></i>Writer slot idle</div>';
+
+            const core = document.getElementById('resourceCore');
+            const mode = document.getElementById('resourceMode');
+            const hint = document.getElementById('resourceHint');
+            const icon = document.getElementById('resourceIcon');
+
+            core.classList.remove('is-idle', 'is-read', 'is-write');
+
+            if (writer) {
+                core.classList.add('is-write');
+                mode.textContent = 'Exclusive write';
+                hint.textContent = `${writer.id} holds the resource. No readers may enter.`;
+                icon.className = 'bi bi-pencil-fill';
+            } else if (readers.length) {
+                core.classList.add('is-read');
+                mode.textContent = 'Shared read';
+                hint.textContent = `${readers.length} reader${readers.length === 1 ? '' : 's'} reading concurrently.`;
+                icon.className = 'bi bi-book-half';
+            } else {
+                core.classList.add('is-idle');
+                mode.textContent = 'Idle';
+                hint.textContent = 'Readers share access · writers need exclusivity';
+                icon.className = 'bi bi-database-fill';
+            }
+        }
+
+        function renderWaitingQueue(snapshot) {
+            const waiting = snapshot.processes
+                .filter(process => process.state === 'waiting')
+                .sort((a, b) => a.order - b.order);
+
+            document.getElementById('queueBadge').textContent =
+                `${waiting.length} waiting`;
+
+            document.getElementById('waitingQueue').innerHTML = waiting.length
+                ? waiting.map(process => {
+                    const starved = process.overtaken > 0;
+                    return `
+                        <span class="queue-chip ${process.type} ${starved ? 'starved' : ''}" title="${process.id} waiting ${process.waitTicks} ticks${starved ? ` · overtaken by ${process.overtaken} later arrival(s)` : ''}">
+                            <i class="bi ${process.type === 'reader' ? 'bi-book-half' : 'bi-pencil-square'}"></i>
+                            <strong>${process.id}</strong>
+                            <span class="queue-wait">${process.waitTicks}t</span>
+                            ${starved ? '<i class="bi bi-exclamation-triangle-fill"></i>' : ''}
+                        </span>
+                    `;
+                }).join('')
+                : '<span class="queue-empty"><i class="bi bi-check2-circle me-1 text-success"></i>No processes waiting — the next arrival can enter immediately.</span>';
+        }
+
+        function renderTimeline(snapshot) {
+            const svg = document.getElementById('timelineSvg');
+            const width = 900;
+            const padLeft = 72;
+            const padRight = 26;
+            const padTop = 26;
+            const padBottom = 32;
+            const rowHeight = 28;
+            const totalTicks = Math.max(1, simulation.ticks);
+            const height = padTop + padBottom + Math.max(1, snapshot.processes.length) * rowHeight;
+            const plotWidth = width - padLeft - padRight;
+            const xFor = tick => padLeft + (Math.max(0, Math.min(tick, totalTicks)) / totalTicks) * plotWidth;
+            const parts = [];
+
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
+            const step = Math.max(1, Math.ceil(totalTicks / 8));
+            for (let tickValue = 0; tickValue <= totalTicks; tickValue += step) {
+                const x = xFor(tickValue);
+                parts.push(`<line x1="${x}" y1="${padTop - 8}" x2="${x}" y2="${height - padBottom + 4}" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3 5"></line>`);
+                parts.push(`<text x="${x}" y="${height - 12}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#94a3b8">${tickValue}</text>`);
+            }
+
+            parts.push(`<text x="${width - padRight}" y="${padTop - 12}" text-anchor="end" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#94a3b8">tick</text>`);
+
+            snapshot.processes.forEach((process, index) => {
+                const y = padTop + index * rowHeight + rowHeight / 2;
+                const color = process.type === 'reader' ? '#628efb' : '#fb6d93';
+                const labelColor = process.wasOvertaken ? '#b91c1c' : color;
+                const label = `${process.id}${process.wasOvertaken ? ' !' : ''}`;
+
+                parts.push(`<g><title>${process.id} · arrival ${process.arrival} · ${process.wasOvertaken ? 'overtaken while waiting' : 'no overtaking'}</title>`);
+                parts.push(`<line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="#eef2f8" stroke-width="1.2"></line>`);
+                parts.push(`<text x="${padLeft - 12}" y="${y + 4}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800" fill="${labelColor}">${label}</text>`);
+
+                if (process.arrival <= snapshot.tick) {
+                    const waitingEnd = process.start !== null ? process.start : snapshot.tick;
+
+                    if (waitingEnd > process.arrival) {
+                        parts.push(`<line x1="${xFor(process.arrival)}" y1="${y}" x2="${xFor(waitingEnd)}" y2="${y}" stroke="#fde68a" stroke-width="7" stroke-linecap="round" opacity="0.95"></line>`);
+                    }
+
+                    parts.push(`<circle cx="${xFor(process.arrival)}" cy="${y}" r="3.4" fill="${process.arrival <= snapshot.tick ? '#94a3b8' : '#ffffff'}" stroke="#ffffff" stroke-width="1.5"></circle>`);
+                }
+
+                if (process.start !== null) {
+                    const serviceEnd = process.end !== null ? process.end : snapshot.tick;
+                    const x = xFor(process.start);
+                    const blockWidth = Math.max(4, xFor(serviceEnd) - x);
+                    const active = process.state === 'reading' || process.state === 'writing';
+
+                    parts.push(`<rect x="${x}" y="${y - 7}" width="${blockWidth}" height="14" rx="7" fill="${color}" opacity="${active ? '0.98' : '0.82'}" stroke="${active ? '#ffffff' : 'none'}" stroke-width="1.5"></rect>`);
+
+                    if (blockWidth > 26) {
+                        parts.push(`<text x="${x + blockWidth / 2}" y="${y + 4}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="800" fill="#ffffff">${process.id}</text>`);
+                    }
+
+                    if (active) {
+                        parts.push(`<circle cx="${x + blockWidth}" cy="${y}" r="5.5" fill="#ffffff" stroke="${color}" stroke-width="2"></circle>`);
+                    }
+                }
+
+                if (process.overtaken > 0 && process.start === null) {
+                    const x = xFor(snapshot.tick) - 2;
+                    parts.push(`<circle cx="${x}" cy="${y}" r="6.5" fill="#f75583" stroke="#ffffff" stroke-width="1.5"></circle>`);
+                    parts.push(`<text x="${x}" y="${y + 3.5}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="9" font-weight="800" fill="#ffffff">!</text>`);
+                }
+
+                parts.push('</g>');
+            });
+
+            if (snapshot.tick > 0) {
+                const currentX = xFor(snapshot.tick);
+                parts.push(`<line x1="${currentX}" y1="${padTop - 6}" x2="${currentX}" y2="${height - padBottom + 4}" stroke="#436cf5" stroke-width="1.8" stroke-dasharray="5 4" opacity="0.8"></line>`);
+                parts.push(`<circle cx="${currentX}" cy="${padTop - 6}" r="3.5" fill="#436cf5"></circle>`);
+            }
+
+            svg.innerHTML = parts.join('');
+            svg.setAttribute('aria-label', `Access timeline at tick ${snapshot.tick} of ${simulation.ticks}`);
+            document.getElementById('timelineBadge').textContent = `Tick ${snapshot.tick} / ${simulation.ticks}`;
+        }
+
+        function renderProcessTable(snapshot) {
+            document.getElementById('processBadge').textContent =
+                `${snapshot.processes.length} processes`;
+
+            document.getElementById('processTableBody').innerHTML = snapshot.processes.map(process => {
+                const state = displayProcessState(process, snapshot);
+                const meta = RW_STATE[state];
+                const serviceWindow = process.start === null
+                    ? '<span class="text-muted">—</span>'
+                    : `<span class="font-monospace fw-bold">${process.start}–${process.end !== null ? process.end : '…'}</span>`;
+                const fairness = process.wasOvertaken
+                    ? `<span class="fairness-flag"><i class="bi bi-exclamation-triangle-fill"></i> Overtaken${process.overtaken > 0 ? ` ×${process.overtaken}` : ''}</span>`
+                    : (process.state === 'done'
+                        ? '<span class="text-success fw-bold small"><i class="bi bi-check2"></i> Fair</span>'
+                        : '<span class="text-muted">—</span>');
+
+                return `
+                    <tr class="${process.wasOvertaken ? 'starved-row' : ''}">
+                        <td>
+                            <i class="bi ${process.type === 'reader' ? 'bi-book-half text-primary' : 'bi-pencil-square text-danger'} me-1"></i>
+                            <span class="fw-bold text-dark">${process.id}</span>
+                            <span class="badge bg-light text-dark border font-monospace ms-1">${process.type === 'reader' ? 'R' : 'W'}</span>
+                        </td>
+                        <td><span class="rw-state ${meta.chip}"><i class="bi ${meta.icon}"></i>${meta.label}</span></td>
+                        <td class="font-monospace">${process.arrival}</td>
+                        <td>${serviceWindow}</td>
+                        <td class="font-monospace">${process.maxWait}t</td>
+                        <td>${fairness}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderKPIs(snapshot) {
+            const waiting = snapshot.processes.filter(process => process.state === 'waiting');
+            const waitingReaders = waiting.filter(process => process.type === 'reader').length;
+            const waitingWriters = waiting.filter(process => process.type === 'writer').length;
+            const writer = snapshot.activeWriter
+                ? snapshot.processes.find(process => process.id === snapshot.activeWriter)
+                : null;
+            const maxWait = Math.max(0, ...snapshot.processes.map(process => process.maxWait));
+            const starving = snapshot.processes.filter(process => process.state === 'waiting' && process.overtaken > 0);
+
+            document.getElementById('kpiReaders').innerHTML =
+                `${snapshot.activeReaders.length} <span class="fs-6 fw-normal text-muted">/ ${simulation.inputs.readers}</span>`;
+            document.getElementById('kpiReadersSub').textContent = snapshot.activeReaders.length
+                ? 'Readers share the resource'
+                : 'No readers active';
+
+            document.getElementById('kpiWriter').textContent = writer ? 'Writing' : 'Idle';
+            document.getElementById('kpiWriter').style.color = writer ? '#b4234b' : 'var(--accent-purple)';
+            document.getElementById('kpiWriterSub').textContent = writer
+                ? `${writer.id} · ${writer.remaining} ticks remaining`
+                : 'Exclusive access is free';
+
+            document.getElementById('kpiWaiting').textContent = String(waiting.length);
+            document.getElementById('kpiWaitingSub').textContent = waiting.length
+                ? `${waitingReaders} reader${waitingReaders === 1 ? '' : 's'} · ${waitingWriters} writer${waitingWriters === 1 ? '' : 's'}`
+                : 'No processes waiting';
+
+            const fairness = document.getElementById('kpiFairness');
+            const fairnessSub = document.getElementById('kpiFairnessSub');
+            const fairnessCard = document.getElementById('fairnessKpiCard');
+            const final = currentStep === simulation.history.length - 1;
+
+            fairnessCard.style.borderLeftColor = '#2ec491';
+            fairness.style.color = '#0f8a63';
+
+            if (starving.length) {
+                fairness.textContent = 'Starving';
+                fairness.style.color = '#b4234b';
+                fairnessCard.style.borderLeftColor = '#f75583';
+                fairnessSub.textContent = `${starving.map(process => process.id).join(', ')} overtaken while waiting`;
+            } else if (currentStep === 0) {
+                fairness.textContent = 'Ready';
+                fairness.style.color = '#436cf5';
+                fairnessCard.style.borderLeftColor = '#436cf5';
+                fairnessSub.textContent = 'Run the simulation';
+            } else if (final && simulation.starved.length) {
+                fairness.textContent = 'Starved';
+                fairness.style.color = '#b4234b';
+                fairnessCard.style.borderLeftColor = '#f75583';
+                fairnessSub.textContent = `${simulation.starved.join(', ')} overtaken · max wait ${maxWait}t`;
+            } else if (final && simulation.allDone) {
+                fairness.textContent = 'Fair';
+                fairnessSub.textContent = `No overtaking · max wait ${maxWait}t`;
+            } else {
+                fairness.textContent = 'Stable';
+                fairnessSub.textContent = `No overtaking yet · max wait ${maxWait}t`;
+            }
+        }
+
+        function renderDecision(snapshot) {
+            const banner = document.getElementById('decisionBanner');
+            const icon = document.getElementById('decisionIcon');
+            const title = document.getElementById('decisionTitle');
+            const text = document.getElementById('decisionText');
+            const callout = document.getElementById('starvationCallout');
+            const policy = POLICY_META[simulation.inputs.policy];
+            const final = currentStep === simulation.history.length - 1;
+            const starving = snapshot.processes.filter(process => process.state === 'waiting' && process.overtaken > 0);
+
+            banner.classList.remove('is-success', 'is-failure');
+            callout.classList.add('d-none');
+
+            if (currentStep === 0) {
+                icon.innerHTML = '<i class="bi bi-info-circle-fill"></i>';
+                title.textContent = `${policy.label} policy selected`;
+                text.textContent = policy.description;
+                return;
+            }
+
+            if (starving.length) {
+                const types = [...new Set(starving.map(process => process.type))];
+                const titleText = types.length > 1
+                    ? 'Reader and writer starvation detected'
+                    : (types[0] === 'reader' ? 'Reader starvation detected' : 'Writer starvation detected');
+                const details = starving.map(process =>
+                    `${process.id} has waited ${process.waitTicks} ticks while ${process.overtaken} later arrival${process.overtaken === 1 ? '' : 's'} completed.`
+                ).join(' ');
+
+                banner.classList.add('is-failure');
+                icon.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i>';
+                title.textContent = titleText;
+                text.textContent = `${details} ${policy.label} does not bound waiting for this workload.`;
+
+                callout.classList.remove('d-none');
+                document.getElementById('starvationTitle').textContent = titleText;
+                document.getElementById('starvationText').textContent = details;
+                return;
+            }
+
+            if (final && simulation.starved.length) {
+                const starvedProcesses = simulation.processes.filter(process => process.wasOvertaken);
+                const types = [...new Set(starvedProcesses.map(process => process.type))];
+                const titleText = types.length > 1
+                    ? 'Reader and writer starvation occurred'
+                    : (types[0] === 'reader' ? 'Reader starvation occurred' : 'Writer starvation occurred');
+
+                banner.classList.add('is-failure');
+                icon.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i>';
+                title.textContent = titleText;
+                text.textContent = `${starvedProcesses.map(process => process.id).join(', ')} ${starvedProcesses.length === 1 ? 'was' : 'were'} overtaken by later arrivals before getting access. All processes eventually completed, but waiting was not bounded.`;
+
+                callout.classList.remove('d-none');
+                document.getElementById('starvationTitle').textContent = titleText;
+                document.getElementById('starvationText').textContent = starvedProcesses.map(process =>
+                    `${process.id} waited up to ${process.maxWait} ticks and was overtaken.`
+                ).join(' ');
+                return;
+            }
+
+            if (final && simulation.allDone) {
+                banner.classList.add('is-success');
+                icon.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+                title.textContent = 'All processes completed fairly';
+                text.textContent = `${simulation.completed} processes finished in ${simulation.ticks} ticks. Longest wait was ${simulation.maxWait} ticks, and no process was overtaken by a later arrival.`;
+                return;
+            }
+
+            const latest = snapshot.events[snapshot.events.length - 1];
+            icon.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
+            title.textContent = `Tick ${snapshot.tick} · ${snapshot.activeReaders.length} reading · ${snapshot.activeWriter ? '1 writing' : '0 writing'} · ${snapshot.waitingIds.length} waiting`;
+            text.textContent = latest
+                ? latest.text
+                : 'No access changed this tick. Service timers are advancing.';
+        }
+
+        function renderEventLog() {
+            const container = document.getElementById('eventLog');
+            const events = simulation.history
+                .slice(0, currentStep + 1)
+                .flatMap(snapshot => snapshot.events)
+                .slice()
+                .reverse()
+                .slice(0, 60);
+
+            document.getElementById('eventBadge').textContent =
+                `${events.length} event${events.length === 1 ? '' : 's'}`;
+
+            if (!events.length) {
+                container.innerHTML = `
+                    <div class="event-empty">
+                        <i class="bi bi-journal-text"></i>
+                        <div class="fw-bold">No events yet</div>
+                        <div class="small">Run the simulation or advance one tick to watch readers and writers enter the resource.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = events.map(event => `
+                <div class="event-row">
+                    <span class="event-tick">T${event.tick}</span>
+                    <span><i class="bi ${event.icon} me-1 text-primary"></i>${event.text}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderPlayback() {
+            const total = simulation.history.length - 1;
+
+            document.getElementById('stepCounterLabel').textContent = `${currentStep} / ${total}`;
+
+            const scrubber = document.getElementById('stepScrubber');
+            scrubber.max = total;
+            scrubber.value = currentStep;
+
+            document.getElementById('btnStepPrev').disabled = currentStep === 0;
+            document.getElementById('btnStepNext').disabled = currentStep >= total;
+            document.getElementById('playIcon').className = playTimer
+                ? 'bi bi-pause-fill fs-4'
+                : 'bi bi-play-fill fs-4';
+        }
+
+        function stopPlayback() {
+            if (playTimer) {
+                clearInterval(playTimer);
+                playTimer = null;
+            }
+            const icon = document.getElementById('playIcon');
+            if (icon) icon.className = 'bi bi-play-fill fs-4';
+        }
+
+        function togglePlay() {
+            if (!simulation) return;
+
+            if (playTimer) {
+                stopPlayback();
+                renderPlayback();
+                return;
+            }
+
+            if (currentStep >= simulation.history.length - 1) {
+                currentStep = 0;
+                renderAll();
+            }
+
+            document.getElementById('playIcon').className = 'bi bi-pause-fill fs-4';
+            playTimer = setInterval(() => {
+                const total = simulation.history.length - 1;
+
+                if (currentStep < total) {
+                    currentStep += 1;
+                    if (currentStep >= total) stopPlayback();
+                    renderAll();
+                } else {
+                    stopPlayback();
+                    renderAll();
+                }
+            }, 700);
+        }
+
+        function stepSimulation(direction) {
+            if (!simulation) return;
+            stopPlayback();
+            const total = simulation.history.length - 1;
+            currentStep = direction === 'next'
+                ? Math.min(currentStep + 1, total)
+                : Math.max(currentStep - 1, 0);
+            renderAll();
+        }
+
+        function scrubStep(value) {
+            if (!simulation) return;
+            stopPlayback();
+            const total = simulation.history.length - 1;
+            currentStep = Math.max(0, Math.min(Number(value), total));
+            renderAll();
+        }
+
+        function resetPlayback() {
+            if (!simulation) return;
+            stopPlayback();
+            currentStep = 0;
+            renderAll();
+        }
+
+        // =========================================================
+        // Simulation Actions
+        // =========================================================
+        function resetSimulation() {
+            const inputs = readInputs();
+            if (!inputs) return;
+
+            stopPlayback();
+            updateHints();
+            simulation = simulateRW(inputs);
+            currentStep = 0;
+            renderAll();
+            generateComparison();
+        }
+
+        function runSimulation() {
+            const inputs = readInputs();
+            if (!inputs) return;
+
+            stopPlayback();
+            updateHints();
+            simulation = simulateRW(inputs);
+            currentStep = simulation.history.length - 1;
+            renderAll();
+            generateComparison();
+        }
+
+        function loadPreset(key) {
+            const preset = presets[key];
+            if (!preset) return;
+
+            document.getElementById('policySelect').value = preset.policy;
+            document.getElementById('workloadSelect').value = preset.workload;
+            document.getElementById('readerCount').value = String(preset.readers);
+            document.getElementById('writerCount').value = String(preset.writers);
+            document.getElementById('readTicks').value = String(preset.readTicks);
+            document.getElementById('writeTicks').value = String(preset.writeTicks);
+            document.getElementById('arrivalGap').value = String(preset.gap);
+
+            updateHints();
+            runSimulation();
+        }
+
+        // =========================================================
+        // Policy Comparison
+        // =========================================================
+        function renderComparisonChart(containerId, items, valueFn, labelFn, bestValue) {
+            const container = document.getElementById(containerId);
+            const maxValue = Math.max(0.01, ...items.map(valueFn));
+
+            container.innerHTML = items.map(item => {
+                const value = valueFn(item);
+                const width = value > 0 ? Math.max(2, (value / maxValue) * 100) : 0;
+                let barClass = 'bar-first';
+
+                if (item.starved.length) {
+                    barClass = 'bar-worst';
+                } else if (value === bestValue) {
+                    barClass = 'bar-best';
+                }
+
+                return `
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center small fw-bold mb-1">
+                            <span>${POLICY_META[item.policy].label}</span>
+                            <span class="text-muted font-monospace">${labelFn(item)}</span>
+                        </div>
+                        <div class="comp-bar-wrapper">
+                            <div class="comp-bar ${barClass}" style="width: ${width}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function generateComparison() {
+            const inputs = readInputs();
+            if (!inputs) return;
+
+            const items = Object.keys(POLICY_META).map(policy => {
+                const sim = simulateRW({ ...inputs, policy });
+                return {
+                    policy,
+                    sim,
+                    last: sim.history[sim.history.length - 1],
+                    completed: sim.completed,
+                    total: sim.processes.length,
+                    ticks: sim.ticks,
+                    maxWait: sim.maxWait,
+                    avgWait: sim.avgWait,
+                    throughput: sim.throughput,
+                    starved: sim.starved,
+                    starvedTypes: sim.starvedTypes,
+                    allDone: sim.allDone
+                };
+            });
+
+            const safeItems = items.filter(item => item.starved.length === 0 && item.allDone);
+            const bestItem = safeItems.length
+                ? safeItems.slice().sort((a, b) => {
+                    if (a.maxWait !== b.maxWait) return a.maxWait - b.maxWait;
+                    return b.throughput - a.throughput;
+                })[0]
+                : null;
+
+            document.getElementById('comparisonCardsRow').innerHTML = items.map(item => {
+                const meta = POLICY_META[item.policy];
+                const isBest = bestItem && item.policy === bestItem.policy;
+                const starvedLabel = item.starved.length
+                    ? (item.starvedTypes.length > 1
+                        ? 'Reader + writer starvation'
+                        : (item.starvedTypes[0] === 'reader' ? 'Reader starvation' : 'Writer starvation'))
+                    : null;
+                const statusBadge = starvedLabel
+                    ? `<span class="badge bg-danger-subtle text-danger border border-danger-subtle">${starvedLabel}</span>`
+                    : (item.allDone
+                        ? '<span class="badge bg-success-subtle text-success border border-success-subtle">No starvation</span>'
+                        : '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Incomplete</span>');
+
+                const dots = item.last.processes.map(process => {
+                    let dotClass = 'waiting';
+                    if (process.wasOvertaken) dotClass = 'starved';
+                    else if (process.state === 'done') dotClass = 'done';
+                    else if (process.state === 'reading') dotClass = 'reader';
+                    else if (process.state === 'writing') dotClass = 'writer';
+
+                    return `<span class="mini-dot ${dotClass}" title="${process.id} · ${RW_STATE[displayProcessState(process, item.last)].label}${process.wasOvertaken ? ' · overtaken' : ''}">${process.id}</span>`;
+                }).join('');
+
+                return `
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="glass-panel compare-card p-3 p-md-4 h-100 d-flex flex-column ${isBest ? 'best' : ''}">
+                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                <div>
+                                    <span class="badge border rounded-pill font-monospace" style="background: ${meta.color}1a; color: ${meta.color}; border-color: ${meta.color}55 !important;">${meta.badge}</span>
+                                    <h5 class="fw-bold mt-2 mb-0 text-dark">${meta.label}</h5>
+                                </div>
+                                ${isBest
+                                    ? '<span class="best-badge">Fairest result</span>'
+                                    : `<i class="bi ${meta.icon} fs-3" style="color: ${meta.color};"></i>`}
+                            </div>
+
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                ${statusBadge}
+                                <span class="badge bg-light text-dark border font-monospace">${item.ticks} ticks</span>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <div class="compare-metric">
+                                        <div class="val">${item.completed}<span class="fs-6 text-muted">/${item.total}</span></div>
+                                        <div class="lbl">Completed</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="compare-metric">
+                                        <div class="val">${item.ticks}</div>
+                                        <div class="lbl">Ticks</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="compare-metric">
+                                        <div class="val">${item.maxWait}</div>
+                                        <div class="lbl">Longest wait</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="compare-metric">
+                                        <div class="val">${item.throughput.toFixed(2)}</div>
+                                        <div class="lbl">Processes / tick</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            ${item.starved.length
+                                ? `<div class="fairness-flag mb-2"><i class="bi bi-exclamation-triangle-fill"></i> Overtaken: ${item.starved.join(', ')}</div>`
+                                : `<div class="small text-success fw-bold mb-2"><i class="bi bi-check2-circle me-1"></i>No process was overtaken</div>`}
+
+                            <div class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.64rem; letter-spacing: 0.4px;">Final states</div>
+                            <div class="mini-dot-row mb-3">${dots}</div>
+
+                            <button class="btn btn-glass-outline btn-sm w-100 mt-auto" type="button" onclick="applyComparison('${item.policy}')">
+                                <i class="bi bi-play-fill me-1"></i> Run this policy
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const waitSet = safeItems.length ? safeItems : items;
+            const bestWait = Math.min(...waitSet.map(item => item.maxWait));
+            const bestThroughput = Math.max(...waitSet.map(item => item.throughput));
+
+            renderComparisonChart(
+                'chartWait',
+                items,
+                item => item.maxWait,
+                item => `${item.maxWait} ticks`,
+                bestWait
+            );
+
+            renderComparisonChart(
+                'chartThroughput',
+                items,
+                item => item.throughput,
+                item => `${item.throughput.toFixed(2)}/tick`,
+                bestThroughput
+            );
+        }
+
+        function applyComparison(policy) {
+            document.getElementById('policySelect').value = policy;
+            document.getElementById('presetSelect').value = '';
+            updateHints();
+            runSimulation();
+
+            const simulatorTab = document.getElementById('tab-simulator');
+            if (simulatorTab) simulatorTab.click();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // =========================================================
+        // C Code Samples
+        // =========================================================
+        const cCodeSnippets = {
+            READERS_FIRST: `/* Readers-Writers - Readers Preference */
+#include <stdio.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <unistd.h>
+
+#define READERS 4
+#define WRITERS 2
+
+int read_count = 0;
+pthread_mutex_t mutex;
+sem_t write_lock;
+
+void *reader(void *arg) {
+    int id = *(int *)arg;
+
+    pthread_mutex_lock(&mutex);
+    read_count++;
+    if (read_count == 1)
+        sem_wait(&write_lock);
+    pthread_mutex_unlock(&mutex);
+
+    printf("R%d is reading (readers = %d)\\n", id, read_count);
+    usleep(120000);
+
+    pthread_mutex_lock(&mutex);
+    read_count--;
+    if (read_count == 0)
+        sem_post(&write_lock);
+    pthread_mutex_unlock(&mutex);
+
+    printf("R%d finished reading\\n", id);
+    return NULL;
+}
+
+void *writer(void *arg) {
+    int id = *(int *)arg;
+
+    sem_wait(&write_lock);
+    printf("W%d is writing (exclusive)\\n", id);
+    usleep(150000);
+    sem_post(&write_lock);
+
+    printf("W%d finished writing\\n", id);
+    return NULL;
+}
+
+int main(void) {
+    pthread_t rt[READERS], wt[WRITERS];
+    int rids[READERS], wids[WRITERS];
+
+    pthread_mutex_init(&mutex, NULL);
+    sem_init(&write_lock, 0, 1);
+
+    for (int i = 0; i < READERS; i++) {
+        rids[i] = i + 1;
+        pthread_create(&rt[i], NULL, reader, &rids[i]);
+    }
+
+    for (int i = 0; i < WRITERS; i++) {
+        wids[i] = i + 1;
+        pthread_create(&wt[i], NULL, writer, &wids[i]);
+    }
+
+    for (int i = 0; i < READERS; i++)
+        pthread_join(rt[i], NULL);
+    for (int i = 0; i < WRITERS; i++)
+        pthread_join(wt[i], NULL);
+
+    pthread_mutex_destroy(&mutex);
+    sem_destroy(&write_lock);
+    return 0;
+}`,
+
+            WRITERS_FIRST: `/* Readers-Writers - Writers Preference */
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+#define READERS 4
+#define WRITERS 2
+
+int readers = 0;
+int writers = 0;
+int waiting_writers = 0;
+pthread_mutex_t mutex;
+pthread_cond_t ok_read;
+pthread_cond_t ok_write;
+
+void *reader(void *arg) {
+    int id = *(int *)arg;
+
+    pthread_mutex_lock(&mutex);
+    while (writers > 0 || waiting_writers > 0)
+        pthread_cond_wait(&ok_read, &mutex);
+    readers++;
+    pthread_mutex_unlock(&mutex);
+
+    printf("R%d is reading (readers = %d)\\n", id, readers);
+    usleep(120000);
+
+    pthread_mutex_lock(&mutex);
+    readers--;
+    if (readers == 0)
+        pthread_cond_signal(&ok_write);
+    pthread_mutex_unlock(&mutex);
+
+    printf("R%d finished reading\\n", id);
+    return NULL;
+}
+
+void *writer(void *arg) {
+    int id = *(int *)arg;
+
+    pthread_mutex_lock(&mutex);
+    waiting_writers++;
+    while (readers > 0 || writers > 0)
+        pthread_cond_wait(&ok_write, &mutex);
+    waiting_writers--;
+    writers++;
+    pthread_mutex_unlock(&mutex);
+
+    printf("W%d is writing (exclusive)\\n", id);
+    usleep(150000);
+
+    pthread_mutex_lock(&mutex);
+    writers--;
+    pthread_cond_signal(&ok_write);
+    pthread_cond_broadcast(&ok_read);
+    pthread_mutex_unlock(&mutex);
+
+    printf("W%d finished writing\\n", id);
+    return NULL;
+}
+
+int main(void) {
+    pthread_t rt[READERS], wt[WRITERS];
+    int rids[READERS], wids[WRITERS];
+
+    pthread_mutex_init(&mutex, NULL);
+    pthread_cond_init(&ok_read, NULL);
+    pthread_cond_init(&ok_write, NULL);
+
+    for (int i = 0; i < READERS; i++) {
+        rids[i] = i + 1;
+        pthread_create(&rt[i], NULL, reader, &rids[i]);
+    }
+
+    for (int i = 0; i < WRITERS; i++) {
+        wids[i] = i + 1;
+        pthread_create(&wt[i], NULL, writer, &wids[i]);
+    }
+
+    for (int i = 0; i < READERS; i++)
+        pthread_join(rt[i], NULL);
+    for (int i = 0; i < WRITERS; i++)
+        pthread_join(wt[i], NULL);
+
+    pthread_mutex_destroy(&mutex);
+    pthread_cond_destroy(&ok_read);
+    pthread_cond_destroy(&ok_write);
+    return 0;
+}`,
+
+            FAIR: `/* Readers-Writers - Fair FIFO admission (ticket order) */
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+#define READERS 4
+#define WRITERS 2
+
+int next_ticket = 0;
+int now_serving = 0;
+int active_readers = 0;
+int active_writer = 0;
+pthread_mutex_t mutex;
+pthread_cond_t turn_cv;
+
+void *reader(void *arg) {
+    int id = *(int *)arg;
+
+    pthread_mutex_lock(&mutex);
+    int my_ticket = next_ticket++;
+
+    while (my_ticket != now_serving || active_writer > 0)
+        pthread_cond_wait(&turn_cv, &mutex);
+
+    now_serving++;
+    active_readers++;
+    pthread_mutex_unlock(&mutex);
+
+    printf("R%d is reading (readers = %d)\\n", id, active_readers);
+    usleep(120000);
+
+    pthread_mutex_lock(&mutex);
+    active_readers--;
+    pthread_cond_broadcast(&turn_cv);
+    pthread_mutex_unlock(&mutex);
+
+    printf("R%d finished reading\\n", id);
+    return NULL;
+}
+
+void *writer(void *arg) {
+    int id = *(int *)arg;
+
+    pthread_mutex_lock(&mutex);
+    int my_ticket = next_ticket++;
+
+    while (my_ticket != now_serving || active_readers > 0 || active_writer > 0)
+        pthread_cond_wait(&turn_cv, &mutex);
+
+    now_serving++;
+    active_writer = 1;
+    pthread_mutex_unlock(&mutex);
+
+    printf("W%d is writing (exclusive)\\n", id);
+    usleep(150000);
+
+    pthread_mutex_lock(&mutex);
+    active_writer = 0;
+    pthread_cond_broadcast(&turn_cv);
+    pthread_mutex_unlock(&mutex);
+
+    printf("W%d finished writing\\n", id);
+    return NULL;
+}
+
+int main(void) {
+    pthread_t rt[READERS], wt[WRITERS];
+    int rids[READERS], wids[WRITERS];
+
+    pthread_mutex_init(&mutex, NULL);
+    pthread_cond_init(&turn_cv, NULL);
+
+    for (int i = 0; i < READERS; i++) {
+        rids[i] = i + 1;
+        pthread_create(&rt[i], NULL, reader, &rids[i]);
+    }
+
+    for (int i = 0; i < WRITERS; i++) {
+        wids[i] = i + 1;
+        pthread_create(&wt[i], NULL, writer, &wids[i]);
+    }
+
+    for (int i = 0; i < READERS; i++)
+        pthread_join(rt[i], NULL);
+    for (int i = 0; i < WRITERS; i++)
+        pthread_join(wt[i], NULL);
+
+    pthread_mutex_destroy(&mutex);
+    pthread_cond_destroy(&turn_cv);
+    return 0;
+}`
+        };
+
+        const codeFileNames = {
+            READERS_FIRST: 'readers_first.c',
+            WRITERS_FIRST: 'writers_first.c',
+            FAIR: 'readers_writers_fair.c'
+        };
+
+        function updateCodeDisplay() {
+            const key = document.getElementById('codePolicySelect').value;
+            const codeBlock = document.getElementById('codeBlock');
+            codeBlock.textContent = cCodeSnippets[key];
+            document.getElementById('codeFileName').textContent = codeFileNames[key];
+
+            if (window.Prism && typeof window.Prism.highlightElement === 'function') {
+                window.Prism.highlightElement(codeBlock);
+            }
+        }
+
+        function fallbackCopyCode(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+
+        function showCopyFeedback() {
+            const label = document.getElementById('codeFileName');
+            const original = codeFileNames[document.getElementById('codePolicySelect').value];
+            label.textContent = 'Copied to clipboard!';
+            setTimeout(() => {
+                label.textContent = original;
+            }, 1600);
+        }
+
+        function copyCode() {
+            const key = document.getElementById('codePolicySelect').value;
+            const text = cCodeSnippets[key];
+
+            if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                navigator.clipboard.writeText(text)
+                    .then(showCopyFeedback)
+                    .catch(() => {
+                        fallbackCopyCode(text);
+                        showCopyFeedback();
+                    });
+            } else {
+                fallbackCopyCode(text);
+                showCopyFeedback();
+            }
+        }
+
+        function downloadCode() {
+            const key = document.getElementById('codePolicySelect').value;
+            const blob = new Blob([cCodeSnippets[key]], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = codeFileNames[key];
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        // =========================================================
+        // Initialization
+        // =========================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            ['policySelect', 'workloadSelect', 'readerCount', 'writerCount', 'readTicks', 'writeTicks', 'arrivalGap'].forEach(id => {
+                document.getElementById(id).addEventListener('change', () => {
+                    document.getElementById('presetSelect').value = '';
+                    resetSimulation();
+                });
+            });
+
+            updateHints();
+            simulation = simulateRW(readInputs());
+            currentStep = 0;
+            renderAll();
+            generateComparison();
+            updateCodeDisplay();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS EduHub - Dining Philosophers Simulator</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <!-- Shared claymorphism theme -->
+    <link href="simulator-theme.css" rel="stylesheet">
+
+    <style>
+        /* Dining Stage */
+        .dining-stage {
+            background: #f0f4fa;
+            border-radius: 26px;
+            padding: 0.75rem;
+            box-shadow: inset 3px 3px 8px rgba(160, 175, 205, 0.28), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+        }
+
+        #diningSvg {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 640px;
+            overflow: visible;
+        }
+
+        #diningSvg text {
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .state-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem 1rem;
+            margin-top: 0.85rem;
+            padding: 0 0.25rem;
+        }
+
+        .legend-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.42rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .legend-swatch {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            box-shadow: 0 1px 4px rgba(30, 40, 80, 0.22);
+            display: inline-block;
+        }
+
+        /* State chips */
+        .state-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            border-radius: 10px;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .state-thinking {
+            background: #eef3f8;
+            color: #64748b;
+        }
+
+        .state-hungry {
+            background: #fef4df;
+            color: #b45309;
+        }
+
+        .state-waiting {
+            background: #fef0f4;
+            color: #c92f5d;
+        }
+
+        .state-eating {
+            background: #edfbf5;
+            color: #0f8a63;
+        }
+
+        .state-deadlocked {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* Status detail table */
+        .philosopher-table {
+            min-width: 0;
+            font-size: 0.78rem;
+        }
+
+        .philosopher-table th,
+        .philosopher-table td {
+            vertical-align: middle;
+            padding-left: 0.55rem;
+            padding-right: 0.55rem;
+        }
+
+        .philosopher-table td:last-child {
+            min-width: 108px;
+        }
+
+        .philosopher-table td:first-child {
+            white-space: nowrap;
+        }
+
+        .deadlocked-row td {
+            background: #fef0f4 !important;
+        }
+
+        .deadlocked-row td:first-child {
+            box-shadow: inset 4px 0 0 var(--accent-pink);
+        }
+
+        .fork-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: #ffffff;
+            border: 1px solid rgba(203, 213, 225, 0.85);
+            border-radius: 10px;
+            padding: 0.26rem 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            box-shadow: 2px 3px 7px rgba(160, 175, 205, 0.14), inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+        }
+
+        .fork-chip.owned {
+            background: #edfbf5;
+            border-color: rgba(46, 196, 145, 0.3);
+            color: #0f8a63;
+        }
+
+        /* SVG state halo */
+        .eat-halo {
+            animation: eatHaloPulse 1.6s ease-in-out infinite;
+        }
+
+        @keyframes eatHaloPulse {
+            0%, 100% { opacity: 0.55; }
+            50% { opacity: 0.12; }
+        }
+
+        /* Summary rows */
+        .resource-summary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.72);
+            border-radius: 12px;
+            padding: 0.38rem 0.55rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .resource-summary-row strong {
+            font-family: var(--font-mono);
+            color: var(--text-main);
+            text-align: right;
+        }
+
+        /* Deadlock alert */
+        .deadlock-callout {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            background: #fef0f4;
+            border: 2px solid rgba(247, 85, 131, 0.45);
+            border-radius: 18px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 6px 16px rgba(247, 85, 131, 0.12), inset 2px 2px 4px rgba(255, 255, 255, 0.85);
+        }
+
+        .deadlock-callout > i {
+            color: var(--accent-pink);
+            font-size: 1.35rem;
+            line-height: 1;
+            margin-top: 0.1rem;
+        }
+
+        .deadlock-callout strong {
+            color: #b4234b;
+        }
+
+        .deadlock-callout .deadlock-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #b4234b;
+            margin-top: 0.15rem;
+        }
+
+        /* Event log */
+        .event-log {
+            max-height: 310px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            padding-right: 0.25rem;
+        }
+
+        .event-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.55rem;
+            background: #f7f9fd;
+            border-radius: 12px;
+            padding: 0.48rem 0.6rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .event-tick {
+            min-width: 34px;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: #94a3b8;
+            padding-top: 0.12rem;
+        }
+
+        .event-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 160px;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            border: 2px dashed rgba(203, 213, 225, 0.9);
+            border-radius: 18px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .event-empty i {
+            font-size: 1.9rem;
+            color: #a5b4fc;
+        }
+
+        /* Comparison */
+        .meal-progress {
+            height: 10px;
+            border-radius: 999px;
+            background: #edf2f8;
+            overflow: hidden;
+            box-shadow: inset 2px 2px 5px rgba(160, 175, 205, 0.28), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+        }
+
+        .meal-progress > span {
+            display: block;
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #38cf9b, #2ec491);
+            box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.55);
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .mini-dot-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            align-items: center;
+        }
+
+        .mini-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            font-family: var(--font-mono);
+            font-size: 0.58rem;
+            font-weight: 800;
+            box-shadow: 0 2px 6px rgba(30, 40, 80, 0.18);
+        }
+
+        .mini-dot.thinking {
+            background: #94a3b8;
+        }
+
+        .mini-dot.hungry {
+            background: #f59e0b;
+        }
+
+        .mini-dot.waiting {
+            background: #f75583;
+        }
+
+        .mini-dot.eating {
+            background: #2ec491;
+        }
+
+        .mini-dot.deadlocked {
+            background: #b91c1c;
+        }
+
+        .strategy-note {
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 767.98px) {
+            .dining-stage {
+                padding: 0.35rem;
+            }
+
+            #diningSvg {
+                max-height: 430px;
+            }
+
+            .state-legend {
+                gap: 0.45rem 0.75rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .state-legend {
+                gap: 0.4rem 0.6rem;
+            }
+
+            .legend-pill {
+                font-size: 0.68rem;
+            }
+
+            .event-row {
+                font-size: 0.74rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-bg">
+        <div class="ambient-orb orb-blue"></div>
+        <div class="ambient-orb orb-pink"></div>
+        <div class="ambient-orb orb-green"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-xl glass-nav sticky-top py-2 px-3 mb-4">
+        <div class="container-fluid max-w-7xl">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="brand-icon" style="background: linear-gradient(145deg, #fbbf24, #f59e0b); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35), inset 2px 2px 4px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(150, 90, 10, 0.3);">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                    <span class="brand-text fs-4">OS EduHub</span>
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle ms-2 font-monospace" style="font-size: 0.7rem;">Dining</span>
+                </div>
+            </a>
+
+            <button class="navbar-toggler glass-nav-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list fs-2 text-primary"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="nav nav-pills ms-auto my-2 my-lg-0" id="mainNav" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab-simulator" data-bs-toggle="pill" data-bs-target="#section-simulator" type="button" role="tab">
+                            <i class="bi bi-play-circle-fill me-1"></i> Simulation
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-compare" data-bs-toggle="pill" data-bs-target="#section-compare" type="button" role="tab">
+                            <i class="bi bi-bar-chart-fill me-1"></i> Compare
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-theory" data-bs-toggle="pill" data-bs-target="#section-theory" type="button" role="tab">
+                            <i class="bi bi-book-half me-1"></i> Problem
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-code" data-bs-toggle="pill" data-bs-target="#section-code" type="button" role="tab">
+                            <i class="bi bi-code-slash me-1"></i> Code in C
+                        </button>
+                    </li>
+                    <li class="nav-item ms-xl-2">
+                        <a href="lectures.html" class="btn btn-sm btn-glass-outline nav-resource-btn d-inline-flex align-items-center mt-1 mt-xl-0" title="Open lecture decks">
+                            <i class="bi bi-collection-play-fill me-1"></i><span class="btn-label"> Lectures</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-xl-1">
+                        <a href="syllabus.html" class="btn btn-sm btn-glass-outline nav-resource-btn d-inline-flex align-items-center mt-1 mt-xl-0" title="Open syllabus">
+                            <i class="bi bi-book-half me-1"></i><span class="btn-label"> Syllabus</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-xl-1">
+                        <a href="index.html" class="btn btn-sm btn-glass-outline nav-resource-btn d-inline-flex align-items-center mt-1 mt-xl-0" title="Back to hub home">
+                            <i class="bi bi-house-door-fill me-1"></i><span class="btn-label"> Hub Home</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid px-3 px-md-4 max-w-7xl pb-5 position-relative" style="z-index: 1;">
+        <div class="tab-content" id="mainTabContent">
+
+            <!-- ========================================== -->
+            <!-- 1. SIMULATION                              -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade show active" id="section-simulator" role="tabpanel">
+
+                <div class="glass-panel controls-bar-panel p-3 p-md-4 mb-4">
+                    <div class="row g-3">
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="philosopherCount">
+                                <i class="bi bi-people-fill text-warning me-1"></i> Philosophers
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="philosopherCount">
+                                <option>3</option>
+                                <option>4</option>
+                                <option selected>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="strategySelect">
+                                <i class="bi bi-diagram-3-fill text-primary me-1"></i> Fork Strategy
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="strategySelect">
+                                <option value="NAIVE" selected>Naive — left then right (unsafe)</option>
+                                <option value="ORDERED">Ordered — lowest-numbered fork first</option>
+                                <option value="WAITER">Waiter — at most N−1 seated</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="mealTarget">
+                                <i class="bi bi-trophy-fill text-success me-1"></i> Meal Target
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="mealTarget">
+                                <option>8</option>
+                                <option selected>12</option>
+                                <option>16</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="eatTicks">
+                                <i class="bi bi-egg-fried text-success me-1"></i> Eat Ticks
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="eatTicks">
+                                <option>1</option>
+                                <option selected>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="thinkTicks">
+                                <i class="bi bi-hourglass-split text-primary me-1"></i> Think Ticks
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="thinkTicks">
+                                <option>1</option>
+                                <option selected>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-12 col-lg-6">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="presetSelect">
+                                <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Load Presets
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="presetSelect" onchange="loadPreset(this.value)">
+                                <option value="">Choose a preset…</option>
+                                <option value="deadlock">Classic Deadlock — Naive</option>
+                                <option value="ordered">Ordered Hierarchy — Deadlock-Free</option>
+                                <option value="waiter">Waiter Arbitration — Deadlock-Free</option>
+                                <option value="dense">High Contention — 7 Philosophers</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-6 d-flex align-items-end">
+                            <div class="d-flex flex-wrap gap-2 w-100">
+                                <button class="btn btn-glass-outline btn-sm flex-grow-1" type="button" onclick="resetSimulation()">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                                </button>
+                                <button class="btn btn-glass-primary flex-grow-1" type="button" onclick="runSimulation()">
+                                    <i class="bi bi-play-fill me-1"></i> Simulate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="small text-muted fw-semibold mt-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Every philosopher starts <strong>hungry</strong> so contention is visible immediately. Compare the unsafe strategy with the two deadlock-free solutions.
+                    </div>
+
+                    <div class="small text-muted fw-semibold mt-1">
+                        <i class="bi bi-arrow-repeat me-1"></i>
+                        Philosophers take turns in a rotating order. A philosopher can pick up at most one fork per tick, which is what makes the naive race window observable.
+                    </div>
+
+                    <div id="inputError" class="input-error d-none">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span id="inputErrorText"></span>
+                    </div>
+                </div>
+
+                <!-- KPI -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-green">
+                            <div class="kpi-label">Meals Served</div>
+                            <div class="kpi-value text-success mt-1" id="kpiMeals">0 <span class="fs-6 fw-normal text-muted">/ 12</span></div>
+                            <small class="text-muted d-block mt-1" id="kpiMealsSub">Target: 12 meals</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-blue" id="statusKpiCard">
+                            <div class="kpi-label">System Status</div>
+                            <div class="kpi-value mt-1 text-primary" id="kpiStatus" style="font-size: 1.6rem;">Ready</div>
+                            <small class="text-muted d-block mt-1" id="kpiStatusSub">Run the simulation</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-amber">
+                            <div class="kpi-label">Longest Wait</div>
+                            <div class="kpi-value mt-1" id="kpiWait" style="color: var(--accent-amber);">0 <span class="fs-6 fw-normal text-muted">ticks</span></div>
+                            <small class="text-muted d-block mt-1" id="kpiWaitSub">No philosopher waiting</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-purple">
+                            <div class="kpi-label">Eating Now</div>
+                            <div class="kpi-value mt-1" id="kpiEating" style="color: var(--accent-purple);">0 <span class="fs-6 fw-normal text-muted">/ 5</span></div>
+                            <small class="text-muted d-block mt-1" id="kpiEatingSub">Forks in use: 0 / 5</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualization -->
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-2">
+                        <div>
+                            <h5 class="fw-bold mb-0 text-dark d-flex align-items-center">
+                                <i class="bi bi-people-fill text-warning me-2"></i>Round Table
+                            </h5>
+                            <small class="text-muted">Simulation tick <strong class="text-primary font-monospace" id="stepCounterLabel">0 / 0</strong></small>
+                        </div>
+
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <div class="bg-white px-3 py-1.5 rounded-3 border d-flex align-items-center gap-2 shadow-sm">
+                                <button class="btn btn-sm btn-link text-secondary p-0" id="btnStepPrev" onclick="stepSimulation('prev')" title="Previous tick" aria-label="Previous tick">
+                                    <i class="bi bi-skip-start-fill fs-5"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-primary p-0" id="btnPlay" onclick="togglePlay()" title="Play / Pause" aria-label="Play or pause">
+                                    <i class="bi bi-play-fill fs-4" id="playIcon"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-secondary p-0" id="btnStepNext" onclick="stepSimulation('next')" title="Next tick" aria-label="Next tick">
+                                    <i class="bi bi-skip-end-fill fs-5"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-danger p-0" id="btnReset" onclick="resetPlayback()" title="Reset playback" aria-label="Reset playback">
+                                    <i class="bi bi-arrow-counterclockwise fs-5"></i>
+                                </button>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 bg-white px-3 py-1 rounded-3 border">
+                                <label for="stepScrubber" class="small fw-bold text-muted mb-0 font-monospace">Step:</label>
+                                <input type="range" class="form-range" id="stepScrubber" min="0" max="0" value="0" style="width: 120px;" oninput="scrubStep(this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="decision-banner" id="decisionBanner">
+                        <span class="banner-icon" id="decisionIcon"><i class="bi bi-info-circle-fill"></i></span>
+                        <div>
+                            <div class="banner-title" id="decisionTitle">Ready to simulate</div>
+                            <div class="banner-text" id="decisionText">Choose a strategy, then run the simulation or step through each tick.</div>
+                        </div>
+                    </div>
+
+                    <div class="deadlock-callout d-none" id="deadlockCallout">
+                        <i class="bi bi-exclamation-octagon-fill"></i>
+                        <div>
+                            <strong id="deadlockTitle">Circular wait detected</strong>
+                            <div class="deadlock-text" id="deadlockText"></div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-lg-7">
+                            <div class="dining-stage">
+                                <svg id="diningSvg" viewBox="0 0 600 600" role="img" aria-label="Dining philosophers round table"></svg>
+                                <div class="state-legend">
+                                    <span class="legend-pill"><span class="legend-swatch" style="background: #cbd5e1;"></span>Thinking</span>
+                                    <span class="legend-pill"><span class="legend-swatch" style="background: #fbbf24;"></span>Hungry</span>
+                                    <span class="legend-pill"><span class="legend-swatch" style="background: #f75583;"></span>Waiting for fork</span>
+                                    <span class="legend-pill"><span class="legend-swatch" style="background: #2ec491;"></span>Eating</span>
+                                </div>
+                            </div>
+                            <div class="small text-muted fw-semibold mt-2 px-1">
+                                <i class="bi bi-bezier2 me-1"></i>
+                                Solid lines connect philosophers to forks they hold. Dashed pink lines show the fork they are waiting for.
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-5">
+                            <div class="frag-tile h-100">
+                                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                                    <h6 class="fw-bold mb-0 text-dark">
+                                        <i class="bi bi-table text-primary me-1"></i> Philosopher Status
+                                    </h6>
+                                    <span class="badge bg-light text-dark border font-monospace" id="roundBadge">Tick 0</span>
+                                </div>
+
+                                <div class="table-matrix-wrapper">
+                                    <table class="table table-clay philosopher-table align-middle mb-0" id="philosopherTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Philosopher</th>
+                                                <th>State</th>
+                                                <th>Holds</th>
+                                                <th>Waiting</th>
+                                                <th>Meals</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="philosopherTableBody"></tbody>
+                                    </table>
+                                </div>
+
+                                <div class="small text-muted d-block d-lg-none mt-2">
+                                    <i class="bi bi-arrows-move me-1"></i>Swipe the table sideways to see all columns.
+                                </div>
+
+                                <div class="mt-3">
+                                    <div class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.66rem; letter-spacing: 0.4px;">Fork Ownership</div>
+                                    <div class="d-flex flex-wrap gap-2" id="forkChips"></div>
+                                </div>
+
+                                <div class="small text-muted fw-semibold mt-3" id="waiterNote">
+                                    <i class="bi bi-info-circle me-1"></i>The waiter limits how many philosophers may compete for forks at once.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="frag-tile mt-4">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                            <div>
+                                <h6 class="fw-bold mb-0 text-dark">
+                                    <i class="bi bi-journal-text text-success me-2"></i>Event Log
+                                </h6>
+                                <small class="text-muted">Newest events are shown first.</small>
+                            </div>
+                            <span class="badge bg-light text-dark border font-monospace" id="eventBadge">0 events</span>
+                        </div>
+                        <div class="event-log" id="eventLog"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 2. COMPARE STRATEGIES                      -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-compare" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                        <div>
+                            <h4 class="fw-bold mb-1 brand-text">
+                                <i class="bi bi-intersect me-2"></i>Naive vs Ordered vs Waiter
+                            </h4>
+                            <p class="text-muted mb-0">Runs all three strategies with the current philosopher count, meal target, and timing. The safest strategy is highlighted in green.</p>
+                        </div>
+                        <button class="btn btn-glass-primary" onclick="generateComparison()">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Recompute Benchmark
+                        </button>
+                    </div>
+
+                    <div class="row g-4 mb-4" id="comparisonCardsRow">
+                        <!-- Dynamic comparison cards -->
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-lg-6">
+                            <div class="glass-panel p-4 h-100">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <h5 class="fw-bold mb-0 text-dark">
+                                        <i class="bi bi-egg-fried text-success me-2"></i>Meals Served
+                                    </h5>
+                                    <small class="text-muted fw-bold">Higher is better</small>
+                                </div>
+                                <div id="chartMeals" class="d-flex flex-column gap-3">
+                                    <!-- Dynamic bars -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="glass-panel p-4 h-100">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <h5 class="fw-bold mb-0 text-dark">
+                                        <i class="bi bi-hourglass-split text-primary me-2"></i>Longest Wait
+                                    </h5>
+                                    <small class="text-muted fw-bold">Lower is better</small>
+                                </div>
+                                <div id="chartWait" class="d-flex flex-column gap-3">
+                                    <!-- Dynamic bars -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="small text-muted fw-semibold mt-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        A strategy is considered safer when it reaches the meal target without a circular wait. The ordered hierarchy and waiter arbitration both avoid the classic deadlock.
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 3. PROBLEM & SOLUTIONS                     -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-theory" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="text-center mx-auto mb-5" style="max-width: 780px;">
+                        <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis px-3 py-2 fw-bold text-uppercase mb-2">Classic Synchronization</span>
+                        <h2 class="fw-bold brand-text mb-3">The Dining Philosophers Problem</h2>
+                        <p class="text-muted">Five philosophers sit around a circular table with one fork between each pair. A philosopher needs both adjacent forks to eat, but may hold only one at a time while waiting for the other. If everyone takes the left fork simultaneously, every philosopher waits forever for the right fork: a classic circular-wait deadlock.</p>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-1" style="color: var(--accent-pink);">Naive</h4>
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Left then right</span>
+                                    </div>
+                                    <i class="bi bi-exclamation-octagon-fill fs-2" style="color: var(--accent-pink);"></i>
+                                </div>
+                                <p class="text-muted">Each philosopher picks up the left fork first and then the right fork. This satisfies all four Coffman conditions and can deadlock when every philosopher holds one fork.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Pros:</strong> Simple and intuitive.</li>
+                                    <li><strong>Cons:</strong> Not deadlock-free under a synchronized start.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-1 text-primary">Ordered</h4>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Resource hierarchy</span>
+                                    </div>
+                                    <i class="bi bi-sort-numeric-down fs-2 text-primary"></i>
+                                </div>
+                                <p class="text-muted">Always acquire the lower-numbered fork before the higher-numbered fork. The global order removes circular wait, so a cycle of philosophers waiting on each other cannot form.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Pros:</strong> Deadlock-free without a central arbiter.</li>
+                                    <li><strong>Cons:</strong> Requires a consistent resource ordering.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-1 text-success">Waiter</h4>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">Arbitrator</span>
+                                    </div>
+                                    <i class="bi bi-person-badge-fill fs-2 text-success"></i>
+                                </div>
+                                <p class="text-muted">A waiter allows at most <strong>N − 1</strong> philosophers to compete at the table. With at least one philosopher outside, at least one fork remains available, so progress is always possible.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Pros:</strong> Simple centralized deadlock prevention.</li>
+                                    <li><strong>Cons:</strong> The waiter is a shared bottleneck.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mt-1">
+                        <div class="col-12 col-lg-6">
+                            <div class="frag-tile">
+                                <h6 class="fw-bold text-dark mb-3"><i class="bi bi-shield-exclamation text-danger me-2"></i>Coffman Conditions</h6>
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="resource-summary-row"><span>Mutual exclusion</span><strong>One owner per fork</strong></div>
+                                    <div class="resource-summary-row"><span>Hold and wait</span><strong>Hold one fork, request the next</strong></div>
+                                    <div class="resource-summary-row"><span>No preemption</span><strong>Forks are released voluntarily</strong></div>
+                                    <div class="resource-summary-row"><span>Circular wait</span><strong>P0 → P1 → … → P0</strong></div>
+                                </div>
+                                <p class="text-muted small mt-3 mb-0">All four conditions must hold for deadlock. Ordered acquisition removes circular wait; the waiter removes the possibility that every philosopher holds a fork.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="frag-tile">
+                                <h6 class="fw-bold text-dark mb-3"><i class="bi bi-calculator text-success me-2"></i>Metrics</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="formula-pill"><i class="bi bi-egg-fried"></i> Meals served = completed meals</span>
+                                    <span class="formula-pill"><i class="bi bi-hourglass-split"></i> Wait = ticks between hungry and eating</span>
+                                    <span class="formula-pill"><i class="bi bi-speedometer2"></i> Throughput = meals ÷ ticks</span>
+                                    <span class="formula-pill"><i class="bi bi-shield-check"></i> Safe ⇔ no circular wait</span>
+                                </div>
+                                <p class="text-muted small mt-3 mb-0">The simulator counts one fork acquisition per philosopher per tick. This makes the hold-and-wait window visible and lets the naive strategy deadlock deterministically from a synchronized hungry start.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 4. C CODE                                  -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-code" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                        <div>
+                            <h4 class="fw-bold mb-1 brand-text">
+                                <i class="bi bi-code-slash me-2"></i>C Implementation Code
+                            </h4>
+                            <p class="text-muted mb-0">Pthreads reference implementations for the naive, ordered, and waiter strategies.</p>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <select class="form-select form-select-glass form-select-sm" id="codeAlgoSelect" onchange="updateCodeDisplay()" style="min-width: 220px; width: auto;">
+                                <option value="NAIVE">Naive (Unsafe)</option>
+                                <option value="ORDERED">Ordered Hierarchy</option>
+                                <option value="WAITER">Waiter / Arbitrator</option>
+                            </select>
+                            <button class="btn btn-glass-outline btn-sm" onclick="copyCode()">
+                                <i class="bi bi-clipboard me-1"></i> Copy Code
+                            </button>
+                            <button class="btn btn-glass-outline btn-sm" onclick="downloadCode()">
+                                <i class="bi bi-download me-1"></i> Download
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="code-container">
+                        <div class="code-header">
+                            <div class="code-dots">
+                                <span style="background: #ef4444;"></span>
+                                <span style="background: #f59e0b;"></span>
+                                <span style="background: #10b981;"></span>
+                            </div>
+                            <span class="text-light small font-monospace" id="codeFileName">dining_naive.c</span>
+                        </div>
+                        <pre><code class="language-c" id="codeBlock">/* Dining Philosophers - Naive */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+
+    <script>
+        // =========================================================
+        // Constants & State
+        // =========================================================
+        const MAX_TICKS = 400;
+
+        const STRATEGY_META = {
+            NAIVE: {
+                label: 'Naive',
+                color: '#f75583',
+                icon: 'bi-exclamation-octagon-fill',
+                badge: 'Left then right',
+                description: 'Each philosopher reaches for the left fork first, then the right fork. A synchronized hungry start can leave everyone holding one fork forever.'
+            },
+            ORDERED: {
+                label: 'Ordered',
+                color: '#436cf5',
+                icon: 'bi-sort-numeric-down',
+                badge: 'Resource hierarchy',
+                description: 'Every philosopher acquires the lower-numbered fork before the higher-numbered fork, which removes circular wait.'
+            },
+            WAITER: {
+                label: 'Waiter',
+                color: '#2ec491',
+                icon: 'bi-person-badge-fill',
+                badge: 'Arbitrator',
+                description: 'A waiter admits at most N − 1 philosophers to the table, guaranteeing that at least one fork stays available.'
+            }
+        };
+
+        const STATE_META = {
+            thinking: { label: 'Thinking', fill: '#e2e8f0', stroke: '#94a3b8', text: '#475569', chip: 'state-thinking', dot: 'thinking' },
+            hungry: { label: 'Hungry', fill: '#fef3c7', stroke: '#f59e0b', text: '#92400e', chip: 'state-hungry', dot: 'hungry' },
+            waiting: { label: 'Waiting', fill: '#ffe4ec', stroke: '#f75583', text: '#b4234b', chip: 'state-waiting', dot: 'waiting' },
+            eating: { label: 'Eating', fill: '#d1fae5', stroke: '#2ec491', text: '#0f8a63', chip: 'state-eating', dot: 'eating' },
+            deadlocked: { label: 'Deadlocked', fill: '#fee2e2', stroke: '#b91c1c', text: '#991b1b', chip: 'state-deadlocked', dot: 'deadlocked' }
+        };
+
+        const presets = {
+            deadlock: { philosophers: 5, strategy: 'NAIVE', mealTarget: 12, eatTicks: 2, thinkTicks: 2 },
+            ordered: { philosophers: 5, strategy: 'ORDERED', mealTarget: 12, eatTicks: 2, thinkTicks: 2 },
+            waiter: { philosophers: 5, strategy: 'WAITER', mealTarget: 12, eatTicks: 2, thinkTicks: 2 },
+            dense: { philosophers: 7, strategy: 'ORDERED', mealTarget: 16, eatTicks: 2, thinkTicks: 1 }
+        };
+
+        let simulation = null;
+        let currentStep = 0;
+        let playTimer = null;
+
+        // =========================================================
+        // Utilities & Validation
+        // =========================================================
+        function showInputError(message) {
+            document.getElementById('inputErrorText').textContent = message;
+            document.getElementById('inputError').classList.remove('d-none');
+        }
+
+        function hideInputError() {
+            document.getElementById('inputError').classList.add('d-none');
+        }
+
+        function readInputs() {
+            const philosophers = Number(document.getElementById('philosopherCount').value);
+            const strategy = document.getElementById('strategySelect').value;
+            const mealTarget = Number(document.getElementById('mealTarget').value);
+            const eatTicks = Number(document.getElementById('eatTicks').value);
+            const thinkTicks = Number(document.getElementById('thinkTicks').value);
+
+            if (!Number.isInteger(philosophers) || philosophers < 3 || philosophers > 7) {
+                showInputError('Choose between 3 and 7 philosophers.');
+                return null;
+            }
+
+            if (!STRATEGY_META[strategy]) {
+                showInputError('Choose a valid fork strategy.');
+                return null;
+            }
+
+            if (!Number.isInteger(mealTarget) || mealTarget < 1) {
+                showInputError('Meal target must be a positive whole number.');
+                return null;
+            }
+
+            if (!Number.isInteger(eatTicks) || eatTicks < 1 || !Number.isInteger(thinkTicks) || thinkTicks < 1) {
+                showInputError('Eat and think durations must be whole numbers of at least 1 tick.');
+                return null;
+            }
+
+            hideInputError();
+            return { philosophers, strategy, mealTarget, eatTicks, thinkTicks };
+        }
+
+        // =========================================================
+        // Dining Philosophers Engine
+        // =========================================================
+        function detectDeadlock(philosophers, forkOwners) {
+            const n = philosophers.length;
+            const edges = new Map();
+
+            philosophers.forEach(philosopher => {
+                if (philosopher.state !== 'waiting' || philosopher.holds.length !== 1 || philosopher.blockedOn === null) {
+                    return;
+                }
+
+                const needed = philosopher.blockedOn;
+                const owner = forkOwners[needed];
+
+                if (owner !== null && owner !== philosopher.id) {
+                    edges.set(philosopher.id, owner);
+                }
+            });
+
+            const visitState = new Map();
+
+            for (const start of edges.keys()) {
+                if (visitState.get(start) === 2) continue;
+
+                const path = [];
+                let current = start;
+
+                while (current !== undefined && !visitState.has(current)) {
+                    visitState.set(current, 1);
+                    path.push(current);
+                    current = edges.get(current);
+                }
+
+                if (current !== undefined && visitState.get(current) === 1) {
+                    const cycleStart = path.indexOf(current);
+                    if (cycleStart !== -1) {
+                        return { cycle: path.slice(cycleStart) };
+                    }
+                }
+
+                path.forEach(id => visitState.set(id, 2));
+            }
+
+            return null;
+        }
+
+        function simulateDining(inputs) {
+            const n = inputs.philosophers;
+            const philosophers = Array.from({ length: n }, (_, id) => ({
+                id,
+                state: 'hungry',
+                holds: [],
+                meals: 0,
+                waitTicks: 0,
+                maxWait: 0,
+                eatingLeft: 0,
+                thinkingLeft: 0,
+                blockedOn: null,
+                waiterBlocked: false
+            }));
+            const forkOwners = Array(n).fill(null);
+            const history = [];
+            let tick = 0;
+            let totalMeals = 0;
+            let deadlock = null;
+
+            const snapshot = (tickEvents, deadlockInfo) => {
+                history.push({
+                    tick,
+                    totalMeals: Math.min(totalMeals, inputs.mealTarget),
+                    philosophers: philosophers.map(philosopher => ({
+                        ...philosopher,
+                        holds: [...philosopher.holds]
+                    })),
+                    forkOwners: [...forkOwners],
+                    deadlock: deadlockInfo
+                        ? { cycle: [...deadlockInfo.cycle], tick }
+                        : null,
+                    events: tickEvents
+                });
+            };
+
+            snapshot([], null);
+
+            while (totalMeals < inputs.mealTarget && tick < MAX_TICKS) {
+                tick += 1;
+                const tickEvents = [];
+                const log = (text, icon) => {
+                    tickEvents.push({ tick, text, icon });
+                };
+
+                philosophers.forEach(philosopher => {
+                    if (philosopher.state === 'eating') {
+                        philosopher.eatingLeft -= 1;
+
+                        if (philosopher.eatingLeft <= 0) {
+                            philosopher.holds.forEach(fork => {
+                                forkOwners[fork] = null;
+                            });
+                            philosopher.holds = [];
+                            philosopher.meals += 1;
+                            totalMeals += 1;
+                            philosopher.state = 'thinking';
+                            philosopher.thinkingLeft = inputs.thinkTicks;
+                            log(`P${philosopher.id} finishes meal ${philosopher.meals} and releases both forks`, 'bi-check-circle-fill');
+                        }
+                    } else if (philosopher.state === 'thinking') {
+                        philosopher.thinkingLeft -= 1;
+
+                        if (philosopher.thinkingLeft <= 0) {
+                            philosopher.state = 'hungry';
+                            philosopher.waitTicks = 0;
+                            philosopher.blockedOn = null;
+                            philosopher.waiterBlocked = false;
+                            log(`P${philosopher.id} finishes thinking and becomes hungry`, 'bi-egg-fried');
+                        }
+                    }
+                });
+
+                if (totalMeals >= inputs.mealTarget) {
+                    snapshot(tickEvents, null);
+                    break;
+                }
+
+                const start = (tick - 1) % n;
+
+                for (let offset = 0; offset < n; offset += 1) {
+                    const philosopher = philosophers[(start + offset) % n];
+                    if (philosopher.state !== 'hungry' && philosopher.state !== 'waiting') continue;
+
+                    if (inputs.strategy === 'WAITER' && philosopher.holds.length === 0) {
+                        const seated = philosophers.filter(other =>
+                            other.holds.length > 0 || other.state === 'eating'
+                        ).length;
+
+                        if (seated >= n - 1) {
+                            if (!philosopher.waiterBlocked) {
+                                log(`P${philosopher.id} waits outside — the waiter allows at most ${n - 1} seated`, 'bi-person-badge-fill');
+                                philosopher.waiterBlocked = true;
+                            }
+                            continue;
+                        }
+
+                        philosopher.waiterBlocked = false;
+                    }
+
+                    const left = philosopher.id;
+                    const right = (philosopher.id + 1) % n;
+                    let first;
+                    let second;
+
+                    if (inputs.strategy === 'ORDERED') {
+                        first = Math.min(left, right);
+                        second = Math.max(left, right);
+                    } else {
+                        first = left;
+                        second = right;
+                    }
+
+                    const target = philosopher.holds.length === 0 ? first : second;
+                    const owner = forkOwners[target];
+
+                    if (owner === null) {
+                        forkOwners[target] = philosopher.id;
+                        philosopher.holds.push(target);
+                        philosopher.blockedOn = null;
+
+                        if (philosopher.holds.length === 2) {
+                            philosopher.state = 'eating';
+                            philosopher.eatingLeft = inputs.eatTicks;
+                            philosopher.maxWait = Math.max(philosopher.maxWait, philosopher.waitTicks);
+                            log(`P${philosopher.id} takes F${target} and starts eating`, 'bi-egg-fried');
+                        } else {
+                            philosopher.state = 'waiting';
+                            log(`P${philosopher.id} picks up F${target}`, 'bi-hand-index-thumb');
+                        }
+                    } else {
+                        philosopher.state = philosopher.holds.length === 0 ? 'hungry' : 'waiting';
+
+                        if (philosopher.blockedOn !== target) {
+                            log(`P${philosopher.id} waits for F${target} — held by P${owner}`, 'bi-hourglass-split');
+                            philosopher.blockedOn = target;
+                        }
+                    }
+                }
+
+                philosophers.forEach(philosopher => {
+                    if (philosopher.state === 'hungry' || philosopher.state === 'waiting') {
+                        philosopher.waitTicks += 1;
+                        philosopher.maxWait = Math.max(philosopher.maxWait, philosopher.waitTicks);
+                    }
+                });
+
+                deadlock = detectDeadlock(philosophers, forkOwners);
+
+                if (deadlock) {
+                    const cycleText = deadlock.cycle.map(id => `P${id}`).join(' → ');
+                    log(`Circular wait detected: ${cycleText} → P${deadlock.cycle[0]}`, 'bi-exclamation-octagon-fill');
+                    snapshot(tickEvents, deadlock);
+                    break;
+                }
+
+                snapshot(tickEvents, null);
+            }
+
+            const last = history[history.length - 1];
+            const status = last.deadlock
+                ? 'deadlocked'
+                : (last.totalMeals >= inputs.mealTarget ? 'complete' : 'limit');
+
+            return {
+                inputs,
+                history,
+                deadlock: last.deadlock,
+                status,
+                ticks: last.tick,
+                meals: last.totalMeals,
+                longestWait: Math.max(0, ...last.philosophers.map(philosopher => philosopher.maxWait))
+            };
+        }
+
+        // =========================================================
+        // Rendering
+        // =========================================================
+        function displayState(philosopher, snapshot) {
+            if (snapshot.deadlock &&
+                snapshot.deadlock.cycle.includes(philosopher.id) &&
+                (philosopher.state === 'waiting' || philosopher.state === 'hungry')) {
+                return 'deadlocked';
+            }
+            return philosopher.state;
+        }
+
+        function currentSnapshot() {
+            return simulation ? simulation.history[currentStep] : null;
+        }
+
+        function renderAll() {
+            const snapshot = currentSnapshot();
+            if (!snapshot) return;
+
+            renderDiningTable(snapshot);
+            renderPhilosopherTable(snapshot);
+            renderForkChips(snapshot);
+            renderWaiterNote(snapshot);
+            renderKPIs(snapshot);
+            renderDecision(snapshot);
+            renderEventLog();
+            renderPlayback();
+        }
+
+        function renderDiningTable(snapshot) {
+            const svg = document.getElementById('diningSvg');
+            const n = simulation.inputs.philosophers;
+            const cx = 300;
+            const cy = 300;
+            const philosopherRadius = 208;
+            const forkRadius = 134;
+            const angleFor = (index) => (-90 + index * (360 / n)) * (Math.PI / 180);
+            const philosopherPosition = index => ({
+                x: cx + philosopherRadius * Math.cos(angleFor(index)),
+                y: cy + philosopherRadius * Math.sin(angleFor(index))
+            });
+            const forkPosition = fork => {
+                const angle = (-90 + (fork - 0.5) * (360 / n)) * (Math.PI / 180);
+                return {
+                    x: cx + forkRadius * Math.cos(angle),
+                    y: cy + forkRadius * Math.sin(angle)
+                };
+            };
+
+            const eating = snapshot.philosophers.filter(philosopher => philosopher.state === 'eating').length;
+            const waiting = snapshot.philosophers.filter(philosopher =>
+                philosopher.state === 'hungry' || philosopher.state === 'waiting'
+            ).length;
+
+            const parts = [];
+            parts.push(`<circle cx="${cx}" cy="${cy}" r="150" fill="#f8fafc" stroke="#dbe4f0" stroke-width="2"></circle>`);
+            parts.push(`<circle cx="${cx}" cy="${cy}" r="112" fill="none" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="5 7"></circle>`);
+            parts.push(`<text x="${cx}" y="${cy - 12}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="14" font-weight="800" fill="#334155">ROUND TABLE</text>`);
+            parts.push(`<text x="${cx}" y="${cy + 9}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#94a3b8">TICK ${snapshot.tick}</text>`);
+            parts.push(`<text x="${cx}" y="${cy + 30}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#64748b">${eating} eating · ${waiting} waiting</text>`);
+
+            snapshot.philosophers.forEach(philosopher => {
+                const from = philosopherPosition(philosopher.id);
+
+                philosopher.holds.forEach(fork => {
+                    const to = forkPosition(fork);
+                    parts.push(`<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="#2ec491" stroke-width="3" stroke-linecap="round" opacity="0.85"></line>`);
+                });
+
+                if (philosopher.state === 'waiting' && philosopher.holds.length === 1) {
+                    const left = philosopher.id;
+                    const right = (philosopher.id + 1) % n;
+                    const needed = philosopher.holds[0] === left ? right : left;
+                    const to = forkPosition(needed);
+                    parts.push(`<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="#f75583" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="6 5" opacity="0.95"></line>`);
+                }
+            });
+
+            const awaitedForks = new Set();
+            snapshot.philosophers.forEach(philosopher => {
+                const left = philosopher.id;
+                const right = (philosopher.id + 1) % n;
+                if (philosopher.state === 'waiting' && philosopher.holds.length === 1) {
+                    awaitedForks.add(philosopher.holds[0] === left ? right : left);
+                } else if (philosopher.state === 'hungry' && philosopher.blockedOn !== null) {
+                    awaitedForks.add(philosopher.blockedOn);
+                }
+            });
+
+            snapshot.forkOwners.forEach((owner, fork) => {
+                const position = forkPosition(fork);
+                const owned = owner !== null;
+                const awaited = awaitedForks.has(fork) && !owned;
+                const stroke = awaited ? '#f75583' : (owned ? '#2ec491' : '#cbd5e1');
+                const fill = owned ? '#edfbf5' : '#ffffff';
+                const textColor = owned ? '#0f8a63' : (awaited ? '#b4234b' : '#64748b');
+                const title = owned ? `Fork ${fork} held by P${owner}` : `Fork ${fork} is free`;
+
+                parts.push(`<g><title>${title}</title>`);
+                parts.push(`<rect x="${position.x - 19}" y="${position.y - 17}" width="38" height="34" rx="11" fill="${fill}" stroke="${stroke}" stroke-width="2.2" ${awaited ? 'stroke-dasharray="4 3"' : ''}></rect>`);
+                parts.push(`<text x="${position.x}" y="${position.y + 4}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800" fill="${textColor}">F${fork}</text>`);
+                parts.push('</g>');
+            });
+
+            snapshot.philosophers.forEach(philosopher => {
+                const position = philosopherPosition(philosopher.id);
+                const state = displayState(philosopher, snapshot);
+                const meta = STATE_META[state];
+                const title = `P${philosopher.id} · ${meta.label} · ${philosopher.meals} meal${philosopher.meals === 1 ? '' : 's'}`;
+
+                parts.push(`<g><title>${title}</title>`);
+
+                if (state === 'eating') {
+                    parts.push(`<circle class="eat-halo" cx="${position.x}" cy="${position.y}" r="45" fill="none" stroke="${meta.stroke}" stroke-width="2.5"></circle>`);
+                }
+
+                if (state === 'deadlocked') {
+                    parts.push(`<circle cx="${position.x}" cy="${position.y}" r="45" fill="none" stroke="#b91c1c" stroke-width="2" opacity="0.35" stroke-dasharray="4 4"></circle>`);
+                }
+
+                parts.push(`<circle cx="${position.x}" cy="${position.y}" r="37" fill="${meta.fill}" stroke="${meta.stroke}" stroke-width="3"></circle>`);
+                parts.push(`<text x="${position.x}" y="${position.y + 6}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="16" font-weight="800" fill="${meta.text}">P${philosopher.id}</text>`);
+
+                if (state === 'deadlocked') {
+                    parts.push(`<circle cx="${position.x + 27}" cy="${position.y - 27}" r="10" fill="#b91c1c" stroke="#ffffff" stroke-width="2"></circle>`);
+                    parts.push(`<text x="${position.x + 27}" y="${position.y - 23}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="800" fill="#ffffff">!</text>`);
+                }
+
+                parts.push('</g>');
+            });
+
+            svg.innerHTML = parts.join('');
+            svg.setAttribute('aria-label', `Round table with ${n} philosophers at tick ${snapshot.tick}`);
+            document.getElementById('roundBadge').textContent = `Tick ${snapshot.tick}`;
+        }
+
+        function renderPhilosopherTable(snapshot) {
+            const n = simulation.inputs.philosophers;
+
+            document.getElementById('philosopherTableBody').innerHTML = snapshot.philosophers.map(philosopher => {
+                const state = displayState(philosopher, snapshot);
+                const meta = STATE_META[state];
+                const isDeadlocked = state === 'deadlocked';
+                const holds = philosopher.holds.length
+                    ? philosopher.holds.map(fork => `<span class="fork-chip owned">F${fork}</span>`).join(' ')
+                    : '<span class="text-muted">—</span>';
+
+                let waiting = '<span class="text-muted">—</span>';
+
+                if (philosopher.state === 'waiting' && philosopher.holds.length === 1) {
+                    const left = philosopher.id;
+                    const right = (philosopher.id + 1) % n;
+                    const needed = philosopher.holds[0] === left ? right : left;
+                    const owner = snapshot.forkOwners[needed];
+                    waiting = `<span class="fork-chip" title="Waiting for fork ${needed}">F${needed} · ${owner === null ? 'free' : `P${owner}`}</span>`;
+                } else if (philosopher.waiterBlocked) {
+                    waiting = '<span class="state-chip state-waiting">Waiter</span>';
+                }
+
+                return `
+                    <tr class="${isDeadlocked ? 'deadlocked-row' : ''}">
+                        <td>
+                            <span class="fw-bold text-dark">P${philosopher.id}</span>
+                            ${isDeadlocked ? '<i class="bi bi-exclamation-octagon-fill text-danger ms-1"></i>' : ''}
+                        </td>
+                        <td><span class="state-chip ${meta.chip}">${meta.label}</span></td>
+                        <td class="font-monospace small">${holds}</td>
+                        <td class="font-monospace small">${waiting}</td>
+                        <td>
+                            <span class="badge bg-light text-dark border font-monospace">${philosopher.meals}</span>
+                            <span class="text-muted small ms-1">waited ${philosopher.maxWait}t</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderForkChips(snapshot) {
+            document.getElementById('forkChips').innerHTML = snapshot.forkOwners.map((owner, fork) => {
+                const owned = owner !== null;
+                return `<span class="fork-chip ${owned ? 'owned' : ''}" title="${owned ? `Fork ${fork} is held by P${owner}` : `Fork ${fork} is free`}">
+                    <i class="bi bi-fork-knife"></i> F${fork} · ${owned ? `P${owner}` : 'free'}
+                </span>`;
+            }).join('');
+        }
+
+        function renderWaiterNote(snapshot) {
+            const n = simulation.inputs.philosophers;
+            const strategy = simulation.inputs.strategy;
+            const note = document.getElementById('waiterNote');
+
+            if (strategy === 'WAITER') {
+                const seated = snapshot.philosophers.filter(philosopher =>
+                    philosopher.holds.length > 0 || philosopher.state === 'eating'
+                ).length;
+                note.innerHTML = `<i class="bi bi-person-badge-fill me-1"></i>The waiter allows at most <strong>${n - 1}</strong> philosophers to hold forks. Seated now: <strong>${seated} / ${n - 1}</strong>.`;
+            } else if (strategy === 'ORDERED') {
+                note.innerHTML = '<i class="bi bi-sort-numeric-down me-1"></i>Every philosopher acquires the lower-numbered fork first. This global ordering prevents a circular wait.';
+            } else {
+                note.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i>No ordering rule or arbiter is used. Every philosopher reaches left first, which can create a circular wait.';
+            }
+        }
+
+        function renderKPIs(snapshot) {
+            const target = simulation.inputs.mealTarget;
+            const meals = snapshot.totalMeals;
+            const eating = snapshot.philosophers.filter(philosopher => philosopher.state === 'eating').length;
+            const waiting = snapshot.philosophers.filter(philosopher =>
+                philosopher.state === 'hungry' || philosopher.state === 'waiting'
+            ).length;
+            const forksInUse = snapshot.forkOwners.filter(owner => owner !== null).length;
+            const longestWait = Math.max(0, ...snapshot.philosophers.map(philosopher => philosopher.maxWait));
+            const waitingPhilosopher = snapshot.philosophers.find(philosopher => philosopher.maxWait === longestWait);
+
+            document.getElementById('kpiMeals').innerHTML =
+                `${meals} <span class="fs-6 fw-normal text-muted">/ ${target}</span>`;
+            document.getElementById('kpiMealsSub').textContent = meals >= target
+                ? 'Meal target reached'
+                : `Target: ${target} meals · ${target - meals} remaining`;
+
+            const statusElement = document.getElementById('kpiStatus');
+            const statusSub = document.getElementById('kpiStatusSub');
+            const final = currentStep === simulation.history.length - 1;
+
+            if (snapshot.deadlock) {
+                statusElement.textContent = 'Deadlocked';
+                statusElement.style.color = '#b91c1c';
+                statusSub.textContent = `Circular wait detected at tick ${snapshot.tick}`;
+            } else if (currentStep === 0) {
+                statusElement.textContent = 'Ready';
+                statusElement.style.color = '#436cf5';
+                statusSub.textContent = 'Run the simulation or step through ticks';
+            } else if (final && meals >= target) {
+                statusElement.textContent = 'Complete';
+                statusElement.style.color = '#0f8a63';
+                statusSub.textContent = `All ${target} meals served in ${snapshot.tick} ticks`;
+            } else {
+                statusElement.textContent = 'Running';
+                statusElement.style.color = '#436cf5';
+                statusSub.textContent = `${eating} eating · ${waiting} waiting`;
+            }
+
+            document.getElementById('kpiWait').innerHTML =
+                `${longestWait} <span class="fs-6 fw-normal text-muted">ticks</span>`;
+            document.getElementById('kpiWaitSub').textContent = longestWait > 0
+                ? `${waitingPhilosopher ? `P${waitingPhilosopher.id}` : 'A philosopher'} waited up to ${longestWait} ticks`
+                : 'No philosopher waiting yet';
+
+            document.getElementById('kpiEating').innerHTML =
+                `${eating} <span class="fs-6 fw-normal text-muted">/ ${simulation.inputs.philosophers}</span>`;
+            document.getElementById('kpiEatingSub').textContent =
+                `Forks in use: ${forksInUse} / ${simulation.inputs.philosophers}`;
+        }
+
+        function renderDecision(snapshot) {
+            const banner = document.getElementById('decisionBanner');
+            const icon = document.getElementById('decisionIcon');
+            const title = document.getElementById('decisionTitle');
+            const text = document.getElementById('decisionText');
+            const callout = document.getElementById('deadlockCallout');
+            const target = simulation.inputs.mealTarget;
+            const strategy = STRATEGY_META[simulation.inputs.strategy];
+            const final = currentStep === simulation.history.length - 1;
+
+            banner.classList.remove('is-success', 'is-failure');
+            callout.classList.add('d-none');
+
+            if (currentStep === 0) {
+                icon.innerHTML = '<i class="bi bi-info-circle-fill"></i>';
+                title.textContent = `${simulation.inputs.philosophers} philosophers at the table`;
+                text.textContent = `${strategy.label} strategy selected. ${strategy.description}`;
+                return;
+            }
+
+            if (snapshot.deadlock) {
+                banner.classList.add('is-failure');
+                icon.innerHTML = '<i class="bi bi-exclamation-octagon-fill"></i>';
+                title.textContent = 'Circular wait — deadlock detected';
+                text.textContent = `${snapshot.deadlock.cycle.map(id => `P${id}`).join(' → ')} → P${snapshot.deadlock.cycle[0]}. Every philosopher in the cycle holds one fork and waits for the next, so none can proceed past tick ${snapshot.tick}.`;
+
+                callout.classList.remove('d-none');
+                document.getElementById('deadlockTitle').textContent = 'Circular wait detected';
+                document.getElementById('deadlockText').textContent = `Cycle: ${snapshot.deadlock.cycle.map(id => `P${id}`).join(' → ')} → P${snapshot.deadlock.cycle[0]}. A deadlock needs all four Coffman conditions. Remove circular wait with ordering, or keep one philosopher away with the waiter.`;
+                return;
+            }
+
+            if (final && snapshot.totalMeals >= target) {
+                banner.classList.add('is-success');
+                icon.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+                title.textContent = 'All meals served';
+                text.textContent = `${snapshot.totalMeals} meals were completed in ${snapshot.tick} ticks. Longest wait: ${simulation.longestWait} ticks. ${strategy.label} completed the target without a circular wait.`;
+                return;
+            }
+
+            const eating = snapshot.philosophers.filter(philosopher => philosopher.state === 'eating').length;
+            const waiting = snapshot.philosophers.filter(philosopher =>
+                philosopher.state === 'hungry' || philosopher.state === 'waiting'
+            ).length;
+            const latest = snapshot.events[snapshot.events.length - 1];
+
+            icon.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
+            title.textContent = `Tick ${snapshot.tick} · ${eating} eating · ${waiting} waiting`;
+            text.textContent = latest
+                ? latest.text
+                : 'No fork changed hands this tick. Eating and thinking timers are advancing.';
+        }
+
+        function renderEventLog() {
+            const container = document.getElementById('eventLog');
+            const events = simulation.history
+                .slice(0, currentStep + 1)
+                .flatMap(snapshot => snapshot.events)
+                .slice()
+                .reverse()
+                .slice(0, 60);
+
+            document.getElementById('eventBadge').textContent = `${events.length} event${events.length === 1 ? '' : 's'}`;
+
+            if (!events.length) {
+                container.innerHTML = `
+                    <div class="event-empty">
+                        <i class="bi bi-journal-text"></i>
+                        <div class="fw-bold">No events yet</div>
+                        <div class="small">Run the simulation or advance one tick to watch forks change hands.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = events.map(event => `
+                <div class="event-row">
+                    <span class="event-tick">T${event.tick}</span>
+                    <span><i class="bi ${event.icon} me-1 text-primary"></i>${event.text}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderPlayback() {
+            const total = simulation.history.length - 1;
+
+            document.getElementById('stepCounterLabel').textContent = `${currentStep} / ${total}`;
+
+            const scrubber = document.getElementById('stepScrubber');
+            scrubber.max = total;
+            scrubber.value = currentStep;
+
+            document.getElementById('btnStepPrev').disabled = currentStep === 0;
+            document.getElementById('btnStepNext').disabled = currentStep >= total;
+            document.getElementById('playIcon').className = playTimer
+                ? 'bi bi-pause-fill fs-4'
+                : 'bi bi-play-fill fs-4';
+        }
+
+        function stopPlayback() {
+            if (playTimer) {
+                clearInterval(playTimer);
+                playTimer = null;
+            }
+            const icon = document.getElementById('playIcon');
+            if (icon) icon.className = 'bi bi-play-fill fs-4';
+        }
+
+        function togglePlay() {
+            if (!simulation) return;
+
+            if (playTimer) {
+                stopPlayback();
+                renderPlayback();
+                return;
+            }
+
+            if (currentStep >= simulation.history.length - 1) {
+                currentStep = 0;
+                renderAll();
+            }
+
+            document.getElementById('playIcon').className = 'bi bi-pause-fill fs-4';
+            playTimer = setInterval(() => {
+                const total = simulation.history.length - 1;
+
+                if (currentStep < total) {
+                    currentStep += 1;
+                    if (currentStep >= total) stopPlayback();
+                    renderAll();
+                } else {
+                    stopPlayback();
+                    renderAll();
+                }
+            }, 750);
+        }
+
+        function stepSimulation(direction) {
+            if (!simulation) return;
+            stopPlayback();
+            const total = simulation.history.length - 1;
+            currentStep = direction === 'next'
+                ? Math.min(currentStep + 1, total)
+                : Math.max(currentStep - 1, 0);
+            renderAll();
+        }
+
+        function scrubStep(value) {
+            if (!simulation) return;
+            stopPlayback();
+            const total = simulation.history.length - 1;
+            currentStep = Math.max(0, Math.min(Number(value), total));
+            renderAll();
+        }
+
+        function resetPlayback() {
+            if (!simulation) return;
+            stopPlayback();
+            currentStep = 0;
+            renderAll();
+        }
+
+        // =========================================================
+        // Simulation Actions
+        // =========================================================
+        function resetSimulation() {
+            const inputs = readInputs();
+            if (!inputs) return;
+
+            stopPlayback();
+            simulation = simulateDining(inputs);
+            currentStep = 0;
+            renderAll();
+            generateComparison();
+        }
+
+        function runSimulation() {
+            const inputs = readInputs();
+            if (!inputs) return;
+
+            stopPlayback();
+            simulation = simulateDining(inputs);
+            currentStep = simulation.history.length - 1;
+            renderAll();
+            generateComparison();
+        }
+
+        function loadPreset(key) {
+            const preset = presets[key];
+            if (!preset) return;
+
+            document.getElementById('philosopherCount').value = String(preset.philosophers);
+            document.getElementById('strategySelect').value = preset.strategy;
+            document.getElementById('mealTarget').value = String(preset.mealTarget);
+            document.getElementById('eatTicks').value = String(preset.eatTicks);
+            document.getElementById('thinkTicks').value = String(preset.thinkTicks);
+
+            runSimulation();
+        }
+
+        // =========================================================
+        // Strategy Comparison
+        // =========================================================
+        function renderComparisonChart(containerId, items, valueFn, labelFn, bestValue) {
+            const container = document.getElementById(containerId);
+            const maxValue = Math.max(1, ...items.map(valueFn));
+
+            container.innerHTML = items.map(item => {
+                const value = valueFn(item);
+                const width = value > 0 ? Math.max(2, (value / maxValue) * 100) : 0;
+                let barClass = 'bar-first';
+
+                if (item.deadlocked) {
+                    barClass = 'bar-worst';
+                } else if (value === bestValue) {
+                    barClass = 'bar-best';
+                }
+
+                return `
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center small fw-bold mb-1">
+                            <span>${STRATEGY_META[item.strategy].label}</span>
+                            <span class="text-muted font-monospace">${labelFn(item)}</span>
+                        </div>
+                        <div class="comp-bar-wrapper">
+                            <div class="comp-bar ${barClass}" style="width: ${width}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function generateComparison() {
+            const inputs = readInputs();
+            if (!inputs) return;
+
+            const items = Object.keys(STRATEGY_META).map(strategy => {
+                const sim = simulateDining({ ...inputs, strategy });
+                const last = sim.history[sim.history.length - 1];
+                const served = last.totalMeals;
+                const deadlocked = Boolean(last.deadlock);
+                const longestWait = Math.max(0, ...last.philosophers.map(philosopher => philosopher.maxWait));
+                const throughput = last.tick > 0 ? served / last.tick : 0;
+
+                return {
+                    strategy,
+                    sim,
+                    last,
+                    served,
+                    deadlocked,
+                    ticks: last.tick,
+                    longestWait,
+                    throughput,
+                    complete: served >= inputs.mealTarget
+                };
+            });
+
+            const safeItems = items.filter(item => !item.deadlocked);
+            const bestItem = safeItems.length
+                ? safeItems.slice().sort((a, b) => {
+                    if (b.served !== a.served) return b.served - a.served;
+                    if (b.throughput !== a.throughput) return b.throughput - a.throughput;
+                    return a.longestWait - b.longestWait;
+                })[0]
+                : null;
+
+            document.getElementById('comparisonCardsRow').innerHTML = items.map(item => {
+                const meta = STRATEGY_META[item.strategy];
+                const isBest = bestItem && item.strategy === bestItem.strategy;
+                const statusBadge = item.deadlocked
+                    ? '<span class="badge bg-danger-subtle text-danger border border-danger-subtle">Deadlock</span>'
+                    : (item.complete
+                        ? '<span class="badge bg-success-subtle text-success border border-success-subtle">Completes target</span>'
+                        : '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Incomplete</span>');
+
+                const dots = item.last.philosophers.map(philosopher => {
+                    const state = displayState(philosopher, item.last);
+                    const stateMeta = STATE_META[state];
+                    return `<span class="mini-dot ${stateMeta.dot}" title="P${philosopher.id} · ${stateMeta.label} · ${philosopher.meals} meal${philosopher.meals === 1 ? '' : 's'}">P${philosopher.id}</span>`;
+                }).join('');
+
+                return `
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="glass-panel compare-card p-3 p-md-4 h-100 d-flex flex-column ${isBest ? 'best' : ''}">
+                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                <div>
+                                    <span class="badge border rounded-pill font-monospace" style="background: ${meta.color}1a; color: ${meta.color}; border-color: ${meta.color}55 !important;">${meta.badge}</span>
+                                    <h5 class="fw-bold mt-2 mb-0 text-dark">${meta.label}</h5>
+                                </div>
+                                ${isBest
+                                    ? '<span class="best-badge">Best safe result</span>'
+                                    : `<i class="bi ${meta.icon} fs-3" style="color: ${meta.color};"></i>`}
+                            </div>
+
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                ${statusBadge}
+                                <span class="badge bg-light text-dark border font-monospace">${item.ticks} ticks</span>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <div class="compare-metric">
+                                        <div class="val">${item.served}<span class="fs-6 text-muted">/${inputs.mealTarget}</span></div>
+                                        <div class="lbl">Meals</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="compare-metric">
+                                        <div class="val">${item.ticks}</div>
+                                        <div class="lbl">Ticks</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="compare-metric">
+                                        <div class="val">${item.longestWait}</div>
+                                        <div class="lbl">Longest wait</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="compare-metric">
+                                        <div class="val">${item.throughput.toFixed(2)}</div>
+                                        <div class="lbl">Meals / tick</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.64rem; letter-spacing: 0.4px;">Final states</div>
+                            <div class="mini-dot-row mb-3">${dots}</div>
+
+                            <button class="btn btn-glass-outline btn-sm w-100 mt-auto" type="button" onclick="applyComparison('${item.strategy}')">
+                                <i class="bi bi-play-fill me-1"></i> Run this strategy
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const bestMeals = Math.max(...items.map(item => item.served));
+            const waitComparisonSet = safeItems.length ? safeItems : items;
+            const bestWait = Math.min(...waitComparisonSet.map(item => item.longestWait));
+
+            renderComparisonChart(
+                'chartMeals',
+                items,
+                item => item.served,
+                item => `${item.served} / ${inputs.mealTarget}`,
+                bestMeals
+            );
+
+            renderComparisonChart(
+                'chartWait',
+                items,
+                item => item.longestWait,
+                item => `${item.longestWait} ticks`,
+                bestWait
+            );
+        }
+
+        function applyComparison(strategy) {
+            document.getElementById('strategySelect').value = strategy;
+            document.getElementById('presetSelect').value = '';
+            runSimulation();
+
+            const simulatorTab = document.getElementById('tab-simulator');
+            if (simulatorTab) simulatorTab.click();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // =========================================================
+        // C Code Samples
+        // =========================================================
+        const cCodeSnippets = {
+            NAIVE: `/* Dining Philosophers - Naive (can deadlock) */
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+#define N 5
+#define MEALS 2
+
+pthread_mutex_t forks[N];
+
+void *philosopher(void *arg) {
+    int id = *(int *)arg;
+    int left = id;
+    int right = (id + 1) % N;
+
+    for (int meal = 0; meal < MEALS; meal++) {
+        printf("P%d is hungry\\n", id);
+
+        pthread_mutex_lock(&forks[left]);
+        usleep(100000);
+        printf("P%d picked up fork %d\\n", id, left);
+
+        pthread_mutex_lock(&forks[right]);
+        printf("P%d picked up fork %d and is eating\\n", id, right);
+
+        usleep(150000);
+        pthread_mutex_unlock(&forks[right]);
+        pthread_mutex_unlock(&forks[left]);
+
+        printf("P%d is thinking\\n", id);
+        usleep(100000);
+    }
+
+    return NULL;
+}
+
+int main(void) {
+    pthread_t threads[N];
+    int ids[N];
+
+    for (int i = 0; i < N; i++) {
+        pthread_mutex_init(&forks[i], NULL);
+        ids[i] = i;
+    }
+
+    for (int i = 0; i < N; i++)
+        pthread_create(&threads[i], NULL, philosopher, &ids[i]);
+
+    for (int i = 0; i < N; i++)
+        pthread_join(threads[i], NULL);
+
+    for (int i = 0; i < N; i++)
+        pthread_mutex_destroy(&forks[i]);
+
+    return 0;
+}`,
+
+            ORDERED: `/* Dining Philosophers - Ordered resource hierarchy */
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+#define N 5
+#define MEALS 2
+
+pthread_mutex_t forks[N];
+
+void *philosopher(void *arg) {
+    int id = *(int *)arg;
+    int left = id;
+    int right = (id + 1) % N;
+    int first = id < right ? id : right;
+    int second = id < right ? right : id;
+
+    for (int meal = 0; meal < MEALS; meal++) {
+        printf("P%d is hungry\\n", id);
+
+        /* Always acquire the lower-numbered fork first. */
+        pthread_mutex_lock(&forks[first]);
+        usleep(100000);
+        printf("P%d picked up fork %d\\n", id, first);
+
+        pthread_mutex_lock(&forks[second]);
+        printf("P%d picked up fork %d and is eating\\n", id, second);
+
+        usleep(150000);
+        pthread_mutex_unlock(&forks[second]);
+        pthread_mutex_unlock(&forks[first]);
+
+        printf("P%d is thinking\\n", id);
+        usleep(100000);
+    }
+
+    return NULL;
+}
+
+int main(void) {
+    pthread_t threads[N];
+    int ids[N];
+
+    for (int i = 0; i < N; i++) {
+        pthread_mutex_init(&forks[i], NULL);
+        ids[i] = i;
+    }
+
+    for (int i = 0; i < N; i++)
+        pthread_create(&threads[i], NULL, philosopher, &ids[i]);
+
+    for (int i = 0; i < N; i++)
+        pthread_join(threads[i], NULL);
+
+    for (int i = 0; i < N; i++)
+        pthread_mutex_destroy(&forks[i]);
+
+    return 0;
+}`,
+
+            WAITER: `/* Dining Philosophers - Waiter / arbitrator */
+#include <stdio.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <unistd.h>
+
+#define N 5
+#define MEALS 2
+
+pthread_mutex_t forks[N];
+sem_t waiter;
+
+void *philosopher(void *arg) {
+    int id = *(int *)arg;
+    int left = id;
+    int right = (id + 1) % N;
+
+    for (int meal = 0; meal < MEALS; meal++) {
+        printf("P%d is hungry\\n", id);
+
+        /* At most N - 1 philosophers may hold forks at once. */
+        sem_wait(&waiter);
+
+        pthread_mutex_lock(&forks[left]);
+        usleep(100000);
+        printf("P%d picked up fork %d\\n", id, left);
+
+        pthread_mutex_lock(&forks[right]);
+        printf("P%d picked up fork %d and is eating\\n", id, right);
+
+        usleep(150000);
+        pthread_mutex_unlock(&forks[right]);
+        pthread_mutex_unlock(&forks[left]);
+
+        sem_post(&waiter);
+
+        printf("P%d is thinking\\n", id);
+        usleep(100000);
+    }
+
+    return NULL;
+}
+
+int main(void) {
+    pthread_t threads[N];
+    int ids[N];
+
+    sem_init(&waiter, 0, N - 1);
+
+    for (int i = 0; i < N; i++) {
+        pthread_mutex_init(&forks[i], NULL);
+        ids[i] = i;
+    }
+
+    for (int i = 0; i < N; i++)
+        pthread_create(&threads[i], NULL, philosopher, &ids[i]);
+
+    for (int i = 0; i < N; i++)
+        pthread_join(threads[i], NULL);
+
+    for (int i = 0; i < N; i++)
+        pthread_mutex_destroy(&forks[i]);
+    sem_destroy(&waiter);
+
+    return 0;
+}`
+        };
+
+        const codeFileNames = {
+            NAIVE: 'dining_naive.c',
+            ORDERED: 'dining_ordered.c',
+            WAITER: 'dining_waiter.c'
+        };
+
+        function updateCodeDisplay() {
+            const key = document.getElementById('codeAlgoSelect').value;
+            const codeBlock = document.getElementById('codeBlock');
+            codeBlock.textContent = cCodeSnippets[key];
+            document.getElementById('codeFileName').textContent = codeFileNames[key];
+
+            if (window.Prism && typeof window.Prism.highlightElement === 'function') {
+                window.Prism.highlightElement(codeBlock);
+            }
+        }
+
+        function fallbackCopyCode(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+
+        function showCopyFeedback() {
+            const label = document.getElementById('codeFileName');
+            const original = codeFileNames[document.getElementById('codeAlgoSelect').value];
+            label.textContent = 'Copied to clipboard!';
+            setTimeout(() => {
+                label.textContent = original;
+            }, 1600);
+        }
+
+        function copyCode() {
+            const key = document.getElementById('codeAlgoSelect').value;
+            const text = cCodeSnippets[key];
+
+            if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                navigator.clipboard.writeText(text)
+                    .then(showCopyFeedback)
+                    .catch(() => {
+                        fallbackCopyCode(text);
+                        showCopyFeedback();
+                    });
+            } else {
+                fallbackCopyCode(text);
+                showCopyFeedback();
+            }
+        }
+
+        function downloadCode() {
+            const key = document.getElementById('codeAlgoSelect').value;
+            const blob = new Blob([cCodeSnippets[key]], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = codeFileNames[key];
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        // =========================================================
+        // Initialization
+        // =========================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            ['philosopherCount', 'strategySelect', 'mealTarget', 'eatTicks', 'thinkTicks'].forEach(id => {
+                document.getElementById(id).addEventListener('change', () => {
+                    document.getElementById('presetSelect').value = '';
+                    resetSimulation();
+                });
+            });
+
+            simulation = simulateDining(readInputs());
+            currentStep = 0;
+            renderAll();
+            generateComparison();
+            updateCodeDisplay();
+        });
+    </script>
+</body>
+</html>

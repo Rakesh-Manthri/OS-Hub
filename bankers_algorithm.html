@@ -1,0 +1,2267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS EduHub - Banker's Algorithm Simulator</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <!-- Shared claymorphism theme -->
+    <link href="simulator-theme.css" rel="stylesheet">
+
+    <style>
+        .kpi-red {
+            background: #fef0f4;
+            border-left: 6px solid var(--accent-pink);
+        }
+
+        /* Editable State Matrices */
+        .state-matrix {
+            min-width: 900px;
+            table-layout: fixed;
+            font-size: 0.84rem;
+        }
+
+        .state-matrix th,
+        .state-matrix td {
+            text-align: center;
+            padding: 0.45rem 0.32rem;
+        }
+
+        .state-matrix th.process-col {
+            width: 86px;
+        }
+
+        .state-matrix .group-alloc {
+            background: #eaf1ff;
+            color: #3355d8;
+            border-left: 3px solid #ffffff;
+        }
+
+        .state-matrix .group-max {
+            background: #fef0f4;
+            color: #c92f5d;
+            border-left: 3px solid #ffffff;
+        }
+
+        .state-matrix .group-need {
+            background: #edfbf5;
+            color: #0f8a63;
+            border-left: 3px solid #ffffff;
+        }
+
+        .state-matrix th.res-head {
+            background: #f7f9fd;
+            color: #94a3b8;
+            font-size: 0.68rem;
+            letter-spacing: 0.5px;
+        }
+
+        .matrix-input {
+            width: 56px;
+            height: 34px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            background: #eef3f8;
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 0.84rem;
+            text-align: center;
+            box-shadow: inset 2px 2px 5px rgba(160, 175, 205, 0.28), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            -moz-appearance: textfield;
+        }
+
+        .matrix-input::-webkit-outer-spin-button,
+        .matrix-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .matrix-input:focus {
+            background: #ffffff;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(67, 108, 245, 0.18);
+            outline: none;
+        }
+
+        .matrix-input.is-invalid {
+            background: #fef0f4;
+            border-color: var(--accent-pink);
+            color: #b4234b;
+        }
+
+        .need-cell {
+            display: inline-flex;
+            width: 56px;
+            height: 34px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: #edfbf5;
+            color: #0f8a63;
+            font-family: var(--font-mono);
+            font-weight: 800;
+            font-size: 0.84rem;
+            box-shadow: inset 2px 2px 5px rgba(20, 150, 105, 0.1), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+        }
+
+        .need-cell.is-invalid {
+            background: #fef0f4;
+            color: #b4234b;
+        }
+
+        .matrix-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.8rem;
+        }
+
+        .matrix-legend span {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .legend-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* Available / Work Vectors */
+        .vector-panel {
+            height: 100%;
+            background: #f0f4fa;
+            border-radius: 22px;
+            padding: 1.15rem;
+            box-shadow: inset 3px 3px 8px rgba(160, 175, 205, 0.28), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+        }
+
+        .vector-input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 0.65rem;
+        }
+
+        .vector-input label {
+            display: block;
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .vector-input .matrix-input {
+            width: 100%;
+        }
+
+        .vector-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: #ffffff;
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            border-radius: 11px;
+            padding: 0.32rem 0.55rem;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--text-main);
+            box-shadow: 2px 3px 7px rgba(160, 175, 205, 0.16), inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+        }
+
+        .vector-chip .res-name {
+            color: #94a3b8;
+            font-size: 0.66rem;
+            font-weight: 800;
+        }
+
+        .resource-summary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .resource-summary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.72);
+            border-radius: 12px;
+            padding: 0.38rem 0.55rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .resource-summary-row strong {
+            font-family: var(--font-mono);
+            color: var(--text-main);
+        }
+
+        /* Safety Sequence */
+        .sequence-flow {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.4rem;
+            min-height: 44px;
+        }
+
+        .seq-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            height: 38px;
+            padding: 0 0.65rem;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #38cf9b, #2ec491);
+            color: #ffffff;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            font-weight: 800;
+            box-shadow: 0 4px 10px rgba(46, 196, 145, 0.28), inset 1px 1px 2px rgba(255, 255, 255, 0.6);
+        }
+
+        .seq-chip.pending {
+            background: #eef3f8;
+            color: #94a3b8;
+            border: 1px dashed #cbd5e1;
+            box-shadow: none;
+        }
+
+        .seq-chip.current {
+            background: linear-gradient(145deg, #628efb, #436cf5);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(67, 108, 245, 0.35), inset 1px 1px 2px rgba(255, 255, 255, 0.6);
+        }
+
+        .seq-arrow {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .safety-work-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+            gap: 1rem;
+            align-items: stretch;
+        }
+
+        .safety-work-box {
+            background: #f0f4fa;
+            border-radius: 18px;
+            padding: 0.9rem 1rem;
+            box-shadow: inset 2px 2px 6px rgba(160, 175, 205, 0.22), inset -2px -2px 6px rgba(255, 255, 255, 0.9);
+        }
+
+        .safety-work-box .label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            margin-bottom: 0.45rem;
+        }
+
+        .current-process-row td {
+            background: #edf3fe !important;
+        }
+
+        .current-process-row td:first-child {
+            box-shadow: inset 4px 0 0 var(--primary-blue);
+        }
+
+        .step-check-ok,
+        .step-check-no {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            border-radius: 10px;
+            padding: 0.28rem 0.55rem;
+            font-size: 0.72rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .step-check-ok {
+            background: #edfbf5;
+            color: #16a876;
+        }
+
+        .step-check-no {
+            background: #fef0f4;
+            color: #d83664;
+        }
+
+        /* Resource Request */
+        .request-form-card {
+            background: #f0f4fa;
+            border-radius: 22px;
+            padding: 1.3rem;
+            box-shadow: inset 3px 3px 8px rgba(160, 175, 205, 0.24), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+        }
+
+        .request-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 300px;
+            gap: 0.7rem;
+            color: var(--text-muted);
+            background: #f7f9fd;
+            border: 2px dashed rgba(203, 213, 225, 0.9);
+            border-radius: 24px;
+            padding: 2rem;
+        }
+
+        .request-empty i {
+            font-size: 2.4rem;
+            color: #a5b4fc;
+        }
+
+        .request-outcome {
+            border: 3px solid rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 1.4rem;
+            box-shadow: var(--clay-shadow-card);
+            height: 100%;
+        }
+
+        .request-outcome.granted {
+            background: linear-gradient(180deg, #ffffff 0%, #f7fffb 100%);
+            border-color: rgba(46, 196, 145, 0.55);
+        }
+
+        .request-outcome.denied {
+            background: linear-gradient(180deg, #ffffff 0%, #fff8fa 100%);
+            border-color: rgba(247, 85, 131, 0.5);
+        }
+
+        .request-checks {
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+
+        .request-check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 13px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            background: #f7f9fd;
+            color: #475569;
+        }
+
+        .request-check-item.pass {
+            background: #edfbf5;
+            color: #0f8a63;
+        }
+
+        .request-check-item.fail {
+            background: #fef0f4;
+            color: #b4234b;
+        }
+
+        @media (max-width: 991.98px) {
+            .safety-work-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .request-form-card,
+            .request-outcome {
+                padding: 1rem;
+            }
+
+            .vector-input-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .state-matrix {
+                min-width: 820px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-bg">
+        <div class="ambient-orb orb-blue"></div>
+        <div class="ambient-orb orb-pink"></div>
+        <div class="ambient-orb orb-green"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-xl glass-nav sticky-top py-2 px-3 mb-4">
+        <div class="container-fluid max-w-7xl">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="brand-icon">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <div>
+                    <span class="brand-text fs-4">OS EduHub</span>
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle ms-2 font-monospace" style="font-size: 0.7rem;">Banker's</span>
+                </div>
+            </a>
+
+            <button class="navbar-toggler glass-nav-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list fs-2 text-primary"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="nav nav-pills ms-auto my-2 my-lg-0" id="mainNav" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab-simulator" data-bs-toggle="pill" data-bs-target="#section-simulator" type="button" role="tab">
+                            <i class="bi bi-shield-check me-1"></i> Safety Check
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-request" data-bs-toggle="pill" data-bs-target="#section-request" type="button" role="tab">
+                            <i class="bi bi-arrow-left-right me-1"></i> Request
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-theory" data-bs-toggle="pill" data-bs-target="#section-theory" type="button" role="tab">
+                            <i class="bi bi-book-half me-1"></i> Algorithm
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-code" data-bs-toggle="pill" data-bs-target="#section-code" type="button" role="tab">
+                            <i class="bi bi-code-slash me-1"></i> Code in C
+                        </button>
+                    </li>
+                    <li class="nav-item ms-xl-2">
+                        <a href="lectures.html" class="btn btn-sm btn-glass-outline nav-resource-btn d-inline-flex align-items-center mt-1 mt-xl-0" title="Open lecture decks">
+                            <i class="bi bi-collection-play-fill me-1"></i><span class="btn-label"> Lectures</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-xl-1">
+                        <a href="syllabus.html" class="btn btn-sm btn-glass-outline nav-resource-btn d-inline-flex align-items-center mt-1 mt-xl-0" title="Open syllabus">
+                            <i class="bi bi-book-half me-1"></i><span class="btn-label"> Syllabus</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-xl-1">
+                        <a href="index.html" class="btn btn-sm btn-glass-outline nav-resource-btn d-inline-flex align-items-center mt-1 mt-xl-0" title="Back to hub home">
+                            <i class="bi bi-house-door-fill me-1"></i><span class="btn-label"> Hub Home</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid px-3 px-md-4 max-w-7xl pb-5 position-relative" style="z-index: 1;">
+        <div class="tab-content" id="mainTabContent">
+
+            <!-- ========================================== -->
+            <!-- 1. SAFETY CHECK                            -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade show active" id="section-simulator" role="tabpanel">
+
+                <!-- Inputs -->
+                <div class="glass-panel controls-bar-panel p-3 p-md-4 mb-4">
+                    <div class="row g-3">
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="processCount">
+                                <i class="bi bi-people-fill text-primary me-1"></i> Processes
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="processCount">
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option selected>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-lg-2">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="resourceCount">
+                                <i class="bi bi-cpu-fill text-success me-1"></i> Resources
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="resourceCount">
+                                <option>1</option>
+                                <option>2</option>
+                                <option selected>3</option>
+                                <option>4</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-7 col-lg-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="presetSelect">
+                                <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Load Presets
+                            </label>
+                            <select class="form-select form-select-glass w-100" id="presetSelect">
+                                <option value="">Choose a preset…</option>
+                                <option value="classic">Classic Textbook (Safe)</option>
+                                <option value="unsafe">Unsafe Variant</option>
+                                <option value="mini">Mini 4 × 2 Example</option>
+                                <option value="request">Request Demo (Safe Grant)</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-5 col-lg-4 d-flex align-items-end">
+                            <div class="d-flex flex-wrap gap-2 w-100">
+                                <button class="btn btn-glass-outline btn-sm flex-grow-1" type="button" onclick="clearMatrices()">
+                                    <i class="bi bi-eraser-fill me-1"></i> Clear
+                                </button>
+                                <button class="btn btn-glass-primary flex-grow-1" type="button" onclick="runSafety()">
+                                    <i class="bi bi-shield-check me-1"></i> Check Safe State
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="small text-muted fw-semibold mt-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Enter each process's current <strong>Allocation</strong> and maximum future claim (<strong>Max</strong>). The <strong>Need</strong> matrix and available units are checked by the Banker's safety algorithm.
+                    </div>
+
+                    <div id="inputError" class="input-error d-none">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span id="inputErrorText"></span>
+                    </div>
+                </div>
+
+                <!-- Matrices -->
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                        <div>
+                            <h5 class="fw-bold mb-0 text-dark">
+                                <i class="bi bi-table text-primary me-2"></i>System State Matrices
+                            </h5>
+                            <small class="text-muted">Allocation and Max are editable. Need is calculated as Max − Allocation.</small>
+                            <small class="text-muted d-block d-xl-none mt-1"><i class="bi bi-arrows-move me-1"></i>Swipe the matrix sideways to edit Max and see Need.</small>
+                        </div>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace">Need = Max − Allocation</span>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-xl-8">
+                            <div class="table-matrix-wrapper">
+                                <table class="table table-clay state-matrix align-middle mb-0" id="stateMatrix">
+                                    <thead id="matrixHead"></thead>
+                                    <tbody id="matrixBody"></tbody>
+                                </table>
+                            </div>
+                            <div class="matrix-legend">
+                                <span><span class="legend-dot" style="background: #628efb;"></span>Allocation (held now)</span>
+                                <span><span class="legend-dot" style="background: #f75583;"></span>Max (future claim)</span>
+                                <span><span class="legend-dot" style="background: #2ec491;"></span>Need (still required)</span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-xl-4">
+                            <div class="vector-panel">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <h6 class="fw-bold mb-0 text-dark">
+                                        <i class="bi bi-boxes text-success me-1"></i> Available Resources
+                                    </h6>
+                                    <span class="badge bg-light text-dark border font-monospace" id="resourceCountBadge">0 types</span>
+                                </div>
+                                <p class="text-muted small fw-semibold mb-3">Units of each resource that are currently unallocated.</p>
+                                <div class="vector-input-grid" id="availableInputs"></div>
+                                <hr class="my-3" style="border-color: rgba(160, 175, 205, 0.25);">
+                                <div class="label fw-bold text-muted small text-uppercase mb-2">Resource Summary</div>
+                                <div class="resource-summary-list" id="resourceSummary"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-blue" id="stateKpiCard">
+                            <div class="kpi-label">System State</div>
+                            <div class="kpi-value mt-1 text-primary" id="kpiState" style="font-size: 1.65rem;">Pending</div>
+                            <small class="text-muted d-block mt-1" id="kpiStateSub">Run the safety check</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-green">
+                            <div class="kpi-label">Processes Finished</div>
+                            <div class="kpi-value text-success mt-1" id="kpiFinished">0 <span class="fs-6 fw-normal text-muted">/ 0</span></div>
+                            <small class="text-muted d-block mt-1" id="kpiFinishedSub">No processes checked</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-purple">
+                            <div class="kpi-label">Safe Sequence</div>
+                            <div class="kpi-value mt-1" id="kpiSequence" style="color: var(--accent-purple);">0 <span class="fs-6 fw-normal text-muted">/ 0</span></div>
+                            <small class="text-muted d-block mt-1" id="kpiSequenceSub">Builds up during playback</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card kpi-amber">
+                            <div class="kpi-label">Work Units</div>
+                            <div class="kpi-value mt-1" id="kpiWork" style="color: var(--accent-amber);">0</div>
+                            <small class="text-muted d-block mt-1" id="kpiWorkSub">Available vector</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Safety Playback -->
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-2">
+                        <div>
+                            <h5 class="fw-bold mb-0 text-dark d-flex align-items-center">
+                                <i class="bi bi-play-circle-fill text-primary me-2"></i>Safety Algorithm Playback
+                            </h5>
+                            <small class="text-muted">Attempt <strong class="text-primary font-monospace" id="stepCounterLabel">0 / 0</strong> of the safety scan</small>
+                        </div>
+
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <div class="bg-white px-3 py-1.5 rounded-3 border d-flex align-items-center gap-2 shadow-sm">
+                                <button class="btn btn-sm btn-link text-secondary p-0" id="btnStepPrev" onclick="stepSafety('prev')" title="Previous step" aria-label="Previous step">
+                                    <i class="bi bi-skip-start-fill fs-5"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-primary p-0" id="btnPlay" onclick="togglePlay()" title="Play / Pause" aria-label="Play or pause">
+                                    <i class="bi bi-play-fill fs-4" id="playIcon"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-secondary p-0" id="btnStepNext" onclick="stepSafety('next')" title="Next step" aria-label="Next step">
+                                    <i class="bi bi-skip-end-fill fs-5"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link text-danger p-0" id="btnReset" onclick="resetPlayback()" title="Reset playback" aria-label="Reset playback">
+                                    <i class="bi bi-arrow-counterclockwise fs-5"></i>
+                                </button>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 bg-white px-3 py-1 rounded-3 border">
+                                <label for="stepScrubber" class="small fw-bold text-muted mb-0 font-monospace">Step:</label>
+                                <input type="range" class="form-range" id="stepScrubber" min="0" max="0" value="0" style="width: 120px;" oninput="scrubStep(this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="decision-banner" id="decisionBanner">
+                        <span class="banner-icon" id="decisionIcon"><i class="bi bi-info-circle-fill"></i></span>
+                        <div>
+                            <div class="banner-title" id="decisionTitle">Ready to check the state</div>
+                            <div class="banner-text" id="decisionText">Enter the matrices and run the Banker's safety algorithm.</div>
+                        </div>
+                    </div>
+
+                    <div class="safety-work-grid mb-3">
+                        <div class="safety-work-box">
+                            <div class="label">Current Work Vector</div>
+                            <div class="d-flex flex-wrap gap-2" id="workVector"></div>
+                            <div class="small text-muted fw-semibold mt-2" id="workHint">Work starts equal to Available.</div>
+                        </div>
+                        <div class="safety-work-box">
+                            <div class="label">Safe Sequence Build-Up</div>
+                            <div class="sequence-flow" id="sequenceFlow"></div>
+                        </div>
+                    </div>
+
+                    <div class="table-matrix-wrapper">
+                        <table class="table table-clay align-middle mb-0" id="safetyTable">
+                            <thead id="safetyHead"></thead>
+                            <tbody id="safetyBody"></tbody>
+                            <tfoot id="safetyFoot"></tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 2. RESOURCE REQUEST                        -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-request" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                        <div>
+                            <h4 class="fw-bold mb-1 brand-text">
+                                <i class="bi bi-arrow-left-right me-2"></i>Resource-Request Algorithm
+                            </h4>
+                            <p class="text-muted mb-0">Test whether a process may receive additional resources without pushing the system into an unsafe state.</p>
+                        </div>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace" id="requestStateBadge">Current state loaded</span>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-lg-4">
+                            <div class="request-form-card">
+                                <h5 class="fw-bold text-dark mb-3">
+                                    <i class="bi bi-sliders text-primary me-2"></i>Request Details
+                                </h5>
+
+                                <label class="form-label fw-bold text-muted small text-uppercase mb-1" for="requestProcess">Requesting Process</label>
+                                <select class="form-select form-select-glass w-100 mb-3" id="requestProcess" onchange="updateRequestHint()"></select>
+
+                                <label class="form-label fw-bold text-muted small text-uppercase mb-1">Request Vector</label>
+                                <div class="vector-input-grid mb-2" id="requestInputs"></div>
+
+                                <div class="small text-muted fw-semibold mt-2 mb-3" id="requestNeedHint">
+                                    Select a process to see its remaining need.
+                                </div>
+
+                                <div class="d-flex flex-column gap-2">
+                                    <button class="btn btn-glass-primary" type="button" onclick="testRequest()">
+                                        <i class="bi bi-send-fill me-1"></i> Test Request
+                                    </button>
+                                    <button class="btn btn-glass-outline btn-sm" type="button" onclick="fillDemoRequest()">
+                                        <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Fill Demo Request
+                                    </button>
+                                </div>
+
+                                <div class="small text-muted fw-semibold mt-3">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    A request must satisfy <strong>Request ≤ Need</strong> and <strong>Request ≤ Available</strong>, and the resulting state must still be safe.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-8">
+                            <div id="requestResult">
+                                <div class="request-empty">
+                                    <i class="bi bi-shield-check"></i>
+                                    <div>
+                                        <h5 class="fw-bold text-dark mb-1">No request tested yet</h5>
+                                        <p class="mb-0">Pick a process, enter how many units of each resource it wants, then run the request check.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-12 col-lg-4">
+                        <div class="frag-tile h-100">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <span class="seq-chip" style="background: linear-gradient(145deg, #628efb, #436cf5);">1</span>
+                                <h6 class="fw-bold mb-0 text-dark">Validate the Request</h6>
+                            </div>
+                            <p class="text-muted small mb-0">Reject the request immediately if it exceeds the process's announced maximum claim or if the resources are not currently available.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <div class="frag-tile h-100">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <span class="seq-chip" style="background: linear-gradient(145deg, #fbbf24, #f59e0b);">2</span>
+                                <h6 class="fw-bold mb-0 text-dark">Pretend to Allocate</h6>
+                            </div>
+                            <p class="text-muted small mb-0">Temporarily reduce Available, increase Allocation, and reduce Need as if the request had already been granted.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <div class="frag-tile h-100">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <span class="seq-chip">3</span>
+                                <h6 class="fw-bold mb-0 text-dark">Re-run Safety Check</h6>
+                            </div>
+                            <p class="text-muted small mb-0">Grant the request only if the imaginary new state is safe. Otherwise deny it and restore the original state.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 3. ALGORITHM THEORY                        -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-theory" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="text-center mx-auto mb-5" style="max-width: 780px;">
+                        <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis px-3 py-2 fw-bold text-uppercase mb-2">Deadlock Avoidance</span>
+                        <h2 class="fw-bold brand-text mb-3">Banker's Algorithm Guide</h2>
+                        <p class="text-muted">Banker's algorithm grants resources only when the resulting state is still safe. A state is safe if there exists at least one order in which every process can finish using the currently available resources plus resources released by earlier processes.</p>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold text-primary mb-1">Safe State</h4>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">At least one finish order</span>
+                                    </div>
+                                    <i class="bi bi-shield-check fs-2 text-primary"></i>
+                                </div>
+                                <p class="text-muted">A safe state guarantees that some sequence of process completions can satisfy every outstanding need. The safe sequence is not necessarily unique.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Key idea:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li>Work starts as the current Available vector.</li>
+                                    <li>A process can finish when every Need entry is ≤ Work.</li>
+                                    <li>On finishing, it releases its Allocation back into Work.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold mb-1" style="color: var(--accent-pink);">Unsafe State</h4>
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle">No finish order exists</span>
+                                    </div>
+                                    <i class="bi bi-exclamation-octagon-fill fs-2" style="color: var(--accent-pink);"></i>
+                                </div>
+                                <p class="text-muted">If no unfinished process can fit within the current Work vector, the safety algorithm cannot make progress. The system is unsafe and may later deadlock.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-info-circle text-primary me-1"></i>Important:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li>Unsafe is <strong>not</strong> the same as deadlocked.</li>
+                                    <li>An unsafe state may never deadlock if processes behave well.</li>
+                                    <li>Banker's algorithm refuses every transition into an unsafe state.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-4">
+                            <div class="algo-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4 class="fw-bold text-success mb-1">Request Check</h4>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">Three conditions</span>
+                                    </div>
+                                    <i class="bi bi-arrow-left-right fs-2 text-success"></i>
+                                </div>
+                                <p class="text-muted">When a process asks for resources, Banker's algorithm checks the request against the announced maximum and current availability before pretending to allocate it.</p>
+                                <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Grant only if:</h6>
+                                <ul class="text-muted small ps-3 mb-0">
+                                    <li><strong>Request ≤ Need</strong> for every resource.</li>
+                                    <li><strong>Request ≤ Available</strong> for every resource.</li>
+                                    <li>The hypothetical post-allocation state is safe.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mt-1">
+                        <div class="col-12 col-lg-6">
+                            <div class="frag-tile">
+                                <h6 class="fw-bold text-dark mb-3"><i class="bi bi-table text-primary me-2"></i>State Data Structures</h6>
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="resource-summary-row"><span>Allocation[i][j]</span><strong>units of j held by P<sub>i</sub></strong></div>
+                                    <div class="resource-summary-row"><span>Max[i][j]</span><strong>maximum future claim of P<sub>i</sub></strong></div>
+                                    <div class="resource-summary-row"><span>Need[i][j]</span><strong>Max − Allocation</strong></div>
+                                    <div class="resource-summary-row"><span>Available[j]</span><strong>currently unallocated units</strong></div>
+                                    <div class="resource-summary-row"><span>Work[j]</span><strong>scratch availability during the check</strong></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="frag-tile">
+                                <h6 class="fw-bold text-dark mb-3"><i class="bi bi-calculator text-success me-2"></i>Core Formulas</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="formula-pill"><i class="bi bi-dash-circle"></i> Need = Max − Allocation</span>
+                                    <span class="formula-pill"><i class="bi bi-plus-circle"></i> Work = Work + Allocation<sub>finished</sub></span>
+                                    <span class="formula-pill"><i class="bi bi-shield-check"></i> Safe ⇔ a complete finish sequence exists</span>
+                                    <span class="formula-pill"><i class="bi bi-arrow-left-right"></i> Request ≤ Need and Request ≤ Available</span>
+                                </div>
+                                <p class="text-muted small mt-3 mb-0">The safety check runs in at most <em>n</em> successful passes because each pass finishes at least one process.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 4. C CODE                                  -->
+            <!-- ========================================== -->
+            <div class="tab-pane fade" id="section-code" role="tabpanel">
+                <div class="glass-panel p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                        <div>
+                            <h4 class="fw-bold mb-1 brand-text">
+                                <i class="bi bi-code-slash me-2"></i>C Implementation Code
+                            </h4>
+                            <p class="text-muted mb-0">Reference implementations for the safety algorithm and the resource-request check.</p>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <select class="form-select form-select-glass form-select-sm" id="codeAlgoSelect" onchange="updateCodeDisplay()" style="min-width: 220px; width: auto;">
+                                <option value="SAFETY">Safety Algorithm</option>
+                                <option value="REQUEST">Resource Request Check</option>
+                            </select>
+                            <button class="btn btn-glass-outline btn-sm" onclick="copyCode()">
+                                <i class="bi bi-clipboard me-1"></i> Copy Code
+                            </button>
+                            <button class="btn btn-glass-outline btn-sm" onclick="downloadCode()">
+                                <i class="bi bi-download me-1"></i> Download
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="code-container">
+                        <div class="code-header">
+                            <div class="code-dots">
+                                <span style="background: #ef4444;"></span>
+                                <span style="background: #f59e0b;"></span>
+                                <span style="background: #10b981;"></span>
+                            </div>
+                            <span class="text-light small font-monospace" id="codeFileName">bankers_safety.c</span>
+                        </div>
+                        <pre><code class="language-c" id="codeBlock">/* Banker's Algorithm - Safety Check */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+
+    <script>
+        // =========================================================
+        // State, Presets & Helpers
+        // =========================================================
+        const RESOURCE_NAMES = ['A', 'B', 'C', 'D'];
+
+        const presets = {
+            classic: {
+                processes: 5,
+                resources: 3,
+                allocation: [
+                    [0, 1, 0],
+                    [2, 0, 0],
+                    [3, 0, 2],
+                    [2, 1, 1],
+                    [0, 0, 2]
+                ],
+                max: [
+                    [7, 5, 3],
+                    [3, 2, 2],
+                    [9, 0, 2],
+                    [2, 2, 2],
+                    [4, 3, 3]
+                ],
+                available: [3, 3, 2]
+            },
+            unsafe: {
+                processes: 5,
+                resources: 3,
+                allocation: [
+                    [0, 1, 0],
+                    [2, 0, 0],
+                    [3, 0, 2],
+                    [2, 1, 1],
+                    [0, 0, 2]
+                ],
+                max: [
+                    [7, 5, 3],
+                    [3, 2, 2],
+                    [9, 0, 2],
+                    [2, 2, 2],
+                    [4, 3, 3]
+                ],
+                available: [1, 0, 0]
+            },
+            mini: {
+                processes: 4,
+                resources: 2,
+                allocation: [
+                    [1, 0],
+                    [0, 1],
+                    [1, 1],
+                    [0, 0]
+                ],
+                max: [
+                    [2, 1],
+                    [1, 2],
+                    [2, 2],
+                    [1, 1]
+                ],
+                available: [1, 1]
+            }
+        };
+
+        let currentState = null;
+        let safety = null;
+        let stepIndex = 0;
+        let playTimer = null;
+        let requestOutcome = null;
+
+        function fmt(value) {
+            return Number(value || 0).toLocaleString('en-US');
+        }
+
+        function sum(values) {
+            return values.reduce((total, value) => total + Number(value || 0), 0);
+        }
+
+        function vecText(vector) {
+            return `(${vector.map(value => fmt(value)).join(', ')})`;
+        }
+
+        function cloneState(state) {
+            return {
+                processes: state.processes,
+                resources: state.resources,
+                allocation: state.allocation.map(row => [...row]),
+                max: state.max.map(row => [...row]),
+                available: [...state.available]
+            };
+        }
+
+        function computeNeed(state) {
+            return state.allocation.map((row, index) =>
+                row.map((value, resource) => state.max[index][resource] - value)
+            );
+        }
+
+        function createEmptyState(processCount, resourceCount) {
+            return {
+                processes: processCount,
+                resources: resourceCount,
+                allocation: Array.from({ length: processCount }, () => Array(resourceCount).fill(0)),
+                max: Array.from({ length: processCount }, () => Array(resourceCount).fill(0)),
+                available: Array(resourceCount).fill(0)
+            };
+        }
+
+        function showInputError(message) {
+            document.getElementById('inputErrorText').textContent = message;
+            document.getElementById('inputError').classList.remove('d-none');
+        }
+
+        function hideInputError() {
+            document.getElementById('inputError').classList.add('d-none');
+        }
+
+        function formValue(id) {
+            return Math.max(0, Math.floor(Number(document.getElementById(id).value) || 0));
+        }
+
+        // =========================================================
+        // Matrix Rendering & Input Handling
+        // =========================================================
+        function renderMatrixEditors(state) {
+            document.getElementById('processCount').value = state.processes;
+            document.getElementById('resourceCount').value = state.resources;
+
+            const resourceLabels = RESOURCE_NAMES.slice(0, state.resources);
+            const head = document.getElementById('matrixHead');
+            const body = document.getElementById('matrixBody');
+
+            head.innerHTML = `
+                <tr>
+                    <th class="process-col" rowspan="2">Process</th>
+                    <th class="group-alloc" colspan="${state.resources}">Allocation</th>
+                    <th class="group-max" colspan="${state.resources}">Max</th>
+                    <th class="group-need" colspan="${state.resources}">Need (auto)</th>
+                </tr>
+                <tr>
+                    ${resourceLabels.map(label => `<th class="res-head">${label}</th>`).join('')}
+                    ${resourceLabels.map(label => `<th class="res-head">${label}</th>`).join('')}
+                    ${resourceLabels.map(label => `<th class="res-head">${label}</th>`).join('')}
+                </tr>
+            `;
+
+            body.innerHTML = state.allocation.map((row, processIndex) => {
+                const allocationCells = row.map((value, resourceIndex) => `
+                    <td>
+                        <input type="number" min="0" step="1" class="matrix-input alloc-input"
+                            data-row="${processIndex}" data-col="${resourceIndex}"
+                            value="${value}" oninput="handleMatrixInput(this)" aria-label="Allocation P${processIndex} ${resourceLabels[resourceIndex]}">
+                    </td>
+                `).join('');
+
+                const maxCells = state.max[processIndex].map((value, resourceIndex) => `
+                    <td>
+                        <input type="number" min="0" step="1" class="matrix-input max-input"
+                            data-row="${processIndex}" data-col="${resourceIndex}"
+                            value="${value}" oninput="handleMatrixInput(this)" aria-label="Max P${processIndex} ${resourceLabels[resourceIndex]}">
+                    </td>
+                `).join('');
+
+                const needCells = row.map((value, resourceIndex) => {
+                    const need = Math.max(0, state.max[processIndex][resourceIndex] - value);
+                    return `
+                        <td>
+                            <span class="need-cell" data-need-row="${processIndex}" data-need-col="${resourceIndex}">${need}</span>
+                        </td>
+                    `;
+                }).join('');
+
+                return `
+                    <tr>
+                        <td><span class="badge bg-light text-dark border font-monospace">P${processIndex}</span></td>
+                        ${allocationCells}
+                        ${maxCells}
+                        ${needCells}
+                    </tr>
+                `;
+            }).join('');
+
+            const availableInputs = document.getElementById('availableInputs');
+            availableInputs.innerHTML = state.available.map((value, index) => `
+                <div class="vector-input">
+                    <label for="availableInput-${index}">${resourceLabels[index]}</label>
+                    <input type="number" min="0" step="1" class="matrix-input" id="availableInput-${index}"
+                        data-col="${index}" value="${value}" oninput="handleAvailableInput(this)" aria-label="Available ${resourceLabels[index]}">
+                </div>
+            `).join('');
+
+            document.getElementById('resourceCountBadge').textContent = `${state.resources} type${state.resources === 1 ? '' : 's'}`;
+            updateResourceSummary();
+            hideInputError();
+        }
+
+        function updateNeedCell(row, col) {
+            const allocInput = document.querySelector(`.alloc-input[data-row="${row}"][data-col="${col}"]`);
+            const maxInput = document.querySelector(`.max-input[data-row="${row}"][data-col="${col}"]`);
+            const needCell = document.querySelector(`.need-cell[data-need-row="${row}"][data-need-col="${col}"]`);
+            if (!allocInput || !maxInput || !needCell) return;
+
+            const allocation = Math.max(0, Number(allocInput.value) || 0);
+            const maximum = Math.max(0, Number(maxInput.value) || 0);
+            const invalid = allocation > maximum;
+
+            allocInput.classList.toggle('is-invalid', invalid);
+            maxInput.classList.toggle('is-invalid', invalid);
+            needCell.textContent = invalid ? '!' : String(maximum - allocation);
+            needCell.classList.toggle('is-invalid', invalid);
+        }
+
+        function handleMatrixInput(input) {
+            let value = Number(input.value);
+            if (!Number.isFinite(value)) value = 0;
+            value = Math.max(0, Math.floor(value));
+            if (input.value !== '' && Number(input.value) !== value) input.value = value;
+
+            updateNeedCell(Number(input.dataset.row), Number(input.dataset.col));
+            updateResourceSummary();
+            hideInputError();
+        }
+
+        function handleAvailableInput(input) {
+            let value = Number(input.value);
+            if (!Number.isFinite(value)) value = 0;
+            value = Math.max(0, Math.floor(value));
+            if (input.value !== '' && Number(input.value) !== value) input.value = value;
+            updateResourceSummary();
+            hideInputError();
+        }
+
+        function updateResourceSummary() {
+            const resourceCount = Number(document.getElementById('resourceCount').value) || 1;
+            const summary = document.getElementById('resourceSummary');
+            if (!summary) return;
+
+            const rows = [];
+
+            for (let resource = 0; resource < resourceCount; resource++) {
+                const allocations = [...document.querySelectorAll(`.alloc-input[data-col="${resource}"]`)];
+                const allocated = allocations.reduce((total, input) => total + (Number(input.value) || 0), 0);
+                const availableInput = document.getElementById(`availableInput-${resource}`);
+                const available = Number(availableInput ? availableInput.value : 0) || 0;
+                const label = RESOURCE_NAMES[resource];
+
+                rows.push(`
+                    <div class="resource-summary-row">
+                        <span><strong>${label}</strong></span>
+                        <span>Alloc <strong>${fmt(allocated)}</strong> · Avail <strong>${fmt(available)}</strong> · Total <strong>${fmt(allocated + available)}</strong></span>
+                    </div>
+                `);
+            }
+
+            summary.innerHTML = rows.join('');
+        }
+
+        function readState() {
+            const processCount = Number(document.getElementById('processCount').value) || 0;
+            const resourceCount = Number(document.getElementById('resourceCount').value) || 0;
+            const allocation = [];
+            const max = [];
+            let hasOverclaim = false;
+
+            for (let row = 0; row < processCount; row++) {
+                allocation.push([]);
+                max.push([]);
+
+                for (let col = 0; col < resourceCount; col++) {
+                    const allocInput = document.querySelector(`.alloc-input[data-row="${row}"][data-col="${col}"]`);
+                    const maxInput = document.querySelector(`.max-input[data-row="${row}"][data-col="${col}"]`);
+
+                    const allocationValue = Math.max(0, Math.floor(Number(allocInput ? allocInput.value : 0) || 0));
+                    const maxValue = Math.max(0, Math.floor(Number(maxInput ? maxInput.value : 0) || 0));
+
+                    allocation[row].push(allocationValue);
+                    max[row].push(maxValue);
+
+                    if (allocationValue > maxValue) {
+                        hasOverclaim = true;
+                        if (allocInput) allocInput.classList.add('is-invalid');
+                        if (maxInput) maxInput.classList.add('is-invalid');
+                    }
+                }
+            }
+
+            if (hasOverclaim) {
+                showInputError('Allocation cannot exceed Max for any process/resource pair. Fix the highlighted cells.');
+                return null;
+            }
+
+            const available = [];
+            for (let col = 0; col < resourceCount; col++) {
+                const input = document.getElementById(`availableInput-${col}`);
+                available.push(Math.max(0, Math.floor(Number(input ? input.value : 0) || 0)));
+            }
+
+            hideInputError();
+
+            return {
+                processes: processCount,
+                resources: resourceCount,
+                allocation,
+                max,
+                available
+            };
+        }
+
+        function syncStateInputs(state) {
+            document.getElementById('processCount').value = state.processes;
+            document.getElementById('resourceCount').value = state.resources;
+        }
+
+        // =========================================================
+        // Safety Algorithm
+        // =========================================================
+        function computeSafety(state) {
+            const need = computeNeed(state);
+            let work = [...state.available];
+            let finished = Array(state.processes).fill(false);
+            let sequence = [];
+            let pass = 0;
+
+            const steps = [{
+                work: [...work],
+                finished: [...finished],
+                sequence: [...sequence],
+                active: null,
+                condition: 'start',
+                pass: 0,
+                workBefore: [...work],
+                needRow: null,
+                released: null,
+                verdict: 'pending'
+            }];
+
+            while (!finished.every(Boolean)) {
+                pass += 1;
+                let progressed = false;
+
+                for (let process = 0; process < state.processes; process++) {
+                    if (finished[process]) continue;
+
+                    const canFinish = need[process].every((value, resource) => value <= work[resource]);
+                    const workBefore = [...work];
+
+                    if (canFinish) {
+                        finished[process] = true;
+                        sequence.push(process);
+                        const released = [...state.allocation[process]];
+                        work = work.map((value, resource) => value + released[resource]);
+                        progressed = true;
+
+                        steps.push({
+                            work: [...work],
+                            finished: [...finished],
+                            sequence: [...sequence],
+                            active: process,
+                            condition: 'can',
+                            pass,
+                            workBefore,
+                            needRow: [...need[process]],
+                            released,
+                            verdict: 'pending'
+                        });
+                    } else {
+                        steps.push({
+                            work: [...work],
+                            finished: [...finished],
+                            sequence: [...sequence],
+                            active: process,
+                            condition: 'cannot',
+                            pass,
+                            workBefore,
+                            needRow: [...need[process]],
+                            released: null,
+                            verdict: 'pending'
+                        });
+                    }
+                }
+
+                if (!progressed) break;
+            }
+
+            const safe = finished.every(Boolean);
+            steps.push({
+                work: [...work],
+                finished: [...finished],
+                sequence: [...sequence],
+                active: null,
+                condition: 'final',
+                pass,
+                workBefore: [...work],
+                needRow: null,
+                released: null,
+                verdict: safe ? 'safe' : 'unsafe'
+            });
+
+            return {
+                need,
+                steps,
+                safe,
+                sequence: [...sequence],
+                remaining: finished
+                    .map((done, index) => done ? null : `P${index}`)
+                    .filter(Boolean)
+            };
+        }
+
+        function runSafety() {
+            const state = readState();
+            if (!state) return;
+
+            stopPlayback();
+            currentState = state;
+            safety = computeSafety(state);
+            stepIndex = safety.steps.length - 1;
+
+            renderAll();
+            updateRequestForm();
+            renderRequestBadge();
+        }
+
+        // =========================================================
+        // Rendering
+        // =========================================================
+        function renderAll() {
+            if (!safety) return;
+            const step = safety.steps[stepIndex];
+            renderKPIs(step);
+            renderSafety(step);
+            renderPlayback();
+        }
+
+        function renderKPIs(step) {
+            const finishedCount = step.finished.filter(Boolean).length;
+            const isFinal = step.condition === 'final';
+            const stateCard = document.getElementById('stateKpiCard');
+            const stateValue = document.getElementById('kpiState');
+
+            stateCard.className = 'kpi-card ' + (isFinal
+                ? (safety.safe ? 'kpi-green' : 'kpi-red')
+                : 'kpi-blue');
+
+            stateValue.className = 'kpi-value mt-1 ' + (isFinal
+                ? (safety.safe ? 'text-success' : 'text-danger')
+                : 'text-primary');
+            stateValue.style.fontSize = '1.65rem';
+            stateValue.textContent = isFinal
+                ? (safety.safe ? 'Safe' : 'Unsafe')
+                : (stepIndex === 0 ? 'Pending' : 'Checking');
+
+            document.getElementById('kpiStateSub').textContent = isFinal
+                ? (safety.safe
+                    ? 'A complete safe sequence exists'
+                    : `${safety.remaining.length} process${safety.remaining.length === 1 ? '' : 'es'} cannot finish`)
+                : 'Stepping through the safety scan';
+
+            document.getElementById('kpiFinished').innerHTML =
+                `${finishedCount} <span class="fs-6 fw-normal text-muted">/ ${safety.steps[0].finished.length}</span>`;
+            document.getElementById('kpiFinishedSub').textContent = finishedCount
+                ? `${finishedCount} process${finishedCount === 1 ? '' : 'es'} completed`
+                : 'No processes completed yet';
+
+            document.getElementById('kpiSequence').innerHTML =
+                `${step.sequence.length} <span class="fs-6 fw-normal text-muted">/ ${safety.steps[0].finished.length}</span>`;
+            document.getElementById('kpiSequenceSub').textContent = step.sequence.length
+                ? step.sequence.map(index => `P${index}`).join(' → ')
+                : 'Builds up during playback';
+
+            const workTotal = sum(step.work);
+            document.getElementById('kpiWork').innerHTML =
+                `${fmt(workTotal)} <span class="fs-6 fw-normal text-muted">units</span>`;
+            document.getElementById('kpiWorkSub').textContent =
+                step.work.map((value, index) => `${RESOURCE_NAMES[index]}: ${fmt(value)}`).join(' · ');
+        }
+
+        function vectorChips(values, extraClass = '') {
+            return values.map((value, index) => `
+                <span class="vector-chip ${extraClass}">
+                    <span class="res-name">${RESOURCE_NAMES[index]}</span>${fmt(value)}
+                </span>
+            `).join('');
+        }
+
+        function renderSafety(step) {
+            document.getElementById('workVector').innerHTML = vectorChips(step.work);
+            document.getElementById('workHint').textContent = step.condition === 'final'
+                ? (safety.safe
+                    ? 'All processes finished; the final Work vector includes every released allocation.'
+                    : 'No further process can finish with this Work vector.')
+                : (stepIndex === 0
+                    ? 'Work starts equal to the Available vector.'
+                    : `Pass ${step.pass} · Work after the latest completed release.`);
+
+            const flow = [];
+            const processTotal = safety.steps[0].finished.length;
+
+            for (let index = 0; index < processTotal; index++) {
+                if (index > 0) flow.push('<span class="seq-arrow"><i class="bi bi-arrow-right"></i></span>');
+
+                if (index < step.sequence.length) {
+                    const isLatest = step.active !== null && index === step.sequence.length - 1;
+                    flow.push(`<span class="seq-chip ${isLatest ? 'current' : ''}">P${step.sequence[index]}</span>`);
+                } else {
+                    flow.push('<span class="seq-chip pending">?</span>');
+                }
+            }
+
+            if (step.condition === 'final' && !safety.safe) {
+                flow.push(`<span class="small fw-bold text-danger ms-2"><i class="bi bi-x-circle me-1"></i>Remaining: ${safety.remaining.join(', ')}</span>`);
+            }
+
+            document.getElementById('sequenceFlow').innerHTML = flow.join('');
+
+            document.getElementById('safetyHead').innerHTML = `
+                <tr>
+                    <th>Process</th>
+                    <th>Allocation</th>
+                    <th>Need</th>
+                    <th>Test This Step</th>
+                    <th>State</th>
+                </tr>
+            `;
+
+            const bodyRows = [];
+
+            for (let process = 0; process < processTotal; process++) {
+                const allocation = currentState.allocation[process];
+                const need = safety.need[process];
+                const isCurrent = step.active === process;
+                const done = step.finished[process];
+                const isFinishedNow = isCurrent && step.condition === 'can';
+                const isBlockedNow = isCurrent && step.condition === 'cannot';
+                const sequencePosition = step.sequence.indexOf(process);
+
+                let testCell = '<span class="text-muted">—</span>';
+                if (isFinishedNow) {
+                    testCell = '<span class="step-check-ok"><i class="bi bi-check2-circle"></i> Need ≤ Work</span>';
+                } else if (isBlockedNow) {
+                    testCell = '<span class="step-check-no"><i class="bi bi-x-circle"></i> Need &gt; Work</span>';
+                }
+
+                let stateCell = '<span class="status-badge-pending">Waiting</span>';
+                if (isFinishedNow) {
+                    stateCell = '<span class="status-badge-alloc">Finished now</span>';
+                } else if (isBlockedNow) {
+                    stateCell = '<span class="status-badge-fail">Must wait</span>';
+                } else if (done) {
+                    stateCell = `<span class="status-badge-alloc">#${sequencePosition + 1} Completed</span>`;
+                }
+
+                bodyRows.push(`
+                    <tr class="${isCurrent ? 'current-process-row' : ''}">
+                        <td><strong class="font-monospace">P${process}</strong></td>
+                        <td class="font-monospace fw-bold" style="font-size: 0.78rem;">${allocation.map(value => fmt(value)).join(' · ')}</td>
+                        <td class="font-monospace fw-bold" style="font-size: 0.78rem; color: #0f8a63;">${need.map(value => fmt(value)).join(' · ')}</td>
+                        <td>${testCell}</td>
+                        <td>${stateCell}</td>
+                    </tr>
+                `);
+            }
+
+            document.getElementById('safetyBody').innerHTML = bodyRows.join('');
+
+            const finishedCount = step.finished.filter(Boolean).length;
+            const statusText = step.condition === 'final'
+                ? (safety.safe ? 'SAFE state' : 'UNSAFE state')
+                : `Pass ${step.pass || '—'}`;
+
+            document.getElementById('safetyFoot').innerHTML = `
+                <tr>
+                    <td colspan="2">${finishedCount} of ${processTotal} finished</td>
+                    <td colspan="2" class="text-muted">${statusText}${step.sequence.length ? ` · Sequence: ${step.sequence.map(index => `P${index}`).join(' → ')}` : ''}</td>
+                    <td>${safety.steps.length - 1} steps</td>
+                </tr>
+            `;
+
+            renderDecision(step);
+        }
+
+        function renderDecision(step) {
+            const banner = document.getElementById('decisionBanner');
+            const icon = document.getElementById('decisionIcon');
+            const title = document.getElementById('decisionTitle');
+            const text = document.getElementById('decisionText');
+
+            banner.classList.remove('is-success', 'is-failure');
+
+            if (step.condition === 'start') {
+                icon.innerHTML = '<i class="bi bi-info-circle-fill"></i>';
+                title.textContent = 'Ready to check the state';
+                text.textContent = `Work starts at ${vecText(step.work)}. The scan compares each unfinished process's Need against Work.`;
+                return;
+            }
+
+            if (step.condition === 'final') {
+                if (safety.safe) {
+                    banner.classList.add('is-success');
+                    icon.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+                    title.textContent = 'System is in a SAFE state';
+                    text.textContent = `Every process can finish. Safe sequence: ${safety.sequence.map(index => `P${index}`).join(' → ')}. Final Work: ${vecText(step.work)}.`;
+                } else {
+                    banner.classList.add('is-failure');
+                    icon.innerHTML = '<i class="bi bi-x-octagon-fill"></i>';
+                    title.textContent = 'System is NOT in a safe state';
+                    text.textContent = `No unfinished process can fit within Work ${vecText(step.work)}. Remaining processes: ${safety.remaining.join(', ')}. The system may deadlock unless resource usage changes.`;
+                }
+                return;
+            }
+
+            const process = `P${step.active}`;
+
+            if (step.condition === 'can') {
+                banner.classList.add('is-success');
+                icon.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+                title.textContent = `${process} can finish (Pass ${step.pass})`;
+                text.textContent = `Need ${vecText(step.needRow)} ≤ Work ${vecText(step.workBefore)}. ${process} releases ${vecText(step.released)}, so Work becomes ${vecText(step.work)}.`;
+            } else {
+                banner.classList.add('is-failure');
+                icon.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+                title.textContent = `${process} must wait (Pass ${step.pass})`;
+                text.textContent = `Need ${vecText(step.needRow)} is not ≤ Work ${vecText(step.workBefore)}. Skip ${process} and continue scanning unfinished processes.`;
+            }
+        }
+
+        // =========================================================
+        // Playback
+        // =========================================================
+        function renderPlayback() {
+            if (!safety) return;
+            const total = safety.steps.length - 1;
+            document.getElementById('stepCounterLabel').textContent = `${stepIndex} / ${total}`;
+
+            const scrubber = document.getElementById('stepScrubber');
+            scrubber.max = total;
+            scrubber.value = stepIndex;
+
+            document.getElementById('btnStepPrev').disabled = stepIndex === 0;
+            document.getElementById('btnStepNext').disabled = stepIndex >= total;
+            document.getElementById('playIcon').className = playTimer
+                ? 'bi bi-pause-fill fs-4'
+                : 'bi bi-play-fill fs-4';
+        }
+
+        function stopPlayback() {
+            if (playTimer) {
+                clearInterval(playTimer);
+                playTimer = null;
+            }
+            const icon = document.getElementById('playIcon');
+            if (icon) icon.className = 'bi bi-play-fill fs-4';
+        }
+
+        function togglePlay() {
+            if (!safety) return;
+
+            if (playTimer) {
+                stopPlayback();
+                renderPlayback();
+                return;
+            }
+
+            if (stepIndex >= safety.steps.length - 1) {
+                stepIndex = 0;
+                renderAll();
+            }
+
+            document.getElementById('playIcon').className = 'bi bi-pause-fill fs-4';
+            playTimer = setInterval(() => {
+                if (stepIndex < safety.steps.length - 1) {
+                    stepIndex += 1;
+                    if (stepIndex >= safety.steps.length - 1) stopPlayback();
+                    renderAll();
+                } else {
+                    stopPlayback();
+                    renderAll();
+                }
+            }, 1000);
+        }
+
+        function stepSafety(direction) {
+            if (!safety) return;
+            stopPlayback();
+            stepIndex = direction === 'next'
+                ? Math.min(stepIndex + 1, safety.steps.length - 1)
+                : Math.max(stepIndex - 1, 0);
+            renderAll();
+        }
+
+        function scrubStep(value) {
+            if (!safety) return;
+            stopPlayback();
+            stepIndex = Math.max(0, Math.min(Number(value), safety.steps.length - 1));
+            renderAll();
+        }
+
+        function resetPlayback() {
+            if (!safety) return;
+            stopPlayback();
+            stepIndex = 0;
+            renderAll();
+        }
+
+        // =========================================================
+        // Presets, Requests & Code Samples
+        // =========================================================
+        function loadPreset(key) {
+            const preset = key === 'request' ? presets.classic : presets[key];
+            if (!preset) return;
+
+            const state = {
+                processes: preset.processes,
+                resources: preset.resources,
+                allocation: preset.allocation.map(row => [...row]),
+                max: preset.max.map(row => [...row]),
+                available: [...preset.available]
+            };
+
+            renderMatrixEditors(state);
+            runSafety();
+            document.getElementById('presetSelect').value = '';
+
+            if (key === 'request') {
+                setRequestForm(1, [1, 0, 2]);
+                document.getElementById('tab-request').click();
+            }
+        }
+
+        function clearMatrices() {
+            const processCount = Number(document.getElementById('processCount').value) || 1;
+            const resourceCount = Number(document.getElementById('resourceCount').value) || 1;
+            const state = createEmptyState(processCount, resourceCount);
+            renderMatrixEditors(state);
+            runSafety();
+        }
+
+        function resizeMatrices() {
+            const processCount = Number(document.getElementById('processCount').value) || 1;
+            const resourceCount = Number(document.getElementById('resourceCount').value) || 1;
+            const base = currentState || createEmptyState(processCount, resourceCount);
+            const next = createEmptyState(processCount, resourceCount);
+
+            for (let row = 0; row < Math.min(processCount, base.processes); row++) {
+                for (let col = 0; col < Math.min(resourceCount, base.resources); col++) {
+                    next.allocation[row][col] = base.allocation[row][col];
+                    next.max[row][col] = base.max[row][col];
+                }
+            }
+
+            for (let col = 0; col < Math.min(resourceCount, base.resources); col++) {
+                next.available[col] = base.available[col];
+            }
+
+            renderMatrixEditors(next);
+            runSafety();
+        }
+
+        function renderRequestBadge() {
+            const badge = document.getElementById('requestStateBadge');
+            if (!currentState || !safety) {
+                badge.className = 'badge bg-secondary-subtle text-secondary border border-secondary-subtle font-monospace';
+                badge.textContent = 'State not checked';
+                return;
+            }
+
+            badge.className = 'badge font-monospace ' + (safety.safe
+                ? 'bg-success-subtle text-success border border-success-subtle'
+                : 'bg-danger-subtle text-danger border border-danger-subtle');
+            badge.textContent = `${safety.safe ? 'Safe' : 'Unsafe'} · ${currentState.processes} processes · ${currentState.resources} resources`;
+        }
+
+        function updateRequestForm() {
+            if (!currentState) return;
+
+            const select = document.getElementById('requestProcess');
+            const previous = Number(select.value);
+            select.innerHTML = Array.from({ length: currentState.processes }, (_, index) =>
+                `<option value="${index}">P${index}</option>`
+            ).join('');
+            select.value = Number.isInteger(previous) && previous < currentState.processes ? previous : 0;
+
+            const inputGrid = document.getElementById('requestInputs');
+            inputGrid.innerHTML = RESOURCE_NAMES.slice(0, currentState.resources).map((label, index) => `
+                <div class="vector-input">
+                    <label for="requestInput-${index}">${label}</label>
+                    <input type="number" min="0" step="1" class="matrix-input" id="requestInput-${index}"
+                        value="0" aria-label="Request ${label}">
+                </div>
+            `).join('');
+
+            updateRequestHint();
+            renderRequestBadge();
+        }
+
+        function updateRequestHint() {
+            if (!currentState) return;
+
+            const select = document.getElementById('requestProcess');
+            const process = Number(select.value);
+            if (!Number.isInteger(process) || process < 0 || process >= currentState.processes) return;
+
+            const need = computeNeed(currentState);
+            const hint = document.getElementById('requestNeedHint');
+            hint.innerHTML = `P${process} still needs <strong class="font-monospace">${vecText(need[process])}</strong> · Available <strong class="font-monospace">${vecText(currentState.available)}</strong>`;
+        }
+
+        function setRequestForm(process, values) {
+            if (!currentState) return;
+            const select = document.getElementById('requestProcess');
+            select.value = String(process);
+
+            values.slice(0, currentState.resources).forEach((value, index) => {
+                const input = document.getElementById(`requestInput-${index}`);
+                if (input) input.value = value;
+            });
+
+            updateRequestHint();
+        }
+
+        function fillDemoRequest() {
+            if (!currentState) return;
+
+            if (currentState.processes >= 2 && currentState.resources === 3) {
+                setRequestForm(1, [1, 0, 2]);
+                return;
+            }
+
+            const need = computeNeed(currentState);
+            const process = need.findIndex(row => row.some(value => value > 0));
+            const target = process >= 0 ? process : 0;
+            const request = need[target].map((value, index) =>
+                Math.max(0, Math.min(value, currentState.available[index]))
+            );
+
+            if (sum(request) === 0) {
+                request[0] = Math.min(1, currentState.available[0] || 0);
+            }
+
+            setRequestForm(target, request);
+        }
+
+        function requestChecksMarkup(checks) {
+            return checks.map(check => `
+                <div class="request-check-item ${check.pass ? 'pass' : 'fail'}">
+                    <i class="bi ${check.pass ? 'bi-check-circle-fill' : 'bi-x-circle-fill'} mt-1"></i>
+                    <span>${check.text}</span>
+                </div>
+            `).join('');
+        }
+
+        function sequenceChipsMarkup(sequence, total, safe) {
+            const chips = [];
+
+            for (let index = 0; index < total; index++) {
+                if (index > 0) chips.push('<span class="seq-arrow"><i class="bi bi-arrow-right"></i></span>');
+                if (index < sequence.length) {
+                    chips.push(`<span class="seq-chip" ${safe === false ? 'style="background: linear-gradient(145deg, #94a3b8, #64748b); box-shadow: none;"' : ''}>P${sequence[index]}</span>`);
+                } else {
+                    chips.push('<span class="seq-chip pending">?</span>');
+                }
+            }
+
+            return chips.join('');
+        }
+
+        function testRequest() {
+            const state = readState();
+            if (!state) return;
+
+            currentState = state;
+            const process = Number(document.getElementById('requestProcess').value);
+            if (!Number.isInteger(process) || process < 0 || process >= state.processes) {
+                renderRequestEmpty('Select a valid process before testing the request.');
+                return;
+            }
+
+            const request = [];
+            for (let resource = 0; resource < state.resources; resource++) {
+                const input = document.getElementById(`requestInput-${resource}`);
+                request.push(Math.max(0, Math.floor(Number(input ? input.value : 0) || 0)));
+            }
+
+            const need = computeNeed(state);
+            const withinNeed = request.every((value, resource) => value <= need[process][resource]);
+            const withinAvailable = request.every((value, resource) => value <= state.available[resource]);
+
+            const checks = [
+                {
+                    pass: withinNeed,
+                    text: `Request ${vecText(request)} ≤ Need ${vecText(need[process])}`
+                },
+                {
+                    pass: withinAvailable,
+                    text: `Request ${vecText(request)} ≤ Available ${vecText(state.available)}`
+                }
+            ];
+
+            if (!withinNeed || !withinAvailable) {
+                const reason = !withinNeed ? 'need' : 'available';
+                const title = !withinNeed ? 'Request denied — exceeds Need' : 'Request denied — not enough available resources';
+                const explanation = !withinNeed
+                    ? `P${process} is asking for more than its remaining maximum claim.`
+                    : `The request is valid against Max, but the system does not currently have enough free units. P${process} must wait.`;
+
+                requestOutcome = { granted: false, reason, process, request, state, need, checks, title, explanation };
+                renderRequestOutcome(requestOutcome);
+                return;
+            }
+
+            const tentative = cloneState(state);
+            tentative.allocation[process] = tentative.allocation[process].map((value, resource) => value + request[resource]);
+            tentative.available = tentative.available.map((value, resource) => value - request[resource]);
+
+            const tentativeSafety = computeSafety(tentative);
+            checks.push({
+                pass: tentativeSafety.safe,
+                text: tentativeSafety.safe
+                    ? `Resulting state is safe: ${tentativeSafety.sequence.map(index => `P${index}`).join(' → ')}`
+                    : `Resulting state is unsafe; remaining: ${tentativeSafety.remaining.join(', ')}`
+            });
+
+            requestOutcome = {
+                granted: tentativeSafety.safe,
+                reason: tentativeSafety.safe ? 'granted' : 'unsafe',
+                process,
+                request,
+                state,
+                need,
+                checks,
+                tentative,
+                tentativeSafety,
+                newAvailable: tentative.available,
+                newNeed: computeNeed(tentative)[process],
+                title: tentativeSafety.safe ? 'Request can be granted safely' : 'Request denied — resulting state is unsafe',
+                explanation: tentativeSafety.safe
+                    ? `P${process} may receive ${vecText(request)}. Available becomes ${vecText(tentative.available)}, and the new state still has a complete safe sequence.`
+                    : `Granting ${vecText(request)} would leave no complete finish order. Banker's algorithm denies the request even though resources are nominally available.`
+            };
+
+            renderRequestOutcome(requestOutcome);
+        }
+
+        function renderRequestEmpty(message) {
+            document.getElementById('requestResult').innerHTML = `
+                <div class="request-empty">
+                    <i class="bi bi-shield-exclamation"></i>
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">Check the request inputs</h5>
+                        <p class="mb-0">${message}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRequestOutcome(outcome) {
+            const { granted, request, process, state, need } = outcome;
+            const afterAvailable = outcome.newAvailable || state.available;
+            const afterAllocation = outcome.tentative ? outcome.tentative.allocation[process]
+                : state.allocation[process].map((value, resource) => value + request[resource]);
+            const afterNeed = outcome.newNeed || need[process].map((value, resource) => value - request[resource]);
+            const sequence = outcome.tentativeSafety
+                ? outcome.tentativeSafety.sequence
+                : [];
+            const safe = outcome.tentativeSafety ? outcome.tentativeSafety.safe : null;
+
+            const extraDetails = (outcome.reason === 'granted' || outcome.reason === 'unsafe') ? `
+                <div class="row g-2 mt-1">
+                    <div class="col-6 col-lg-3">
+                        <div class="compare-metric">
+                            <div class="val">${vecText(afterAvailable)}</div>
+                            <div class="lbl">Available after</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="compare-metric">
+                            <div class="val">${vecText(afterAllocation)}</div>
+                            <div class="lbl">P${process} allocation</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="compare-metric">
+                            <div class="val">${vecText(afterNeed)}</div>
+                            <div class="lbl">P${process} need after</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="compare-metric">
+                            <div class="val">${outcome.tentativeSafety ? outcome.tentativeSafety.sequence.length + ' / ' + state.processes : '—'}</div>
+                            <div class="lbl">Safe order length</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <div class="small fw-bold text-muted text-uppercase mb-2">Hypothetical Safe Sequence</div>
+                    <div class="sequence-flow">
+                        ${sequenceChipsMarkup(sequence, state.processes, safe)}
+                    </div>
+                </div>
+            ` : `
+                <div class="small fw-semibold text-muted mt-3">
+                    <i class="bi bi-info-circle me-1"></i>No tentative allocation was made; the system state is unchanged.
+                </div>
+            `;
+
+            const applyButton = granted ? `
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <button class="btn btn-glass-primary btn-sm" type="button" onclick="applyGrant()">
+                        <i class="bi bi-check2-circle me-1"></i> Apply Grant to State
+                    </button>
+                    <button class="btn btn-glass-outline btn-sm" type="button" onclick="renderRequestEmpty('The grant was not applied. You can test another request.')">
+                        <i class="bi bi-x-circle me-1"></i> Discard
+                    </button>
+                </div>
+            ` : '';
+
+            document.getElementById('requestResult').innerHTML = `
+                <div class="request-outcome ${granted ? 'granted' : 'denied'}">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div class="banner-icon" style="width: 50px; height: 50px; font-size: 1.35rem; ${granted
+                            ? 'background: #d6f7e9; color: #16a876;'
+                            : 'background: #fde0e9; color: #d83664;'}">
+                            <i class="bi ${granted ? 'bi-shield-check' : 'bi-shield-exclamation'}"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-1 ${granted ? 'text-success' : 'text-danger'}">${outcome.title}</h4>
+                            <p class="text-muted mb-0">P${process} requests ${vecText(request)}. ${outcome.explanation}</p>
+                        </div>
+                    </div>
+
+                    <div class="request-checks">
+                        ${requestChecksMarkup(outcome.checks)}
+                    </div>
+
+                    ${extraDetails}
+                    ${applyButton}
+
+                    ${!granted ? '<div class="small fw-semibold text-muted mt-3"><i class="bi bi-arrow-counterclockwise me-1"></i>The original state remains unchanged.</div>' : ''}
+                </div>
+            `;
+        }
+
+        function applyGrant() {
+            if (!requestOutcome || !requestOutcome.granted || !currentState) return;
+
+            const { process, request } = requestOutcome;
+            currentState.allocation[process] = currentState.allocation[process]
+                .map((value, resource) => value + request[resource]);
+            currentState.available = currentState.available
+                .map((value, resource) => value - request[resource]);
+
+            requestOutcome = null;
+            renderMatrixEditors(currentState);
+            runSafety();
+
+            document.getElementById('requestResult').innerHTML = `
+                <div class="request-outcome granted">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="banner-icon" style="width: 50px; height: 50px; font-size: 1.35rem; background: #d6f7e9; color: #16a876;">
+                            <i class="bi bi-check2-circle"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-1 text-success">Allocation applied</h4>
+                            <p class="text-muted mb-2">P${process} received ${vecText(request)}. The matrices and Available vector have been updated, and the safety check was rerun.</p>
+                            <button class="btn btn-glass-outline btn-sm" type="button" onclick="document.getElementById('tab-simulator').click()">
+                                <i class="bi bi-play-circle me-1"></i> View Updated Safety Check
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // =========================================================
+        // C Code Samples
+        // =========================================================
+        const cCodeSnippets = {
+            SAFETY: `/* Banker's Algorithm - Safety Check */
+#include <stdio.h>
+#include <stdbool.h>
+
+#define P 5
+#define R 3
+
+int main(void) {
+    int alloc[P][R] = {
+        {0, 1, 0}, {2, 0, 0}, {3, 0, 2},
+        {2, 1, 1}, {0, 0, 2}
+    };
+    int max[P][R] = {
+        {7, 5, 3}, {3, 2, 2}, {9, 0, 2},
+        {2, 2, 2}, {4, 3, 3}
+    };
+    int avail[R] = {3, 3, 2};
+
+    int need[P][R];
+    for (int i = 0; i < P; i++)
+        for (int j = 0; j < R; j++)
+            need[i][j] = max[i][j] - alloc[i][j];
+
+    int work[R];
+    for (int j = 0; j < R; j++) work[j] = avail[j];
+
+    bool finished[P] = {false};
+    int sequence[P];
+    int count = 0;
+
+    for (int pass = 0; pass < P; pass++) {
+        bool progressed = false;
+
+        for (int i = 0; i < P; i++) {
+            if (finished[i]) continue;
+
+            bool canFinish = true;
+            for (int j = 0; j < R; j++) {
+                if (need[i][j] > work[j]) {
+                    canFinish = false;
+                    break;
+                }
+            }
+
+            if (!canFinish) continue;
+
+            for (int j = 0; j < R; j++)
+                work[j] += alloc[i][j];
+
+            finished[i] = true;
+            sequence[count++] = i;
+            progressed = true;
+
+            printf("P%d can finish. Work = [%d %d %d]\\n",
+                   i, work[0], work[1], work[2]);
+        }
+
+        if (!progressed) break;
+    }
+
+    if (count == P) {
+        printf("\\nSystem is SAFE. Safe sequence: ");
+        for (int i = 0; i < P; i++) {
+            printf("P%d", sequence[i]);
+            if (i < P - 1) printf(" -> ");
+        }
+        printf("\\n");
+    } else {
+        printf("\\nSystem is UNSAFE. Only %d process(es) can finish.\\n", count);
+    }
+
+    return 0;
+}`,
+            REQUEST: `/* Banker's Algorithm - Resource Request Check */
+#include <stdio.h>
+#include <stdbool.h>
+
+#define P 5
+#define R 3
+
+bool isSafe(int alloc[P][R], int max[P][R], int avail[R], int seq[P]) {
+    int need[P][R];
+    int work[R];
+    bool finished[P] = {false};
+    int count = 0;
+
+    for (int i = 0; i < P; i++)
+        for (int j = 0; j < R; j++)
+            need[i][j] = max[i][j] - alloc[i][j];
+
+    for (int j = 0; j < R; j++) work[j] = avail[j];
+
+    for (int pass = 0; pass < P; pass++) {
+        bool progressed = false;
+
+        for (int i = 0; i < P; i++) {
+            if (finished[i]) continue;
+
+            bool canFinish = true;
+            for (int j = 0; j < R; j++) {
+                if (need[i][j] > work[j]) {
+                    canFinish = false;
+                    break;
+                }
+            }
+
+            if (!canFinish) continue;
+
+            for (int j = 0; j < R; j++)
+                work[j] += alloc[i][j];
+
+            finished[i] = true;
+            seq[count++] = i;
+            progressed = true;
+        }
+
+        if (!progressed) break;
+    }
+
+    return count == P;
+}
+
+int main(void) {
+    int alloc[P][R] = {
+        {0, 1, 0}, {2, 0, 0}, {3, 0, 2},
+        {2, 1, 1}, {0, 0, 2}
+    };
+    int max[P][R] = {
+        {7, 5, 3}, {3, 2, 2}, {9, 0, 2},
+        {2, 2, 2}, {4, 3, 3}
+    };
+    int avail[R] = {3, 3, 2};
+
+    int process = 1;
+    int request[R] = {1, 0, 2};
+    int seq[P];
+
+    int need[R];
+    for (int j = 0; j < R; j++)
+        need[j] = max[process][j] - alloc[process][j];
+
+    for (int j = 0; j < R; j++) {
+        if (request[j] > need[j]) {
+            printf("Denied: request exceeds P%d's Need.\\n", process);
+            return 0;
+        }
+        if (request[j] > avail[j]) {
+            printf("Denied: request exceeds Available. P%d must wait.\\n", process);
+            return 0;
+        }
+    }
+
+    /* Pretend to allocate */
+    for (int j = 0; j < R; j++) {
+        alloc[process][j] += request[j];
+        avail[j] -= request[j];
+    }
+
+    if (isSafe(alloc, max, avail, seq)) {
+        printf("Granted. New Available = [%d %d %d]\\n", avail[0], avail[1], avail[2]);
+        printf("Safe sequence: ");
+        for (int i = 0; i < P; i++) {
+            printf("P%d", seq[i]);
+            if (i < P - 1) printf(" -> ");
+        }
+        printf("\\n");
+    } else {
+        printf("Denied: granting would leave the system unsafe.\\n");
+    }
+
+    return 0;
+}`
+        };
+
+        function updateCodeDisplay() {
+            const selector = document.getElementById('codeAlgoSelect');
+            const algorithm = selector ? selector.value : 'SAFETY';
+            const codeBlock = document.getElementById('codeBlock');
+            const slugs = { SAFETY: 'safety', REQUEST: 'request' };
+            const fileName = `bankers_${slugs[algorithm] || 'safety'}.c`;
+
+            codeBlock.textContent = cCodeSnippets[algorithm];
+            document.getElementById('codeFileName').textContent = fileName;
+            Prism.highlightElement(codeBlock);
+        }
+
+        function fallbackCopyCode(text) {
+            const area = document.createElement('textarea');
+            area.value = text;
+            area.setAttribute('readonly', '');
+            area.style.position = 'fixed';
+            area.style.opacity = '0';
+            document.body.appendChild(area);
+            area.select();
+            document.execCommand('copy');
+            document.body.removeChild(area);
+            alert('C code copied to clipboard!');
+        }
+
+        function copyCode() {
+            const code = document.getElementById('codeBlock').textContent;
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(code)
+                    .then(() => alert('C code copied to clipboard!'))
+                    .catch(() => fallbackCopyCode(code));
+            } else {
+                fallbackCopyCode(code);
+            }
+        }
+
+        function downloadCode() {
+            const code = document.getElementById('codeBlock').textContent;
+            const fileName = document.getElementById('codeFileName').textContent;
+            const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // =========================================================
+        // Initialisation
+        // =========================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPreset('classic');
+            updateCodeDisplay();
+
+            document.getElementById('processCount').addEventListener('change', resizeMatrices);
+            document.getElementById('resourceCount').addEventListener('change', resizeMatrices);
+
+            document.getElementById('presetSelect').addEventListener('change', event => {
+                if (event.target.value) loadPreset(event.target.value);
+            });
+
+            document.querySelectorAll('[data-bs-toggle="pill"]').forEach(tab => {
+                tab.addEventListener('shown.bs.tab', event => {
+                    if (event.target.id === 'tab-request') {
+                        updateRequestHint();
+                        renderRequestBadge();
+                    }
+                });
+            });
+        });
+
+    </script>
+
+</body>
+</html>
