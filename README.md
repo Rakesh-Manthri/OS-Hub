@@ -59,12 +59,103 @@ Styled with a **Tactile Claymorphism** design language, the interface delivers p
 
 ---
 
-### 4. 📖 OS Curriculum & Syllabus (`syllabus.html`)
+### 4. 🧠 Contiguous Memory Allocation Simulator (`memory_allocation.html`)
+- **Algorithms Supported**:
+  - **First Fit** (first adequate block from the lowest address)
+  - **Best Fit** (smallest adequate block)
+  - **Worst Fit** (largest free block)
+- **Partition Modes**:
+  - **Fixed partitions** reserve the whole block, demonstrating internal fragmentation.
+  - **Dynamic partitions** split the chosen block, leaving free holes and demonstrating external fragmentation.
+- **Interactive Memory Map**:
+  - Address-ordered clay memory strip with proportional process blocks, hatched free holes, and per-block address ranges.
+  - Step-by-step playback with play, pause, previous, next, reset, and scrubber controls.
+  - Process-by-process decision banner explaining exactly why a block was chosen or why a request failed.
+- **Metrics & Benchmarks**:
+  - Live KPIs for total memory, processes placed, memory occupied, and internal/external fragmentation.
+  - Allocation results table with partition addresses, leftover holes, wasted capacity, and failure reasons.
+  - Multi-algorithm comparison cards, mini memory maps, and bar charts for allocation count, useful memory load, and fragmentation.
+- **Theory & C Source Code**: Algorithm trade-offs, fragmentation definitions, formula pills, and downloadable C implementations for all three algorithms.
+
+---
+
+### 5. 🛡️ Banker's Algorithm Simulator (`bankers_algorithm.html`)
+- **Deadlock Avoidance Workflow**:
+  - Editable **Allocation** and **Max** matrices for up to 8 processes and 4 resource types, with **Need = Max − Allocation** calculated automatically.
+  - Editable **Available** vector and live resource summary showing allocated, available and total units.
+- **Safety Check Playback**:
+  - Step-by-step safety scan with Play, Pause, Prev, Next, Reset and a scrubber.
+  - Live Work vector, finished-process count, safe-sequence build-up and a decision banner for every process test.
+  - Classic safe, unsafe, mini and request-demo presets, including the standard sequence **P1 → P3 → P4 → P0 → P2**.
+- **Resource-Request Tester**:
+  - Verifies **Request ≤ Need** and **Request ≤ Available**, then pretends to allocate and re-runs the safety algorithm.
+  - Explains granted/denied outcomes, previews the hypothetical safe sequence, and can apply a granted request back to the state matrices.
+- **Theory & C Source Code**: Safety-state definitions, request-check conditions, formula pills, and downloadable C implementations for both the safety algorithm and the resource-request check.
+
+---
+
+### 6. 💽 Disk Scheduling Simulator (`disk_scheduling.html`)
+- **Algorithms Supported**:
+  - **FCFS** (First Come, First Served)
+  - **SSTF** (Shortest Seek Time First)
+  - **SCAN** (Elevator Algorithm)
+  - **C-SCAN** (Circular SCAN)
+  - **LOOK** (Look-Ahead SCAN)
+  - **C-LOOK** (Circular LOOK)
+- **Disk Head Visualization**:
+  - Proportional disk-track lane with pending, served and current request dots plus a live head marker.
+  - SVG seek-path chart showing the service order, disk-edge visits and circular jumps.
+  - Scrollable service-sequence strip and a detailed movement log with per-move distance, cumulative seek and movement type.
+- **Playback & Controls**:
+  - Play, Pause, Prev, Next, Reset and step scrubber.
+  - Initial head, cylinder count, request queue, direction control for the SCAN family, random request generation and textbook presets.
+- **Metrics & Six-Algorithm Benchmark**:
+  - Live total head movement, average seek per request, requests served and head-direction KPIs.
+  - Side-by-side comparison cards and bar charts for total movement and average seek, with the lowest-movement algorithm highlighted.
+- **Theory & C Source Code**: Trade-offs for all six algorithms, seek formulas, edge/jump accounting notes, and downloadable C implementations.
+
+---
+
+### 7. 🍽️ Dining Philosophers Simulator (`dining_philosophers.html`)
+- **Fork Strategies**:
+  - **Naive** — left fork then right fork, exposing the classic circular-wait deadlock.
+  - **Ordered** — lowest-numbered fork first, removing circular wait through a resource hierarchy.
+  - **Waiter** — at most **N − 1** philosophers seated, guaranteeing at least one free fork.
+- **Live Round Table**:
+  - SVG table with philosophers, fork ownership, solid held-fork links, dashed wait-for links, eating pulses and deadlock markers.
+  - Philosopher status table with state chips, held forks, waiting fork, meals and wait history; fork-ownership chips below.
+- **Playback & Detection**:
+  - Play, Pause, Prev, Next, Reset and scrubber; configurable philosopher count (3–7), meal target, eating duration and thinking duration.
+  - Deterministic deadlock detection through the wait-for graph with a circular-wait callout and cycle path.
+  - Event log for arrivals, fork pickups, blocked waits, meals and deadlock detection.
+- **Strategy Benchmark & C Code**: Meals, ticks, longest wait and throughput comparison cards/charts, presets, theory, and downloadable pthread implementations for all three strategies.
+
+---
+
+### 8. 📚 Readers–Writers Simulator (`readers_writers.html`)
+- **Access Policies**:
+  - **Readers preference** — readers keep entering while a writer waits; may starve writers.
+  - **Writers preference** — a waiting writer blocks new readers; may starve readers.
+  - **Fair / FIFO** — arrival-order admission with bounded waiting.
+- **Configurable Workload**:
+  - Reader/writer counts, read/write durations, arrival gap and reader-heavy, balanced or writer-heavy arrival mixes.
+  - Presets for reader flood, writer flood, balanced FIFO and high-contention mixed arrivals.
+- **Live Visualization**:
+  - Shared-resource stage with concurrent reader chips, exclusive writer slot and read/write/idle modes.
+  - Waiting queue with per-process wait ticks and starvation flags.
+  - SVG access timeline showing arrivals, waiting spans and reading/writing blocks, plus a detailed process table with service windows and overtaking status.
+- **Starvation & Fairness Analysis**:
+  - A process is flagged as starved when a later arrival completes first; the event log, callouts, fairness KPI and benchmark cards report it explicitly.
+  - Playback controls, policy comparison cards/charts for longest wait and throughput, theory, and downloadable pthread implementations for all three policies.
+
+---
+
+### 9. 📖 OS Curriculum & Syllabus (`syllabus.html`)
 - **Full Course Specification**: Complete academic breakdown for **Operating Systems (Course Code: U24PC540IT)**, 3 Credits, 3:0:0 Hrs/week.
 - **5 Core Syllabus Units**:
   - **Unit I**: Introduction & Process Management (Types, System Calls, Process Concept, Threads, Uniprocessor & Multiprocessor/RT Scheduling).
   - **Unit II**: Memory Management & Virtual Memory (Swapping, Paging, Segmentation, Demand Paging, Page Replacement, Thrashing).
-  - **Unit III**: Process Synchronization & Deadlocks (IPC, Peterson's Solution, Bakery Algorithm, Semaphores, Monitors, Banker's Algorithm).
+  - **Unit III**: Process Synchronization & Deadlocks (IPC, Peterson's Solution, Bakery Algorithm, Semaphores, Monitors, Dining Philosophers, Readers–Writers, Banker's Algorithm).
   - **Unit IV**: Storage & I/O Management (File Systems, Directory Structures, Disk Scheduling, RAID, Protection Access Matrix).
   - **Unit V**: Case Studies (Windows 10, The Linux System Kernel & IPC, Android OS Architecture & Activity Life Cycle).
 - **Course Outcomes & Objectives**: Mapped CO1–CO5 outcomes with interactive status badges.
@@ -73,7 +164,7 @@ Styled with a **Tactile Claymorphism** design language, the interface delivers p
 
 ---
 
-### 5. 🎓 Pure PDF Slide Deck & Interactive Scribbler (`lecture_notes.html`)
+### 10. 🎓 Pure PDF Slide Deck & Interactive Scribbler (`lecture_notes.html`)
 - **Authentic PDF Page-by-Page Presentation Engine**: Directly renders the authentic 35-page lecture deck (`lecture/1.1.0-Introduction.pdf`) by Dr. S Arun Kumar (Vasavi College of Engineering) with high-DPI retina sharpness.
 - **Single Page Step-by-Step Navigation**: Smooth slide transitions with floating tactile arrows, keyboard arrows (`←`/`→`, `Space`, `PageUp`/`PageDown`, `Home`/`End`), slide counter pill (`1 / 35`), and progress bar.
 - **🎨 Live Chalkboard & Scribble Overlay**:
@@ -149,6 +240,33 @@ $$\text{CPU Utilization} = \left( \frac{\text{Total Time} - \text{Total Idle Tim
 $$\text{Hit Ratio } (\%) = \left( \frac{\text{Total Page Hits}}{\text{Total Page References}} \right) \times 100\%$$
 $$\text{Fault Ratio } (\%) = \left( \frac{\text{Total Page Faults}}{\text{Total Page References}} \right) \times 100\%$$
 
+### Contiguous Memory Allocation
+$$\text{Internal Fragmentation} = \text{Partition Size} - \text{Process Size}$$
+$$\text{External Fragmentation} = \text{Total Free Memory} - \text{Largest Free Hole}$$
+$$\text{Memory Utilisation } (\%) = \left( \frac{\text{Occupied Memory}}{\text{Total Memory}} \right) \times 100\%$$
+
+### Banker's Algorithm
+$$\text{Need}[i][j] = \text{Max}[i][j] - \text{Allocation}[i][j]$$
+$$\text{Work}_{\text{new}} = \text{Work}_{\text{old}} + \text{Allocation}_{P_i} \quad \text{when } \text{Need}_{P_i} \le \text{Work}_{\text{old}}$$
+$$\text{Safe State} \iff \text{a complete finish sequence exists for all processes}$$
+$$\text{Grant Request} \iff \text{Request} \le \text{Need} \;\land\; \text{Request} \le \text{Available} \;\land\; \text{resulting state is safe}$$
+
+### Disk Scheduling
+$$\text{Seek Distance} = |\text{current cylinder} - \text{next cylinder}|$$
+$$\text{Total Head Movement} = \sum \text{Seek Distances}$$
+$$\text{Average Seek} = \frac{\text{Total Head Movement}}{\text{Requests Served}}$$
+
+### Dining Philosophers
+$$\text{Meal Throughput} = \frac{\text{Meals Served}}{\text{Simulation Ticks}}$$
+$$\text{Longest Wait} = \max_{P_i} \left( \text{ticks between hungry and eating} \right)$$
+$$\text{Deadlock} \iff \text{the wait-for graph contains a cycle}$$
+
+### Readers–Writers
+$$\text{Wait} = \text{Grant Tick} - \text{Arrival Tick}$$
+$$\text{Throughput} = \frac{\text{Completed Processes}}{\text{Simulation Ticks}}$$
+$$\text{Reader Concurrency} = |\text{active readers}|$$
+$$\text{Starvation} \iff \text{a later arrival completes before an earlier waiting process}$$
+
 ---
 
 ## 📁 Project Structure
@@ -161,6 +279,12 @@ CPU-Scheduler/
 ├── lecture_notes.html      # High-DPI Interactive Slide Reader, Zoom & Scribble Canvas
 ├── cpu_schedule.html       # Visual CPU Scheduling Simulator & C Code
 ├── page_replacement.html   # Page Replacement Algorithms Simulator & C Code
+├── memory_allocation.html  # Contiguous Memory Allocation (First/Best/Worst Fit) & C Code
+├── bankers_algorithm.html  # Banker's Algorithm Safety Check & Resource Request Simulator
+├── disk_scheduling.html    # Disk Scheduling (FCFS/SSTF/SCAN/C-SCAN/LOOK/C-LOOK) Simulator
+├── dining_philosophers.html # Dining Philosophers (Naive/Ordered/Waiter) Simulator & C Code
+├── readers_writers.html     # Readers–Writers (Readers/Writers/FIFO) Simulator & C Code
+├── simulator-theme.css      # Shared claymorphism theme for the simulator pages
 ├── syllabus.html           # Full Operating Systems Syllabus (U24PC540IT)
 ├── lecture/                # PDF lecture courseware (Unit-1 slide decks & data)
 └── README.md               # Comprehensive platform documentation
