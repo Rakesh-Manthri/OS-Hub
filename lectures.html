@@ -432,6 +432,31 @@
             box-shadow: 0 6px 14px rgba(30, 40, 80, 0.1);
         }
 
+        .btn-download-pptx {
+            background: linear-gradient(145deg, #f59e0b, #d97706);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
+            padding: 0.65rem 1.15rem;
+            font-weight: 700;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            box-shadow: 0 6px 16px rgba(217, 119, 6, 0.28);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-grow: 1;
+        }
+
+        .btn-download-pptx:hover {
+            background: linear-gradient(145deg, #fbbf24, #b45309);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.38);
+        }
+
         /* Coming Soon Badge */
         .badge-coming-soon {
             background: var(--accent-pink-soft);
@@ -575,7 +600,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-auto d-flex justify-content-between align-items-center gap-3">
-                    <span id="resultsCountLabel" class="text-muted fw-bold small">Showing 8 lectures</span>
+                    <span id="resultsCountLabel" class="text-muted fw-bold small">Showing 25 lectures</span>
                     <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold">
                         <i class="bi bi-filter me-1"></i> Live Filter
                     </span>
@@ -587,6 +612,7 @@
         <div class="unit-nav-bar" id="unitNavBar">
             <button class="unit-tab-pill active" data-unit="all">
                 <i class="bi bi-grid-fill"></i> All Units
+                <span class="badge bg-primary text-white ms-1">25</span>
             </button>
             <button class="unit-tab-pill" data-unit="1">
                 <i class="bi bi-1-circle-fill text-primary"></i> Unit I: Process Management
@@ -594,15 +620,15 @@
             </button>
             <button class="unit-tab-pill" data-unit="2">
                 <i class="bi bi-2-circle-fill text-success"></i> Unit II: Memory Management
-                <span class="badge bg-light text-muted ms-1">Soon</span>
+                <span class="badge bg-success-subtle text-success ms-1">6</span>
             </button>
             <button class="unit-tab-pill" data-unit="3">
                 <i class="bi bi-3-circle-fill text-danger"></i> Unit III: Synchronization & Deadlocks
-                <span class="badge bg-light text-muted ms-1">Soon</span>
+                <span class="badge bg-danger-subtle text-danger ms-1">7</span>
             </button>
             <button class="unit-tab-pill" data-unit="4">
                 <i class="bi bi-4-circle-fill text-warning"></i> Unit IV: Storage & I/O
-                <span class="badge bg-light text-muted ms-1">Soon</span>
+                <span class="badge bg-warning-subtle text-warning ms-1">4</span>
             </button>
             <button class="unit-tab-pill" data-unit="5">
                 <i class="bi bi-5-circle-fill text-info"></i> Unit V: Case Studies
@@ -630,7 +656,7 @@
             <div class="row g-4" id="unit1CardsRow">
 
                 <!-- Lecture 1.1.0 -->
-                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-keywords="introduction os goals definitions hardware abstractions dual mode interrupts system call">
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="1" data-keywords="introduction os goals definitions hardware abstractions dual mode interrupts system call">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="lecture-code-badge">
@@ -664,7 +690,7 @@
                 </div>
 
                 <!-- Lecture 1.1.1 -->
-                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-keywords="os functionalities services user interface cli gui touch program execution file system communications error detection accounting">
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="1" data-keywords="os functionalities services user interface cli gui touch program execution file system communications error detection accounting">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="lecture-code-badge">
@@ -698,7 +724,7 @@
                 </div>
 
                 <!-- Lecture 1.1.2 -->
-                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-keywords="system calls api interface trap parameter passing registers stack block process control file management device management">
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="1" data-keywords="system calls api interface trap parameter passing registers stack block process control file management device management">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="lecture-code-badge">
@@ -732,7 +758,7 @@
                 </div>
 
                 <!-- Lecture 1.1.3 -->
-                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-keywords="system boot bootstrap bios uefi kernel initialization post monolithic microkernel modular lkm hybrid">
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="1" data-keywords="system boot bootstrap bios uefi kernel initialization post monolithic microkernel modular lkm hybrid">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="lecture-code-badge">
@@ -766,7 +792,7 @@
                 </div>
 
                 <!-- Lecture 1.2.0 -->
-                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-keywords="process concept states transitions memory text data heap stack 5 state model new ready running waiting terminated">
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="1" data-keywords="process concept states transitions memory text data heap stack 5 state model new ready running waiting terminated">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="lecture-code-badge">
@@ -800,7 +826,7 @@
                 </div>
 
                 <!-- Lecture 1.2.1 -->
-                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-keywords="pcb process control block threads multithreading context switch user threads kernel threads threading models">
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="1" data-keywords="pcb process control block threads multithreading context switch user threads kernel threads threading models">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="lecture-code-badge">
@@ -834,7 +860,7 @@
                 </div>
 
                 <!-- Lecture 1.2.2 -->
-                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-keywords="process scheduling queues job ready device queues long term short term medium term swapper degree of multiprogramming">
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="1" data-keywords="process scheduling queues job ready device queues long term short term medium term swapper degree of multiprogramming">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="lecture-code-badge">
@@ -868,7 +894,7 @@
                 </div>
 
                 <!-- Lecture 1.2.3 -->
-                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-keywords="cpu scheduling algorithms fcfs sjf srtf priority round robin multilevel queue dispatcher utilization throughput turnaround waiting response">
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="1" data-keywords="cpu scheduling algorithms fcfs sjf srtf priority round robin multilevel queue dispatcher utilization throughput turnaround waiting response">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="lecture-code-badge">
@@ -908,7 +934,7 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- UNITS II - V (COMING SOON PLACEHOLDERS)        -->
+        <!-- UNIT II: MEMORY MANAGEMENT                     -->
         <!-- ============================================== -->
         <div class="unit-section mt-5" id="unitSection-2">
             <div class="d-flex align-items-center justify-content-between mb-4">
@@ -917,35 +943,225 @@
                         <span class="badge bg-success-subtle text-success border border-success-subtle me-2">Unit II</span>
                         Memory Management & Virtual Memory
                     </h3>
-                    <p class="text-muted small mb-0">Swapping, contiguous memory allocation, paging, segmentation, demand paging, and page replacement algorithms</p>
+                    <p class="text-muted small mb-0">Address binding, swapping, contiguous allocation, segmentation, paging tables, demand paging, and page replacement</p>
                 </div>
-                <span class="badge-coming-soon">Coming Soon</span>
+                <span class="badge bg-success-subtle text-success fw-bold px-3 py-2 rounded-pill font-monospace d-none d-sm-inline-block">
+                    <i class="bi bi-check-circle-fill me-1"></i>6 Decks Released
+                </span>
             </div>
 
-            <div class="row g-4">
-                <div class="col-12 col-md-6">
-                    <div class="lecture-card" style="opacity: 0.85;">
-                        <span class="badge-coming-soon align-self-start mb-2">Deck In Preparation</span>
-                        <h5 class="fw-bold text-dark">Main Memory Management</h5>
-                        <p class="text-muted small mb-3">Address binding, logical vs physical address space, dynamic loading, dynamic linking, and contiguous allocation.</p>
-                        <div class="mt-auto d-flex gap-2">
-                            <button class="btn btn-sm btn-outline-secondary disabled rounded-pill px-3"><i class="bi bi-clock-history me-1"></i> Coming Soon</button>
+            <div class="row g-4" id="unit2CardsRow">
+
+                <!-- Lecture 2.1 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="memory management background swapping address binding compile load execution time logical physical address space mmu dynamic loading dynamic linking">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(46, 196, 145, 0.12); color: #059669;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 2.1
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">26 Slides</span>
+                                <span class="lecture-meta-chip">761 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Main Memory: Background & Swapping</h4>
+                        <p class="text-success small fw-semibold mb-3">Address Binding, Logical vs Physical Address Spaces & Swapping</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Memory Protection via Base & Limit Registers with Hardware Relocation</li>
+                            <li>Address Binding Stages: Compile Time, Load Time, and Execution Time</li>
+                            <li>Logical vs. Physical Address Space & Memory Management Unit (MMU)</li>
+                            <li>Dynamic Loading, Dynamically Linked Shared Libraries & Standard Swapping</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture_notes.html?file=2.1 Memory Management - Background, Swapping.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-2/2.1 Memory Management - Background, Swapping.pdf" download="2.1 Memory Management - Background, Swapping.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-6">
-                    <div class="lecture-card" style="opacity: 0.85;">
-                        <span class="badge-coming-soon align-self-start mb-2">Deck In Preparation</span>
-                        <h5 class="fw-bold text-dark">Virtual Memory & Page Replacement</h5>
-                        <p class="text-muted small mb-3">Demand paging, page faults, Belady's anomaly, FIFO, LRU, Optimal, LFU, and thrashing.</p>
-                        <div class="mt-auto d-flex gap-2">
-                            <a href="page_replacement.html" class="btn btn-sm btn-outline-primary rounded-pill px-3"><i class="bi bi-memory me-1"></i> Open Page Replacement Simulator</a>
+
+                <!-- Lecture 2.2 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="contiguous memory allocation fixed variable dynamic partitioning placement strategies first fit best fit worst fit internal external fragmentation compaction">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(46, 196, 145, 0.12); color: #059669;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 2.2
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">30 Slides</span>
+                                <span class="lecture-meta-chip">652 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Contiguous Memory Allocation</h4>
+                        <p class="text-success small fw-semibold mb-3">Partition Allocation Heuristics, Fragmentation & Compaction</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Contiguous Allocation Principles & Memory Protection with Relocation Registers</li>
+                            <li>Fixed Multiple-Partition Allocation vs. Dynamic Variable Partitioning</li>
+                            <li>Dynamic Storage Allocation Strategies: First-Fit, Best-Fit, and Worst-Fit</li>
+                            <li>Fragmentation Analysis: Internal vs. External Fragmentation and Compaction</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture_notes.html?file=2.2 Contiguous Memory Allocation.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-2/2.2 Contiguous Memory Allocation.pdf" download="2.2 Contiguous Memory Allocation.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
                         </div>
                     </div>
                 </div>
+
+                <!-- Lecture 2.3 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="segmentation user view memory logical address format segment number offset segment table limit base protection sharing">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(46, 196, 145, 0.12); color: #059669;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 2.3
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">10 Slides</span>
+                                <span class="lecture-meta-chip">238 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Segmentation & Architecture</h4>
+                        <p class="text-success small fw-semibold mb-3">User View of Memory, Segment Tables & Hardware Protection</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Non-contiguous Allocation: Programmer's Modular Perspective of Memory</li>
+                            <li>Two-Dimensional Logical Address Structure: Segment Number (s) & Offset (d)</li>
+                            <li>Segment Table Hardware Architecture: Segment Base and Segment Limit</li>
+                            <li>Protection Verification: Validation Bits, Bounds Checking & Segment Sharing</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture_notes.html?file=2.3. Segmentation.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-2/2.3. Segmentation.pdf" download="2.3. Segmentation.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lecture 2.4 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="paging frames pages page table tlb translation lookaside buffer effective memory access time emat hierarchical multilevel page table inverted">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(46, 196, 145, 0.12); color: #059669;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 2.4
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">38 Slides</span>
+                                <span class="lecture-meta-chip">1.14 MB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Paging & Translation Lookaside Buffers</h4>
+                        <p class="text-success small fw-semibold mb-3">Frames, Pages, Address Translation & TLB Access Time</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Paging Architecture: Physical Frames vs. Logical Pages and Internal Fragmentation</li>
+                            <li>Address Translation Scheme: Page Number (p) and Frame Offset (d) Calculations</li>
+                            <li>Hardware TLB Cache: Hit Ratios & Effective Memory Access Time (EMAT)</li>
+                            <li>Page Table Structures: Hierarchical Multi-Level Paging, Hashed & Inverted Tables</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture_notes.html?file=2.4. Paging.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-2/2.4. Paging.pdf" download="2.4. Paging.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lecture 2.5 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="virtual memory demand paging page fault page replacement algorithms fifo lru optimal belady anomaly second chance frame allocation">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(46, 196, 145, 0.12); color: #059669;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 2.5
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">52 Slides</span>
+                                <span class="lecture-meta-chip">1.11 MB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Virtual Memory & Page Replacement</h4>
+                        <p class="text-success small fw-semibold mb-3">Demand Paging, Page Fault Lifecycle & Replacement Algorithms</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Virtual Memory Paradigm: Executing Programs Larger Than Physical RAM</li>
+                            <li>Demand Paging Workflow: Valid/Invalid Bit, Trap Handling & Swap Operations</li>
+                            <li>Page Replacement Heuristics: FIFO & Belady's Anomaly Demonstration</li>
+                            <li>Optimal Algorithm (OPT), Least Recently Used (LRU) & Counting Schemes (LFU/MFU)</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2 flex-wrap">
+                            <a href="lecture_notes.html?file=2.5 Virtual Memory- Demand Paging, Page Replacement Algorithms.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-2/2.5 Virtual Memory- Demand Paging, Page Replacement Algorithms.pdf" download="2.5 Virtual Memory- Demand Paging, Page Replacement Algorithms.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
+                            <a href="page_replacement.html" class="btn btn-sm btn-outline-success d-inline-flex align-items-center rounded-pill px-3" title="Test in Page Replacement Simulator">
+                                <i class="bi bi-memory me-1"></i> Simulator
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lecture 2.6 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="thrashing working set model page fault frequency kernel memory allocation buddy system slab allocator pptx">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+                                <i class="bi bi-file-earmark-slides-fill"></i> LEC 2.6
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">20 Slides</span>
+                                <span class="lecture-meta-chip">1.63 MB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Thrashing & Allocating Kernel Memory</h4>
+                        <p class="text-warning small fw-semibold mb-3">Working-Set Model, Page-Fault Frequency & Buddy/Slab Allocators</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Thrashing Definition: System Spending More Time Paging Than Executing</li>
+                            <li>Locality Model & Working-Set Strategy for Multiprogramming Throttling</li>
+                            <li>Page-Fault Frequency (PFF) Upper/Lower Bound Frame Allocation Scheme</li>
+                            <li>Allocating Kernel Memory: Buddy System Allocator & Slab Cache Architecture</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture/unit-2/2.6 Virtual Memory-Thrashing,Allocating Kernel Memory.pptx" download="2.6 Virtual Memory-Thrashing,Allocating Kernel Memory.pptx" class="btn-download-pptx" title="Download PowerPoint Deck">
+                                <i class="bi bi-file-earmark-slides-fill"></i> Download PPTX
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
+        <!-- ============================================== -->
+        <!-- UNIT III: PROCESS SYNCHRONIZATION & DEADLOCKS  -->
+        <!-- ============================================== -->
         <div class="unit-section mt-5" id="unitSection-3">
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <div>
@@ -953,30 +1169,268 @@
                         <span class="badge bg-danger-subtle text-danger border border-danger-subtle me-2">Unit III</span>
                         Process Synchronization & Deadlocks
                     </h3>
-                    <p class="text-muted small mb-0">Inter-process communication, critical section problem, semaphores, monitors, and Banker's algorithm</p>
+                    <p class="text-muted small mb-0">Inter-process communication, critical sections, Peterson's & Bakery algorithms, semaphores, monitors, and Banker's algorithm</p>
                 </div>
-                <span class="badge-coming-soon">Coming Soon</span>
+                <span class="badge bg-danger-subtle text-danger fw-bold px-3 py-2 rounded-pill font-monospace d-none d-sm-inline-block">
+                    <i class="bi bi-check-circle-fill me-1"></i>7 Decks Released
+                </span>
             </div>
-            <div class="p-4 bg-white rounded-4 border text-center text-muted">
-                <i class="bi bi-lock-fill fs-2 text-danger mb-2 d-block"></i>
-                <h6 class="fw-bold text-dark">Unit III Slide Decks Coming Soon</h6>
-                <p class="small mb-0">Peterson's Solution, Bakery Algorithm, Semaphores, Critical Section, Monitors, and Deadlock Detection & Avoidance.</p>
-            </div>
-            <div class="p-4 bg-white rounded-4 border mt-3">
-                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-                    <div>
-                        <h6 class="fw-bold text-dark mb-1"><i class="bi bi-play-circle-fill text-success me-2"></i>Interactive simulators available now</h6>
-                        <p class="small text-muted mb-0">Practice synchronization and deadlock concepts while the Unit III slide decks are being prepared.</p>
-                    </div>
-                    <div class="d-flex flex-wrap gap-2">
-                        <a href="bankers_algorithm.html" class="btn btn-sm btn-outline-primary rounded-pill px-3"><i class="bi bi-shield-lock-fill me-1"></i>Banker's</a>
-                        <a href="dining_philosophers.html" class="btn btn-sm btn-outline-danger rounded-pill px-3"><i class="bi bi-people-fill me-1"></i>Dining Philosophers</a>
-                        <a href="readers_writers.html" class="btn btn-sm btn-outline-primary rounded-pill px-3"><i class="bi bi-arrow-left-right me-1"></i>Readers–Writers</a>
+
+            <div class="row g-4" id="unit3CardsRow">
+
+                <!-- Lecture 3.1 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="ipc inter process communication shared memory message passing direct indirect communication mailboxes ports sockets rpc pipes">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 3.1
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">33 Slides</span>
+                                <span class="lecture-meta-chip">1.07 MB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Inter-Process Communication (IPC)</h4>
+                        <p class="text-danger small fw-semibold mb-3">Shared Memory, Message Passing, Sockets & Remote Procedure Calls</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Cooperating Processes: Speedup, Modularity & Inter-Process Coordination</li>
+                            <li>IPC Mechanisms: Shared-Memory Architecture vs. Message-Passing Primitives</li>
+                            <li>Direct vs. Indirect Communication (Mailboxes, Ports, Sync vs Async)</li>
+                            <li>Client-Server Communication Systems: Sockets, RPC, and UNIX Pipes</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture_notes.html?file=3.1 IPC.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-3/3.1 IPC.pdf" download="3.1 IPC.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Lecture 3.2 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="process synchronization race conditions critical section mutual exclusion progress bounded waiting preemptive kernel non preemptive">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 3.2
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">14 Slides</span>
+                                <span class="lecture-meta-chip">226 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Process Synchronization Fundamentals</h4>
+                        <p class="text-danger small fw-semibold mb-3">Race Conditions, Critical Section Problem & Synchronization Criteria</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Race Conditions: Concurrent Modifications & Non-Deterministic Execution</li>
+                            <li>The Critical Section Formulation: Entry, Critical, Exit, and Remainder Sections</li>
+                            <li>Three Essential Correctness Rules: Mutual Exclusion, Progress, Bounded Waiting</li>
+                            <li>Operating System Kernel Handling: Preemptive vs. Non-Preemptive Kernels</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture_notes.html?file=3.2 Process Synchronization Introduction.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-3/3.2 Process Synchronization Introduction.pdf" download="3.2 Process Synchronization Introduction.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lecture 3.2.1 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="petersons solution bakery algorithm software synchronization two process n process turn flag array mutual exclusion proof">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 3.2.1
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">27 Slides</span>
+                                <span class="lecture-meta-chip">302 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Peterson's Solution & Bakery Algorithm</h4>
+                        <p class="text-danger small fw-semibold mb-3">Software-Based Solutions for Two-Process & N-Process Synchronization</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Peterson's Algorithm for Two Processes: Turn Variable & Flag Array Mechanics</li>
+                            <li>Mathematical Proof of Correctness: Mutual Exclusion, Progress, Bounded Waiting</li>
+                            <li>Modern Architecture Limitations: Hardware Memory Reordering & Memory Barriers</li>
+                            <li>Lamport's Bakery Algorithm: Solving N-Process Mutual Exclusion via Ticket Ordering</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture_notes.html?file=3.2.1 Petersons and Bakerys Algorithm.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-3/3.2.1 Petersons and Bakerys Algorithm.pdf" download="3.2.1 Petersons and Bakerys Algorithm.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lecture 3.2.2 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="mutex locks semaphores monitors testandset compareandswap spinlocks wait signal condition variables counting binary">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 3.2.2
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">31 Slides</span>
+                                <span class="lecture-meta-chip">236 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Mutex Locks, Semaphores & Monitors</h4>
+                        <p class="text-danger small fw-semibold mb-3">Hardware Support, Counting/Binary Semaphores & Language Monitors</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Hardware Instructions: Atomic TestAndSet() & CompareAndSwap() Primitives</li>
+                            <li>Mutex Locks: acquire() and release() Operations with Contention Overhead</li>
+                            <li>Semaphores: wait() (P) and signal() (V) Definitions (Counting vs. Binary)</li>
+                            <li>Spinlocks vs. Block-and-Wakeup Queues, High-Level Monitors & Condition Variables</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture_notes.html?file=3.2.2 Mutex Lock,  Semaphores, Moitors.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-3/3.2.2 Mutex Lock,  Semaphores, Moitors.pdf" download="3.2.2 Mutex Lock,  Semaphores, Moitors.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lecture 3.2.3 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="classical synchronization problems bounded buffer producer consumer readers writers dining philosophers deadlock starvation">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 3.2.3
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">21 Slides</span>
+                                <span class="lecture-meta-chip">318 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Classical Synchronization Problems</h4>
+                        <p class="text-danger small fw-semibold mb-3">Bounded-Buffer, Readers-Writers & Dining-Philosophers Solutions</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Bounded-Buffer (Producer-Consumer) Problem using Counting Semaphores</li>
+                            <li>Readers-Writers Problem: Reader-Preference vs. Writer-Preference Solutions</li>
+                            <li>Dining-Philosophers Problem: Deadlock & Starvation Vulnerability Analysis</li>
+                            <li>Deadlock-Free Formulations using Asymmetric Ordering & Monitor Solutions</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2 flex-wrap">
+                            <a href="lecture_notes.html?file=3.2.3 Classical Synchronization Problems.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-3/3.2.3 Classical Synchronization Problems.pdf" download="3.2.3 Classical Synchronization Problems.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
+                            <a href="dining_philosophers.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center rounded-pill px-2" title="Dining Philosophers Simulator">
+                                <i class="bi bi-people-fill me-1"></i> Dining
+                            </a>
+                            <a href="readers_writers.html" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center rounded-pill px-2" title="Readers-Writers Simulator">
+                                <i class="bi bi-arrow-left-right me-1"></i> R/W
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lecture 3.3 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="deadlocks system model 4 necessary conditions mutual exclusion hold wait no preemption circular wait resource allocation graph rag cycle">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 3.3
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">18 Slides</span>
+                                <span class="lecture-meta-chip">237 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Deadlocks: System Model & Conditions</h4>
+                        <p class="text-danger small fw-semibold mb-3">The 4 Coffman Conditions, Resource Graphs & Cycle Analysis</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Deadlock Definition: Infinite Blocking & Contrast with Starvation</li>
+                            <li>The 4 Coffman Necessary Conditions: Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait</li>
+                            <li>Resource Allocation Graph (RAG): Request Edges, Assignment Edges & Claims</li>
+                            <li>Graph Cycles: Necessary Condition vs. Sufficient Condition in Multi-Instance Scenarios</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture_notes.html?file=3.3 Deadlocks Introduction.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-3/3.3 Deadlocks Introduction.pdf" download="3.3 Deadlocks Introduction.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lecture 3.3.1 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="deadlock prevention avoidance detection recovery bankers algorithm safe state safe sequence resource request algorithm">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 3.3.1
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">45 Slides</span>
+                                <span class="lecture-meta-chip">513 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Deadlock Prevention & Banker's Algorithm</h4>
+                        <p class="text-danger small fw-semibold mb-3">Safe States, Banker's Algorithm, Detection & Recovery Strategies</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Deadlock Prevention: Protocol Design to Invalidate Each of the 4 Conditions</li>
+                            <li>Deadlock Avoidance Theory: Safe State Definition & Safe Execution Sequences</li>
+                            <li>Banker's Algorithm: Available, Max, Allocation & Need Matrices Analysis</li>
+                            <li>Safety Algorithm, Resource-Request Algorithm, Detection & Recovery Policies</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2 flex-wrap">
+                            <a href="lecture_notes.html?file=3.3.1 Deadlocks Preention, Avoidance, Bankers Algorithm.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-3/3.3.1 Deadlocks Preention, Avoidance, Bankers Algorithm.pdf" download="3.3.1 Deadlocks Preention, Avoidance, Bankers Algorithm.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
+                            <a href="bankers_algorithm.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center rounded-pill px-3" title="Test in Banker's Algorithm Simulator">
+                                <i class="bi bi-shield-lock-fill me-1"></i> Simulator
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
+        <!-- ============================================== -->
+        <!-- UNIT IV: STORAGE AND I/O MANAGEMENT            -->
+        <!-- ============================================== -->
         <div class="unit-section mt-5" id="unitSection-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <div>
@@ -984,14 +1438,148 @@
                         <span class="badge bg-warning-subtle text-warning border border-warning-subtle me-2">Unit IV</span>
                         Storage and I/O Management
                     </h3>
-                    <p class="text-muted small mb-0">File systems, directory structure, disk scheduling, RAID levels, and system protection</p>
+                    <p class="text-muted small mb-0">File systems, directory structure, allocation methods, disk structure, disk scheduling, and RAID architectures</p>
                 </div>
-                <span class="badge-coming-soon">Coming Soon</span>
+                <span class="badge bg-warning-subtle text-warning fw-bold px-3 py-2 rounded-pill font-monospace d-none d-sm-inline-block">
+                    <i class="bi bi-check-circle-fill me-1"></i>4 Decks Released
+                </span>
             </div>
-            <div class="p-4 bg-white rounded-4 border text-center text-muted">
-                <i class="bi bi-hdd-fill fs-2 text-warning mb-2 d-block"></i>
-                <h6 class="fw-bold text-dark">Unit IV Slide Decks Coming Soon</h6>
-                <p class="small mb-0">File System Allocation Methods, Free Space Management, Disk Scheduling (FCFS, SSTF, SCAN, C-SCAN), and RAID Architectures.</p>
+
+            <div class="row g-4" id="unit4CardsRow">
+
+                <!-- Lecture 4.1 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="file concept file attributes operations create read write reposition access methods sequential direct indexed pptx">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+                                <i class="bi bi-file-earmark-slides-fill"></i> LEC 4.1
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">38 Slides</span>
+                                <span class="lecture-meta-chip">544 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">File Concept, Operations & Access</h4>
+                        <p class="text-warning small fw-semibold mb-3">File Attributes, Types, File Operations & Access Methods</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>File Concept: Logical Storage Abstraction Over Non-Volatile Physical Devices</li>
+                            <li>File Attributes: Name, Identifier, Type, Location, Size, Protection, Timestamps</li>
+                            <li>File Operations: Create, Write, Read, Reposition (Seek), Delete, Truncate, Open/Close</li>
+                            <li>Access Methods: Sequential Access, Direct (Relative) Access, and Indexed Access</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture/unit-4/4.1-File Concept.pptx" download="4.1-File Concept.pptx" class="btn-download-pptx" title="Download PowerPoint Deck">
+                                <i class="bi bi-file-earmark-slides-fill"></i> Download PPTX
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lecture 4.2 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="file system structure mounting directory structure allocation methods contiguous linked indexed free space management bit vector pptx">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+                                <i class="bi bi-file-earmark-slides-fill"></i> LEC 4.2
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">20 Slides</span>
+                                <span class="lecture-meta-chip">432 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">File Structure, Mounting & Allocation</h4>
+                        <p class="text-warning small fw-semibold mb-3">Layered Architecture, Directory Trees, Allocation & Free Space</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Layered File System: Logical File System, File-Organization, Basic File System, I/O</li>
+                            <li>Directory Organization: Single-Level, Two-Level, Tree-Structured, and Acyclic-Graph</li>
+                            <li>Allocation Methods: Contiguous Allocation, Linked Allocation, and Indexed Allocation (Inodes)</li>
+                            <li>Free-Space Management: Bit Vector / Bit Map, Linked Free Lists, Grouping & Counting</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture/unit-4/4.2-File Structure, Mounting, Directory Structure, Allocation Methods, Free Space Management.pptx" download="4.2-File Structure, Mounting, Directory Structure, Allocation Methods, Free Space Management.pptx" class="btn-download-pptx" title="Download PowerPoint Deck">
+                                <i class="bi bi-file-earmark-slides-fill"></i> Download PPTX
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lecture 4.3 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="disk structure disk scheduling algorithms fcfs sstf scan cscan look clook seek time rotational latency cylinder platter">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 4.3
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">25 Slides</span>
+                                <span class="lecture-meta-chip">683 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">Disk Structure & Disk Scheduling</h4>
+                        <p class="text-warning small fw-semibold mb-3">Magnetic Disks, Seek Latency & Head Scheduling Algorithms</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Physical Disk Geometry: Platters, Tracks, Cylinders, Sectors & Read-Write Heads</li>
+                            <li>Disk Timing Performance: Seek Time, Rotational Latency, and Data Transfer Rate</li>
+                            <li>Basic Scheduling Algorithms: First-Come, First-Served (FCFS) & Shortest Seek Time First (SSTF)</li>
+                            <li>Scan Algorithms: SCAN (Elevator Algorithm), C-SCAN, LOOK, and C-LOOK Algorithms</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2 flex-wrap">
+                            <a href="lecture_notes.html?file=4.3 Disk Structure, Disk Scheduling Algorithms.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-4/4.3 Disk Structure, Disk Scheduling Algorithms.pdf" download="4.3 Disk Structure, Disk Scheduling Algorithms.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
+                            <a href="disk_scheduling.html" class="btn btn-sm btn-outline-warning d-inline-flex align-items-center rounded-pill px-3" title="Test in Disk Scheduling Simulator">
+                                <i class="bi bi-hdd-fill me-1"></i> Simulator
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lecture 4.3.1 -->
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="raid structure redundancy disk striping mirroring parity raid 0 raid 1 raid 5 raid 6 nested raid reliability">
+                    <div class="lecture-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+                                <i class="bi bi-journal-bookmark-fill"></i> LEC 4.3.1
+                            </span>
+                            <div class="d-flex gap-1">
+                                <span class="lecture-meta-chip">19 Slides</span>
+                                <span class="lecture-meta-chip">898 KB</span>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-1">RAID Structure & Redundancy Levels</h4>
+                        <p class="text-warning small fw-semibold mb-3">Striping, Mirroring, Parity & RAID Architectures (0 through 6)</p>
+
+                        <ul class="lecture-topics-list">
+                            <li>Redundant Array of Independent Disks (RAID) Motivations & Mean Time to Failure</li>
+                            <li>Data Striping: Bit-Level Striping vs. Block-Level Striping for Throughput</li>
+                            <li>Redundancy Paradigms: Disk Mirroring (RAID 1) vs. Parity Bits (RAID 3, 4, 5, 6)</li>
+                            <li>RAID Classification: RAID 0, 1, 5 (Distributed Parity), RAID 6 (Dual Parity) & Nested 0+1/1+0</li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a href="lecture_notes.html?file=4.3.1 RAID Structure.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-4/4.3.1 RAID Structure.pdf" download="4.3.1 RAID Structure.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -1059,22 +1647,14 @@
             const query = searchInput.value.toLowerCase().trim();
             let visibleCount = 0;
 
-            // Handle Unit Sections Visibility
-            unitSections.forEach(section => {
-                const sectionUnit = section.id.replace('unitSection-', '');
-                if (activeUnit === 'all' || activeUnit === sectionUnit) {
-                    section.style.display = 'block';
-                } else {
-                    section.style.display = 'none';
-                }
-            });
-
-            // Filter individual lecture cards in Unit 1
-            lectureCards.forEach(card => {
+            // Filter individual lecture cards across all units
+            const cards = document.querySelectorAll('.lecture-card-item');
+            cards.forEach(card => {
                 const text = card.textContent.toLowerCase();
                 const keywords = (card.getAttribute('data-keywords') || '').toLowerCase();
+                const cardUnit = card.getAttribute('data-unit') || '1';
                 const matchesQuery = (!query || text.includes(query) || keywords.includes(query));
-                const matchesUnit = (activeUnit === 'all' || activeUnit === '1');
+                const matchesUnit = (activeUnit === 'all' || activeUnit === cardUnit);
 
                 if (matchesQuery && matchesUnit) {
                     card.style.display = 'block';
@@ -1084,8 +1664,39 @@
                 }
             });
 
+            // Handle Unit Sections Visibility
+            unitSections.forEach(section => {
+                const sectionUnit = section.id.replace('unitSection-', '');
+                if (activeUnit === 'all' || activeUnit === sectionUnit) {
+                    if (query && sectionUnit !== '5') {
+                        const hasMatchingCard = Array.from(section.querySelectorAll('.lecture-card-item')).some(c => c.style.display !== 'none');
+                        section.style.display = hasMatchingCard ? 'block' : 'none';
+                    } else if (query && sectionUnit === '5') {
+                        section.style.display = 'none';
+                    } else {
+                        section.style.display = 'block';
+                    }
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+
             resultsCountLabel.textContent = `Showing ${visibleCount} lecture${visibleCount === 1 ? '' : 's'}`;
         }
+
+        // Check for URL query parameter (e.g. ?unit=2)
+        const urlParams = new URLSearchParams(window.location.search);
+        const reqUnit = urlParams.get('unit');
+        if (reqUnit && ['1', '2', '3', '4', '5'].includes(reqUnit)) {
+            unitTabs.forEach(tab => {
+                if (tab.getAttribute('data-unit') === reqUnit) {
+                    unitTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    activeUnit = reqUnit;
+                }
+            });
+        }
+        filterLectures();
     </script>
 </body>
 

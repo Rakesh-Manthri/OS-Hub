@@ -1338,46 +1338,61 @@
                 </div>
                 <div class="modal-body py-4 px-4 px-md-5">
                     <div class="list-group list-group-flush">
-                        <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent py-3 border-bottom">
+                        <div class="list-group-item d-flex flex-wrap justify-content-between align-items-center bg-transparent py-3 border-bottom gap-2">
                             <div>
-                                <h6 class="fw-bold mb-1">Module 1: Introduction, Architecture & System Calls</h6>
-                                <p class="text-muted small mb-0">Hardware abstraction, dual-mode operation, system calls, 35 lecture slides with scribbler.</p>
+                                <h6 class="fw-bold mb-1"><span class="badge bg-primary-subtle text-primary me-2">Unit I</span>Introduction & Process Management</h6>
+                                <p class="text-muted small mb-0">OS functionalities, system calls, system boot, PCB, threads, and uniprocessor scheduling. (8 Decks Available)</p>
                             </div>
-                            <a href="lecture_notes.html" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-play-circle-fill me-1"></i> Launch Reader
-                            </a>
-                        </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent py-3 border-bottom">
-                            <div>
-                                <h6 class="fw-bold mb-1">Module 2: CPU Scheduling & Dispatching</h6>
-                                <p class="text-muted small mb-0">Preemptive vs non-preemptive scheduling, turnaround time, waiting time, convoy effect.</p>
-                            </div>
-                            <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='cpu_schedule.html'">Launch Simulator</button>
-                        </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent py-3 border-bottom">
-                            <div>
-                                <h6 class="fw-bold mb-1">Module 3: Virtual Memory & Page Replacement</h6>
-                                <p class="text-muted small mb-0">Multi-level page tables, TLB hits/misses, Belady's anomaly, LRU, FIFO, Optimal.</p>
-                            </div>
-                            <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='page_replacement.html'">Launch Simulator</button>
-                        </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent py-3 border-bottom gap-3">
-                            <div>
-                                <h6 class="fw-bold mb-1">Module 4: Concurrency, Deadlocks & Synchronization</h6>
-                                <p class="text-muted small mb-0">Critical sections, Peterson's algorithm, semaphores, deadlock avoidance, dining philosophers and readers–writers.</p>
-                            </div>
-                            <div class="d-flex flex-wrap gap-2 justify-content-end">
-                                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='bankers_algorithm.html'">Banker's</button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="window.location.href='dining_philosophers.html'">Dining</button>
-                                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='readers_writers.html'">R/W</button>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="lectures.html?unit=1" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-collection-play me-1"></i> View 8 Decks
+                                </a>
+                                <a href="cpu_schedule.html" class="btn btn-sm btn-outline-primary">CPU Simulator</a>
                             </div>
                         </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent py-3 gap-3">
+                        <div class="list-group-item d-flex flex-wrap justify-content-between align-items-center bg-transparent py-3 border-bottom gap-2">
                             <div>
-                                <h6 class="fw-bold mb-1">Module 5: Storage, I/O & Disk Scheduling</h6>
-                                <p class="text-muted small mb-0">Disk structure, seek time, FCFS, SSTF, SCAN, C-SCAN, LOOK and C-LOOK movement.</p>
+                                <h6 class="fw-bold mb-1"><span class="badge bg-success-subtle text-success me-2">Unit II</span>Memory Management & Virtual Memory</h6>
+                                <p class="text-muted small mb-0">Swapping, contiguous allocation, paging, segmentation, demand paging, and page replacement. (6 Decks Available)</p>
                             </div>
-                            <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='disk_scheduling.html'">Launch Disk Simulator</button>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="lectures.html?unit=2" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-collection-play me-1"></i> View 6 Decks
+                                </a>
+                                <a href="page_replacement.html" class="btn btn-sm btn-outline-success">Page Simulator</a>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex flex-wrap justify-content-between align-items-center bg-transparent py-3 border-bottom gap-2">
+                            <div>
+                                <h6 class="fw-bold mb-1"><span class="badge bg-danger-subtle text-danger me-2">Unit III</span>Process Synchronization & Deadlocks</h6>
+                                <p class="text-muted small mb-0">IPC, Peterson's & Bakery algorithms, semaphores, classical synchronization, and Banker's algorithm. (7 Decks Available)</p>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="lectures.html?unit=3" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-collection-play me-1"></i> View 7 Decks
+                                </a>
+                                <a href="bankers_algorithm.html" class="btn btn-sm btn-outline-danger">Banker's</a>
+                                <a href="dining_philosophers.html" class="btn btn-sm btn-outline-danger">Dining</a>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex flex-wrap justify-content-between align-items-center bg-transparent py-3 border-bottom gap-2">
+                            <div>
+                                <h6 class="fw-bold mb-1"><span class="badge bg-warning-subtle text-warning me-2">Unit IV</span>Storage and I/O Management</h6>
+                                <p class="text-muted small mb-0">File concept, directory mounting, disk structure, FCFS/SSTF/SCAN disk scheduling, and RAID levels. (4 Decks Available)</p>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="lectures.html?unit=4" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-collection-play me-1"></i> View 4 Decks
+                                </a>
+                                <a href="disk_scheduling.html" class="btn btn-sm btn-outline-warning">Disk Simulator</a>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex flex-wrap justify-content-between align-items-center bg-transparent py-3 gap-2">
+                            <div>
+                                <h6 class="fw-bold mb-1"><span class="badge bg-info-subtle text-info me-2">Unit V</span>Operating System Case Studies</h6>
+                                <p class="text-muted small mb-0">Windows 10, Linux kernel modules, and Android OS architecture stack and UI lifecycle.</p>
+                            </div>
+                            <span class="badge bg-light text-muted border px-3 py-2 rounded-pill">In Preparation</span>
                         </div>
                     </div>
                 </div>
