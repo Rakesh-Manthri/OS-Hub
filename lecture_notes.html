@@ -7,23 +7,16 @@
     <title>OS EduHub — Lecture 01 Slide Deck (1.1.0 Introduction)</title>
 
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- PDF.js Engine -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
-    <!-- Pre-embedded PDF Data for instant zero-CORS file:// loading -->
-    <script src="lecture/pdfData.js"></script>
-    <script src="lecture/unit1_data.js"></script>
-    <script src="lecture/unit2_data.js"></script>
-    <script src="lecture/unit3_data.js"></script>
-    <script src="lecture/unit4_data.js"></script>
+    <script src="vendor/pdfjs/pdf.min.js"></script>
 
     <style>
         :root {
@@ -1098,14 +1091,14 @@
     </div>
 
     <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
 
     <!-- ============================================== -->
     <!-- SLIDE DECK ENGINE JAVASCRIPT                   -->
     <!-- ============================================== -->
     <script>
         // PDF.js Worker Configuration
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'vendor/pdfjs/pdf.worker.min.js';
 
         // Core Presentation State
         let pdfDoc = null;
@@ -1193,7 +1186,10 @@
             return `os_pdf_${prefix}_${safeName}_p${pageNum}`;
         }
 
-        // 1. PDF Loading Engine (Triple-Robust: Base64 offline -> Fetch relative -> File upload fallback)
+        // 1. PDF Loading Engine (Fetch the PDF file directly -> File upload fallback)
+        // Decks live as plain files under lecture/unit-1..4 and are fetched with
+        // PDF.js, so no embedded base64 copies are needed. On file:// the fetch
+        // is blocked by the browser; use Upload / drag-and-drop in that case.
         async function initPdfDeck() {
             showLoading("Loading Lecture Slides...");
             try {
@@ -1205,38 +1201,12 @@
                 if (badge) badge.innerHTML = `<i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> ${activePdfName}`;
                 document.title = `OS EduHub — ${activePdfName.replace('.pdf', '')}`;
 
-                // Strategy A: Pre-embedded Base64 in window.ALL_PDF_DATA / UNIT DATA or DEFAULT_PDF_BASE64
-                const allData = window.ALL_PDF_DATA || {};
-                const u1Data = window.UNIT1_PDF_DATA || {};
-                const u2Data = window.UNIT2_PDF_DATA || {};
-                const u3Data = window.UNIT3_PDF_DATA || {};
-                const u4Data = window.UNIT4_PDF_DATA || {};
-                const b64Data = allData[activePdfName] || u1Data[activePdfName] || u2Data[activePdfName] || u3Data[activePdfName] || u4Data[activePdfName];
-
-                if (b64Data) {
-                    const binaryString = atob(b64Data);
-                    const len = binaryString.length;
-                    const bytes = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
-                    }
-                    pdfDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
-                } else if (window.DEFAULT_PDF_BASE64 && activePdfName === '1.1.0-Introduction.pdf') {
-                    const binaryString = atob(window.DEFAULT_PDF_BASE64);
-                    const len = binaryString.length;
-                    const bytes = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
-                    }
-                    pdfDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
-                } else {
-                    // Strategy B: Fetch relative PDF file based on unit number
-                    let unitFolder = 'unit-1';
-                    if (activePdfName.startsWith('2.') || targetParam.includes('unit-2')) unitFolder = 'unit-2';
-                    else if (activePdfName.startsWith('3.') || targetParam.includes('unit-3')) unitFolder = 'unit-3';
-                    else if (activePdfName.startsWith('4.') || targetParam.includes('unit-4')) unitFolder = 'unit-4';
-                    pdfDoc = await pdfjsLib.getDocument(`lecture/${unitFolder}/${activePdfName}`).promise;
-                }
+                // Load the PDF directly from lecture/<unit>/<file>
+                let unitFolder = 'unit-1';
+                if (activePdfName.startsWith('2.') || targetParam.includes('unit-2')) unitFolder = 'unit-2';
+                else if (activePdfName.startsWith('3.') || targetParam.includes('unit-3')) unitFolder = 'unit-3';
+                else if (activePdfName.startsWith('4.') || targetParam.includes('unit-4')) unitFolder = 'unit-4';
+                pdfDoc = await pdfjsLib.getDocument(`lecture/${unitFolder}/${activePdfName}`).promise;
 
                 totalPages = pdfDoc.numPages;
                 totalSlidesNum.textContent = totalPages;
@@ -1246,21 +1216,7 @@
                 renderSlide(currentPage);
                 generateThumbnails();
             } catch (err) {
-                console.warn("Auto-load failed, trying fallback:", err);
-                try {
-                    if (window.DEFAULT_PDF_BASE64) {
-                        activePdfName = '1.1.0-Introduction.pdf';
-                        const binaryString = atob(window.DEFAULT_PDF_BASE64);
-                        const bytes = new Uint8Array(binaryString.length);
-                        for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
-                        pdfDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
-                        totalPages = pdfDoc.numPages;
-                        totalSlidesNum.textContent = totalPages;
-                        renderSlide(1);
-                        generateThumbnails();
-                        return;
-                    }
-                } catch (e2) {}
+                console.warn("Auto-load failed, use Upload / drag-and-drop:", err);
                 hideLoading();
                 loadingLabel.textContent = "Please select or drop PDF file";
                 showLoading("Upload / Import PDF to start");

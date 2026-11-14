@@ -7,9 +7,9 @@
     <title>OS EduHub — Operating Systems Lecture Slides & Courseware</title>
 
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -430,31 +430,6 @@
             border-color: #94a3b8;
             transform: translateY(-2px);
             box-shadow: 0 6px 14px rgba(30, 40, 80, 0.1);
-        }
-
-        .btn-download-pptx {
-            background: linear-gradient(145deg, #f59e0b, #d97706);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 16px;
-            padding: 0.65rem 1.15rem;
-            font-weight: 700;
-            font-size: 0.88rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
-            text-decoration: none;
-            box-shadow: 0 6px 16px rgba(217, 119, 6, 0.28);
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-            flex-grow: 1;
-        }
-
-        .btn-download-pptx:hover {
-            background: linear-gradient(145deg, #fbbf24, #b45309);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.38);
         }
 
         /* Coming Soon Badge */
@@ -1126,7 +1101,7 @@
                 </div>
 
                 <!-- Lecture 2.6 -->
-                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="thrashing working set model page fault frequency kernel memory allocation buddy system slab allocator pptx">
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="thrashing working set model page fault frequency kernel memory allocation buddy system slab allocator">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
@@ -1134,7 +1109,7 @@
                             </span>
                             <div class="d-flex gap-1">
                                 <span class="lecture-meta-chip">20 Slides</span>
-                                <span class="lecture-meta-chip">1.63 MB</span>
+                                <span class="lecture-meta-chip">338 KB</span>
                             </div>
                         </div>
 
@@ -1149,8 +1124,11 @@
                         </ul>
 
                         <div class="mt-auto pt-3 border-top d-flex gap-2">
-                            <a href="lecture/unit-2/2.6 Virtual Memory-Thrashing,Allocating Kernel Memory.pptx" download="2.6 Virtual Memory-Thrashing,Allocating Kernel Memory.pptx" class="btn-download-pptx" title="Download PowerPoint Deck">
-                                <i class="bi bi-file-earmark-slides-fill"></i> Download PPTX
+                            <a href="lecture_notes.html?file=2.6 Virtual Memory-Thrashing,Allocating Kernel Memory.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-2/2.6 Virtual Memory-Thrashing,Allocating Kernel Memory.pdf" download="2.6 Virtual Memory-Thrashing,Allocating Kernel Memory.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
                             </a>
                         </div>
                     </div>
@@ -1448,7 +1426,7 @@
             <div class="row g-4" id="unit4CardsRow">
 
                 <!-- Lecture 4.1 -->
-                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="file concept file attributes operations create read write reposition access methods sequential direct indexed pptx">
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="file concept file attributes operations create read write reposition access methods sequential direct indexed">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
@@ -1456,7 +1434,7 @@
                             </span>
                             <div class="d-flex gap-1">
                                 <span class="lecture-meta-chip">38 Slides</span>
-                                <span class="lecture-meta-chip">544 KB</span>
+                                <span class="lecture-meta-chip">495 KB</span>
                             </div>
                         </div>
 
@@ -1471,15 +1449,18 @@
                         </ul>
 
                         <div class="mt-auto pt-3 border-top d-flex gap-2">
-                            <a href="lecture/unit-4/4.1-File Concept.pptx" download="4.1-File Concept.pptx" class="btn-download-pptx" title="Download PowerPoint Deck">
-                                <i class="bi bi-file-earmark-slides-fill"></i> Download PPTX
+                            <a href="lecture_notes.html?file=4.1-File Concept.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-4/4.1-File Concept.pdf" download="4.1-File Concept.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
                             </a>
                         </div>
                     </div>
                 </div>
 
                 <!-- Lecture 4.2 -->
-                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="file system structure mounting directory structure allocation methods contiguous linked indexed free space management bit vector pptx">
+                <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="file system structure mounting directory structure allocation methods contiguous linked indexed free space management bit vector">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
@@ -1487,7 +1468,7 @@
                             </span>
                             <div class="d-flex gap-1">
                                 <span class="lecture-meta-chip">20 Slides</span>
-                                <span class="lecture-meta-chip">432 KB</span>
+                                <span class="lecture-meta-chip">307 KB</span>
                             </div>
                         </div>
 
@@ -1502,8 +1483,11 @@
                         </ul>
 
                         <div class="mt-auto pt-3 border-top d-flex gap-2">
-                            <a href="lecture/unit-4/4.2-File Structure, Mounting, Directory Structure, Allocation Methods, Free Space Management.pptx" download="4.2-File Structure, Mounting, Directory Structure, Allocation Methods, Free Space Management.pptx" class="btn-download-pptx" title="Download PowerPoint Deck">
-                                <i class="bi bi-file-earmark-slides-fill"></i> Download PPTX
+                            <a href="lecture_notes.html?file=4.2-File Structure, Mounting, Directory Structure, Allocation Methods, Free Space Management.pdf" class="btn-view-slides">
+                                <i class="bi bi-easel2-fill"></i> View Slides
+                            </a>
+                            <a href="lecture/unit-4/4.2-File Structure, Mounting, Directory Structure, Allocation Methods, Free Space Management.pdf" download="4.2-File Structure, Mounting, Directory Structure, Allocation Methods, Free Space Management.pdf" class="btn-download-pdf" title="Download PDF Deck">
+                                <i class="bi bi-download"></i> PDF
                             </a>
                         </div>
                     </div>
@@ -1616,7 +1600,7 @@
     </footer>
 
     <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
 
     <!-- Interactive Filtering & Search Script -->
     <script>
