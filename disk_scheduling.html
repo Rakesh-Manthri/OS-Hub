@@ -7,12 +7,13 @@
 
     <!-- Bootstrap 5 CSS -->
     <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="design.css">
     <!-- Bootstrap Icons -->
     <link href="vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700" rel="stylesheet">
     <!-- Prism.js -->
     <link href="vendor/prism/prism-tomorrow.min.css" rel="stylesheet" />
     <!-- Shared claymorphism theme -->
@@ -21,10 +22,10 @@
     <style>
         /* Disk Lane */
         .disk-lane {
-            background: #f0f4fa;
-            border-radius: 24px;
+            background: #F8FAFF;
+            border-radius: 12px;
             padding: 1.15rem 1.2rem 0.9rem;
-            box-shadow: inset 3px 3px 8px rgba(160, 175, 205, 0.28), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .disk-track-wrap {
@@ -40,8 +41,8 @@
             top: 50px;
             height: 11px;
             border-radius: 999px;
-            background: linear-gradient(90deg, #dbe4f0, #eef3fa 50%, #dbe4f0);
-            box-shadow: inset 2px 2px 5px rgba(160, 175, 205, 0.38), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+            background: #DBEAFE;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .disk-request-dot {
@@ -51,22 +52,22 @@
             height: 15px;
             border-radius: 50%;
             transform: translate(-50%, -50%);
-            border: 3px solid #ffffff;
-            background: #f59e0b;
-            box-shadow: 0 3px 8px rgba(245, 158, 11, 0.35);
+            border: 1px solid #DCE6F2;
+            background: #2563EB;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             z-index: 2;
             transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
         }
 
         .disk-request-dot.served {
-            background: #2ec491;
-            box-shadow: 0 3px 8px rgba(46, 196, 145, 0.32);
+            background: #16A34A;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             transform: translate(-50%, -50%) scale(0.85);
         }
 
         .disk-request-dot.current {
-            background: #436cf5;
-            box-shadow: 0 0 0 6px rgba(67, 108, 245, 0.22), 0 4px 10px rgba(67, 108, 245, 0.4);
+            background: #2563EB;
+            box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.22), 0 4px 10px rgba(37, 99, 235, 0.4);
             transform: translate(-50%, -50%) scale(1.15);
             z-index: 4;
         }
@@ -77,11 +78,11 @@
             width: 3px;
             height: 54px;
             border-radius: 999px;
-            background: linear-gradient(180deg, #436cf5, #2b55df);
+            background: #2563EB;
             transform: translateX(-50%);
             z-index: 5;
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.75), 0 4px 10px rgba(67, 108, 245, 0.3);
-            transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.75), 0 4px 10px rgba(37, 99, 235, 0.3);
+            transition: left 0.4s cubic-bezier(0.2, 0, 0, 1);
         }
 
         .disk-head-marker::after {
@@ -94,7 +95,7 @@
             transform: translateX(-50%);
             border-left: 7px solid transparent;
             border-right: 7px solid transparent;
-            border-top: 9px solid #2b55df;
+            border-top: 9px solid #1D4ED8;
         }
 
         .disk-head-label {
@@ -102,15 +103,15 @@
             top: -12px;
             left: 50%;
             transform: translateX(-50%);
-            background: #436cf5;
+            background: #2563EB;
             color: #ffffff;
-            border-radius: 8px;
+            border-radius: 6px;
             padding: 1px 7px;
             font-family: var(--font-mono);
             font-size: 0.66rem;
             font-weight: 800;
             white-space: nowrap;
-            box-shadow: 0 3px 7px rgba(67, 108, 245, 0.3);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .disk-scale {
@@ -140,15 +141,15 @@
             border-radius: 50%;
             display: inline-block;
             border: 2px solid #ffffff;
-            box-shadow: 0 1px 3px rgba(30, 40, 80, 0.2);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         /* Seek Chart */
         .seek-panel {
-            background: #f0f4fa;
-            border-radius: 22px;
+            background: #F8FAFF;
+            border-radius: 12px;
             padding: 0.9rem;
-            box-shadow: inset 3px 3px 8px rgba(160, 175, 205, 0.25), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         #seekChart {
@@ -178,46 +179,46 @@
             min-width: 40px;
             height: 36px;
             padding: 0 0.55rem;
-            border-radius: 11px;
-            background: linear-gradient(145deg, #38cf9b, #2ec491);
+            border-radius: 8px;
+            background: #22C55E;
             color: #ffffff;
             font-family: var(--font-mono);
             font-size: 0.78rem;
             font-weight: 800;
-            box-shadow: 0 3px 8px rgba(46, 196, 145, 0.25), inset 1px 1px 2px rgba(255, 255, 255, 0.55);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             white-space: nowrap;
         }
 
         .seq-chip.pending {
-            background: #eef3f8;
-            color: #94a3b8;
-            border: 1px dashed #cbd5e1;
-            box-shadow: none;
+            background: #F8FAFF;
+            color: #7A8DB0;
+            border: 1px dashed #C7D6EE;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .seq-chip.current {
-            background: linear-gradient(145deg, #628efb, #436cf5);
-            box-shadow: 0 4px 11px rgba(67, 108, 245, 0.35), inset 1px 1px 2px rgba(255, 255, 255, 0.55);
+            background: #3B82F6;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .seq-chip.start {
-            background: #334155;
-            box-shadow: 0 3px 8px rgba(51, 65, 85, 0.3);
+            background: #2A3B5C;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .seq-chip.boundary {
-            background: linear-gradient(145deg, #fbbf24, #f59e0b);
-            box-shadow: 0 3px 8px rgba(245, 158, 11, 0.28);
+            background: #3B82F6;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .seq-chip.jump {
-            background: linear-gradient(145deg, #fb6d93, #f75583);
-            box-shadow: 0 3px 8px rgba(247, 85, 131, 0.28);
+            background: #3B82F6;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             border: 2px dashed rgba(255, 255, 255, 0.8);
         }
 
         .seq-arrow {
-            color: #94a3b8;
+            color: #7A8DB0;
             font-size: 0.82rem;
             font-weight: 800;
         }
@@ -229,11 +230,11 @@
 
         /* Movement Table */
         .current-move-row td {
-            background: #edf3fe !important;
+            background: #EFF6FF !important;
         }
 
         .current-move-row td:first-child {
-            box-shadow: inset 4px 0 0 var(--primary-blue);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .result-pending {
@@ -253,7 +254,7 @@
             justify-content: space-between;
             gap: 0.5rem;
             background: rgba(255, 255, 255, 0.72);
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 0.38rem 0.55rem;
             font-size: 0.74rem;
             font-weight: 700;
@@ -270,33 +271,33 @@
             display: block;
             width: 100%;
             height: 82px;
-            background: #f0f4fa;
-            border-radius: 14px;
-            box-shadow: inset 2px 2px 6px rgba(160, 175, 205, 0.24), inset -2px -2px 6px rgba(255, 255, 255, 0.9);
+            background: #F8FAFF;
+            border-radius: 10px;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .mini-path-line {
             fill: none;
-            stroke: #436cf5;
+            stroke: #2563EB;
             stroke-width: 2.5;
             stroke-linecap: round;
             stroke-linejoin: round;
         }
 
         .algo-mini-card {
-            border-radius: 18px;
-            background: #f7f9fd;
-            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: 10px;
+            background: #F8FAFF;
+            border: 1px solid rgba(220, 230, 242, 0.9);
             padding: 0.7rem;
         }
 
         /* Algorithm icon tints */
-        .disk-icon-blue { color: #436cf5; }
-        .disk-icon-green { color: #2ec491; }
-        .disk-icon-pink { color: #f75583; }
-        .disk-icon-purple { color: #8b5cf6; }
-        .disk-icon-amber { color: #f59e0b; }
-        .disk-icon-cyan { color: #06b6d4; }
+        .disk-icon-blue { color: #2563EB; }
+        .disk-icon-green { color: #16A34A; }
+
+
+
+
 
         @media (max-width: 767.98px) {
             .disk-track-wrap {
@@ -324,12 +325,6 @@
     </style>
 </head>
 <body>
-
-    <div class="ambient-bg">
-        <div class="ambient-orb orb-blue"></div>
-        <div class="ambient-orb orb-pink"></div>
-        <div class="ambient-orb orb-green"></div>
-    </div>
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-xl glass-nav sticky-top py-2 px-3 mb-4">
@@ -507,14 +502,14 @@
                         </div>
                     </div>
                     <div class="col-6 col-lg-3">
-                        <div class="kpi-card kpi-purple">
+                        <div class="kpi-card kpi-blue">
                             <div class="kpi-label">Requests Served</div>
                             <div class="kpi-value mt-1" id="kpiServed" style="color: var(--accent-purple);">0 <span class="fs-6 fw-normal text-muted">/ 0</span></div>
                             <small class="text-muted d-block mt-1" id="kpiServedSub">At the current step</small>
                         </div>
                     </div>
                     <div class="col-6 col-lg-3">
-                        <div class="kpi-card kpi-amber">
+                        <div class="kpi-card kpi-green">
                             <div class="kpi-label">Head Direction</div>
                             <div class="kpi-value mt-1" id="kpiDirection" style="color: var(--accent-amber); font-size: 1.55rem;">Higher</div>
                             <small class="text-muted d-block mt-1" id="kpiDirectionSub">Initial head: 53</small>
@@ -565,9 +560,9 @@
 
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
                         <div class="disk-legend">
-                            <span class="legend-chip"><span class="legend-dot-round" style="background: #f59e0b;"></span>Pending request</span>
-                            <span class="legend-chip"><span class="legend-dot-round" style="background: #2ec491;"></span>Served request</span>
-                            <span class="legend-chip"><span class="legend-dot-round" style="background: #436cf5;"></span>Head position</span>
+                            <span class="legend-chip"><span class="legend-dot-round" style="background: #2563EB;"></span>Pending request</span>
+                            <span class="legend-chip"><span class="legend-dot-round" style="background: #16A34A;"></span>Served request</span>
+                            <span class="legend-chip"><span class="legend-dot-round" style="background: #2563EB;"></span>Head position</span>
                         </div>
                         <span class="badge bg-light text-dark border font-monospace" id="headBadge">Current head: 53</span>
                     </div>
@@ -724,7 +719,7 @@
                                         <h4 class="fw-bold mb-1" style="color: var(--accent-purple);">SCAN</h4>
                                         <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Elevator Algorithm</span>
                                     </div>
-                                    <i class="bi bi-arrow-left-right fs-2 disk-icon-purple"></i>
+                                    <i class="bi bi-arrow-left-right fs-2 disk-icon-blue"></i>
                                 </div>
                                 <p class="text-muted">Move in one direction serving requests, reach the disk edge, then reverse and serve the remaining requests.</p>
                                 <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
@@ -742,7 +737,7 @@
                                         <h4 class="fw-bold mb-1" style="color: var(--accent-pink);">C-SCAN</h4>
                                         <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Circular SCAN</span>
                                     </div>
-                                    <i class="bi bi-arrow-repeat fs-2 disk-icon-pink"></i>
+                                    <i class="bi bi-arrow-repeat fs-2 disk-icon-blue"></i>
                                 </div>
                                 <p class="text-muted">Sweep in one direction to the disk edge, jump back to the opposite edge, and continue sweeping in the same direction.</p>
                                 <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
@@ -760,7 +755,7 @@
                                         <h4 class="fw-bold mb-1" style="color: var(--accent-amber);">LOOK</h4>
                                         <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Look Ahead SCAN</span>
                                     </div>
-                                    <i class="bi bi-search fs-2 disk-icon-amber"></i>
+                                    <i class="bi bi-search fs-2 disk-icon-blue"></i>
                                 </div>
                                 <p class="text-muted">Like SCAN, but reverse as soon as no more requests lie ahead instead of travelling all the way to the disk edge.</p>
                                 <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
@@ -775,10 +770,10 @@
                             <div class="algo-card">
                                 <div class="d-flex justify-content-between align-items-start mb-3">
                                     <div>
-                                        <h4 class="fw-bold mb-1" style="color: var(--accent-cyan, #06b6d4);">C-LOOK</h4>
+                                        <h4 class="fw-bold mb-1" style="color: var(--accent-cyan, #2563EB);">C-LOOK</h4>
                                         <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">Circular LOOK</span>
                                     </div>
-                                    <i class="bi bi-arrow-90deg-right fs-2 disk-icon-cyan"></i>
+                                    <i class="bi bi-arrow-90deg-right fs-2 disk-icon-blue"></i>
                                 </div>
                                 <p class="text-muted">Serve requests in one direction, then jump directly to the farthest request on the opposite side and continue in the same direction.</p>
                                 <h6 class="fw-bold text-dark mt-3 mb-2"><i class="bi bi-check2 text-success me-1"></i>Trade-offs:</h6>
@@ -851,9 +846,9 @@
                     <div class="code-container">
                         <div class="code-header">
                             <div class="code-dots">
-                                <span style="background: #ef4444;"></span>
-                                <span style="background: #f59e0b;"></span>
-                                <span style="background: #10b981;"></span>
+                                <span style="background: #1E40AF;"></span>
+                                <span style="background: #2563EB;"></span>
+                                <span style="background: #22C55E;"></span>
                             </div>
                             <span class="text-light small font-monospace" id="codeFileName">disk_scheduling_fcfs.c</span>
                         </div>
@@ -885,12 +880,12 @@
         const DIRECTIONAL_ALGOS = new Set(['SCAN', 'CSCAN', 'LOOK', 'CLOOK']);
 
         const ALGO_COLORS = {
-            FCFS: '#436cf5',
-            SSTF: '#2ec491',
-            SCAN: '#8b5cf6',
-            CSCAN: '#f75583',
-            LOOK: '#f59e0b',
-            CLOOK: '#06b6d4'
+            FCFS: '#2563EB',
+            SSTF: '#16A34A',
+            SCAN: '#2563EB',
+            CSCAN: '#2563EB',
+            LOOK: '#2563EB',
+            CLOOK: '#2563EB'
         };
 
         const presets = {
@@ -1329,17 +1324,17 @@
             [0, 0.25, 0.5, 0.75, 1].forEach(fraction => {
                 const value = Math.round(maxCylinder * fraction);
                 const y = yFor(value);
-                parts.push(`<line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="#dbe4f0" stroke-width="1.2" stroke-dasharray="4 5"></line>`);
-                parts.push(`<text x="${padLeft - 12}" y="${y + 4}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#94a3b8">${value}</text>`);
+                parts.push(`<line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="#DBEAFE" stroke-width="1.2" stroke-dasharray="4 5"></line>`);
+                parts.push(`<text x="${padLeft - 12}" y="${y + 4}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#7A8DB0">${value}</text>`);
             });
 
             if (points.length <= 13) {
                 points.forEach((point, index) => {
                     const x = xFor(index);
-                    parts.push(`<text x="${x}" y="${height - 18}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#94a3b8">${index === 0 ? 'H' : index}</text>`);
+                    parts.push(`<text x="${x}" y="${height - 18}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#7A8DB0">${index === 0 ? 'H' : index}</text>`);
                 });
             } else {
-                parts.push(`<text x="${(padLeft + width - padRight) / 2}" y="${height - 16}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="700" fill="#94a3b8">Service order →</text>`);
+                parts.push(`<text x="${(padLeft + width - padRight) / 2}" y="${height - 16}" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#7A8DB0">Service order →</text>`);
             }
 
             for (let index = 1; index < points.length; index++) {
@@ -1349,7 +1344,7 @@
                 const y1 = yFor(points[index - 1].cyl);
                 const x2 = xFor(index);
                 const y2 = yFor(points[index].cyl);
-                const color = visited ? (jump ? '#f75583' : '#436cf5') : '#cbd5e1';
+                const color = visited ? (jump ? '#2563EB' : '#2563EB') : '#C7D6EE';
                 const width = visited ? (jump ? 2.4 : 2.8) : 1.5;
                 const dash = jump ? '6 5' : (visited ? '' : '3 6');
                 const opacity = visited ? '1' : '0.55';
@@ -1364,15 +1359,15 @@
                 const jump = point.jump;
                 const isStart = point.kind === 'start';
                 const fill = isStart || visited
-                    ? (jump ? '#f75583' : (point.kind === 'boundary' ? '#f59e0b' : '#436cf5'))
+                    ? (jump ? '#2563EB' : (point.kind === 'boundary' ? '#2563EB' : '#2563EB'))
                     : '#ffffff';
                 const stroke = visited || isStart
-                    ? (jump ? '#f75583' : (point.kind === 'boundary' ? '#f59e0b' : '#436cf5'))
-                    : '#cbd5e1';
+                    ? (jump ? '#2563EB' : (point.kind === 'boundary' ? '#2563EB' : '#2563EB'))
+                    : '#C7D6EE';
                 const radius = isCurrent ? 6 : (isStart ? 5.5 : 4);
 
                 if (isCurrent) {
-                    parts.push(`<circle cx="${x}" cy="${y}" r="13" fill="rgba(67, 108, 245, 0.16)"></circle>`);
+                    parts.push(`<circle cx="${x}" cy="${y}" r="13" fill="rgba(37, 99, 235, 0.16)"></circle>`);
                 }
 
                 parts.push(`<circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="2"><title>Cylinder ${point.cyl}${isStart ? ' (initial head)' : ''}</title></circle>`);
@@ -1380,7 +1375,7 @@
                 if (isStart || isCurrent) {
                     const label = isStart ? `H ${point.cyl}` : `${point.cyl}`;
                     const labelY = Math.max(16, y - 14);
-                    parts.push(`<text x="${x}" y="${labelY}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800" fill="#334155">${label}</text>`);
+                    parts.push(`<text x="${x}" y="${labelY}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800" fill="#2A3B5C">${label}</text>`);
                 }
             });
 
@@ -1669,7 +1664,7 @@
                 parts.push(`<line x1="${xFor(index - 1)}" y1="${yFor(points[index - 1].cyl)}" x2="${xFor(index)}" y2="${yFor(points[index].cyl)}" stroke="${color}" stroke-width="2.2" stroke-linecap="round" ${jump ? 'stroke-dasharray="4 3"' : ''} opacity="0.9"></line>`);
             }
 
-            parts.push(`<circle cx="${xFor(0)}" cy="${yFor(points[0].cyl)}" r="3.2" fill="#334155" stroke="#ffffff" stroke-width="1.5"></circle>`);
+            parts.push(`<circle cx="${xFor(0)}" cy="${yFor(points[0].cyl)}" r="3.2" fill="#2A3B5C" stroke="#ffffff" stroke-width="1.5"></circle>`);
 
             if (points.length > 1) {
                 const end = points.length - 1;

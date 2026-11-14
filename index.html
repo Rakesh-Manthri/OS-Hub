@@ -7,10 +7,11 @@
     <title>OS EduHub - Master Operating Systems</title>
     <!-- Bootstrap 5 CSS -->
     <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="design.css">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="vendor/bootstrap-icons/bootstrap-icons.min.css">
 
-    <!-- Google Fonts: Plus Jakarta Sans -->
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -18,74 +19,53 @@
     <style>
         :root {
             /* Claymorphism Matte Pastel Palette */
-            --clay-bg: #eef2f7;
+            --clay-bg: #FFFFFF;
             --clay-surface: #ffffff;
-            --clay-surface-soft: #f7f9fd;
+            --clay-surface-soft: #F8FAFF;
             
-            --clay-primary: #5582f6;
-            --clay-primary-light: #e8f0fe;
-            --clay-primary-dark: #3763db;
+            --clay-primary: #3B82F6;
+            --clay-primary-light: #EFF6FF;
+            --clay-primary-dark: #1D4ED8;
             
-            --clay-mint: #2ec491;
-            --clay-mint-light: #e4f9f1;
-            --clay-mint-dark: #1ea374;
+            --clay-mint: #16A34A;
+            --clay-mint-light: #ECFDF5;
+            --clay-mint-dark: #15803D;
             
-            --clay-pink: #f75583;
-            --clay-pink-light: #fdeaf0;
-            --clay-pink-dark: #d83664;
+            --clay-pink: #2563EB;
+            --clay-pink-light: #EFF6FF;
+            --clay-pink-dark: #1E40AF;
             
-            --clay-purple: #8b5cf6;
-            --clay-purple-light: #f0eaff;
+            --clay-purple: #2563EB;
+            --clay-purple-light: #EFF6FF;
             
-            --clay-amber: #f59e0b;
-            --clay-amber-light: #fef4df;
+            --clay-amber: #2563EB;
+            --clay-amber-light: #EFF6FF;
 
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --text-main: #0A2540;
+            --text-muted: #52648A;
 
             /* Canonical Clay Shadows */
-            --clay-shadow-card: 
-                0 8px 24px rgba(30, 40, 80, 0.13),
-                0 2px 6px rgba(30, 40, 80, 0.07),
-                inset 3px 3px 6px rgba(255, 255, 255, 0.9),
-                inset -3px -3px 8px rgba(170, 185, 215, 0.18);
+            --clay-shadow-card: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
 
-            --clay-shadow-card-hover: 
-                0 14px 35px rgba(30, 40, 80, 0.19),
-                0 4px 10px rgba(30, 40, 80, 0.10),
-                inset 4px 4px 7px rgba(255, 255, 255, 0.95),
-                inset -4px -4px 9px rgba(160, 178, 210, 0.22);
+            --clay-shadow-card-hover: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
 
-            --clay-shadow-btn: 
-                0 6px 18px rgba(85, 130, 246, 0.32),
-                0 2px 5px rgba(30, 40, 80, 0.10),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.6),
-                inset -3px -3px 6px rgba(35, 75, 180, 0.3);
+            --clay-shadow-btn: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
 
-            --clay-shadow-btn-hover: 
-                0 10px 24px rgba(85, 130, 246, 0.42),
-                0 3px 8px rgba(30, 40, 80, 0.12),
-                inset 3px 3px 6px rgba(255, 255, 255, 0.7),
-                inset -3px -3px 6px rgba(35, 75, 180, 0.35);
+            --clay-shadow-btn-hover: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
 
-            --clay-shadow-btn-pressed: 
-                0 2px 5px rgba(85, 130, 246, 0.2),
-                inset 3px 3px 6px rgba(20, 55, 150, 0.4),
-                inset -2px -2px 4px rgba(255, 255, 255, 0.3);
+            --clay-shadow-btn-pressed: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
 
-            --clay-shadow-sunken: 
-                inset 3px 3px 7px rgba(160, 175, 205, 0.35),
-                inset -3px -3px 7px rgba(255, 255, 255, 0.95);
+            --clay-shadow-sunken: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         body {
             background-color: var(--clay-bg);
             background-image: 
-                radial-gradient(circle at 12% 18%, rgba(220, 230, 250, 0.8) 0%, transparent 45%),
-                radial-gradient(circle at 88% 82%, rgba(252, 230, 240, 0.7) 0%, transparent 45%),
-                radial-gradient(circle at 50% 45%, rgba(226, 248, 240, 0.6) 0%, transparent 55%);
+                none,
+                none,
+                none;
             background-attachment: fixed;
-            font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -96,73 +76,65 @@
 
         /* Plush Rounded Clay Navbar */
         .glass-nav {
-            background: var(--clay-surface);
-            border-radius: 26px;
-            margin: 1.25rem auto 1.5rem;
-            max-width: min(96%, 1400px);
-            padding: 0.85rem 1.5rem;
-            border: 3px solid rgba(255, 255, 255, 0.95);
-            box-shadow: var(--clay-shadow-card);
-            transition: all 0.3s ease;
+            background: #ffffff;
+            border-radius: 0;
+            margin: 0;
+            max-width: none;
+            padding: 0.85rem 2rem;
+            border: none;
+            border-bottom: 1px solid #DCE6F2;
+            box-shadow: none;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .brand-icon {
-            background: linear-gradient(145deg, #6c8cff, #436cf5);
+            background: #2563EB;
             color: #ffffff;
             width: 44px;
             height: 44px;
-            border-radius: 14px;
+            border-radius: 10px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-size: 1.35rem;
-            box-shadow: 
-                0 4px 12px rgba(67, 108, 245, 0.35),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.6),
-                inset -2px -2px 4px rgba(25, 55, 160, 0.3);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
-        .brand-text {
+                .brand-text {
             font-weight: 800;
-            background: linear-gradient(135deg, #436cf5 0%, #f75583 55%, #2ec491 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #0A2540;
             letter-spacing: -0.5px;
         }
 
         .glass-nav-toggler {
-            background: #f0f4fa;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 14px;
+            background: #F8FAFF;
+            border: 1px solid #DCE6F2;
+            border-radius: 10px;
             padding: 0.45rem 0.75rem;
-            color: #436cf5;
+            color: #2563EB;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 
-                0 4px 10px rgba(160, 175, 205, 0.25),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.8),
-                inset -2px -2px 4px rgba(160, 175, 205, 0.15);
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
         }
 
         .glass-nav-toggler:hover, .glass-nav-toggler:focus {
             transform: translateY(-2px);
             background: #ffffff;
-            color: #2b55df;
-            box-shadow: 
-                0 6px 14px rgba(67, 108, 245, 0.2),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.9),
-                inset -2px -2px 4px rgba(160, 175, 205, 0.15);
+            color: #1D4ED8;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             outline: none;
         }
 
         .nav-pills .nav-link {
             color: var(--text-muted);
             font-weight: 700;
-            border-radius: 18px;
+            border-radius: 10px;
             padding: 0.6rem 1.35rem;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
             margin: 0 0.25rem;
             cursor: pointer;
             border: 2px solid transparent;
@@ -170,58 +142,52 @@
         }
 
         .nav-pills .nav-link:hover {
-            color: #436cf5;
-            background: #f0f4fa;
-            box-shadow: 
-                0 4px 12px rgba(160, 175, 205, 0.2),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.8),
-                inset -2px -2px 4px rgba(160, 175, 205, 0.12);
+            color: #2563EB;
+            background: #F8FAFF;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             transform: translateY(-2px);
         }
 
         .nav-pills .nav-link.active {
-            background: linear-gradient(145deg, #628efb, #436cf5);
+            background: #2563EB;
             color: #ffffff;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 
-                0 5px 16px rgba(67, 108, 245, 0.35),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.6),
-                inset -2px -2px 4px rgba(25, 55, 160, 0.3);
+            border: 1px solid #DCE6F2;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             transform: translateY(-2px);
         }
 
         /* Plush Clay Cards */
         .glass-card {
             background: var(--clay-surface);
-            border-radius: 28px;
+            border-radius: 12px;
             padding: 2.25rem 2rem;
-            border: 3px solid rgba(255, 255, 255, 0.9);
-            box-shadow: var(--clay-shadow-card);
+            border: 1px solid #DCE6F2;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             height: 100%;
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.35s cubic-bezier(0.2, 0, 0, 1);
         }
 
         .glass-card.interactive:hover {
-            transform: translateY(-8px) scale(1.018);
-            box-shadow: var(--clay-shadow-card-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(10, 37, 64, 0.08), 0 10px 24px rgba(10, 37, 64, 0.09);
             cursor: pointer;
         }
 
         /* Tactile Clay Buttons */
         .glass-btn-primary {
-            background: linear-gradient(145deg, #628efb, #436cf5);
+            background: #2563EB;
             color: #ffffff;
             border: none;
-            border-radius: 20px;
+            border-radius: 10px;
             padding: 0.75rem 1.6rem;
             font-weight: 700;
             letter-spacing: 0.3px;
-            box-shadow: var(--clay-shadow-btn);
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+            transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
             width: 100%;
             display: inline-flex;
             align-items: center;
@@ -229,27 +195,27 @@
         }
 
         .glass-btn-primary:hover {
-            background: linear-gradient(145deg, #6d96fc, #3b64ec);
+            background: #1D4ED8;
             color: #ffffff;
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: var(--clay-shadow-btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .glass-btn-primary:active {
             transform: translateY(2px) scale(0.97);
-            box-shadow: var(--clay-shadow-btn-pressed);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         /* Sunken Tactile Locked Button */
         .glass-btn-locked {
-            background: #eef2f7;
+            background: #FFFFFF;
             border: none;
-            color: #8c9cb0;
-            border-radius: 20px;
+            color: #7A8DB0;
+            border-radius: 10px;
             padding: 0.75rem 1.6rem;
             font-weight: 700;
             width: 100%;
-            box-shadow: var(--clay-shadow-sunken);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             pointer-events: none;
         }
 
@@ -257,23 +223,19 @@
         .card-icon-container {
             width: 72px;
             height: 72px;
-            border-radius: 22px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2rem;
             margin-bottom: 1.5rem;
-            box-shadow: 
-                6px 8px 16px rgba(160, 175, 205, 0.25),
-                -5px -5px 12px rgba(255, 255, 255, 0.95),
-                inset 3px 3px 6px rgba(255, 255, 255, 0.9),
-                inset -3px -3px 6px rgba(160, 175, 205, 0.16);
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+            border: 1px solid #DCE6F2;
+            transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
         }
 
         .glass-card:hover .card-icon-container {
-            transform: scale(1.08) rotate(-3deg);
+            transform: scale(1) rotate(-3deg);
         }
 
         .icon-blue {
@@ -312,11 +274,7 @@
             font-weight: 800;
             letter-spacing: 0.6px;
             text-transform: uppercase;
-            box-shadow: 
-                3px 4px 10px rgba(247, 85, 131, 0.2),
-                -2px -2px 6px rgba(255, 255, 255, 0.9),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.8),
-                inset -2px -2px 4px rgba(216, 54, 100, 0.15);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         /* SPA Transitions */
@@ -343,7 +301,7 @@
 
         .hero-title {
             font-weight: 900;
-            color: #0f172a;
+            color: #081A30;
             letter-spacing: -1.2px;
             margin-bottom: 1.25rem;
         }
@@ -359,13 +317,9 @@
         /* Plush Clay Modal */
         .glass-modal-content {
             background: #ffffff;
-            border-radius: 32px;
-            border: 4px solid rgba(255, 255, 255, 0.95);
-            box-shadow: 
-                20px 25px 50px rgba(140, 160, 190, 0.35),
-                -15px -15px 35px rgba(255, 255, 255, 0.95),
-                inset 4px 4px 8px rgba(255, 255, 255, 0.9),
-                inset -4px -4px 10px rgba(165, 180, 210, 0.18);
+            border-radius: 12px;
+            border: 1px solid #DCE6F2;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .modal-backdrop.show {
@@ -375,18 +329,21 @@
         /* Mobile Navbar & Responsive Enhancements */
         @media (max-width: 991.98px) {
             .glass-nav {
-                border-radius: 20px;
-                padding: 0.65rem 1rem;
-                margin: 0.75rem auto 1rem;
+                margin: 0;
+                padding: 0.55rem 1rem;
+                border-radius: 0;
+                border: none;
+                border-bottom: 1px solid #DCE6F2;
+                box-shadow: none;
             }
 
             .navbar-collapse {
                 background: #ffffff;
-                border: 2px solid rgba(67, 108, 245, 0.12);
-                border-radius: 20px;
+                border: 2px solid rgba(37, 99, 235, 0.12);
+                border-radius: 10px;
                 padding: 0.85rem;
                 margin-top: 0.75rem;
-                box-shadow: 0 8px 24px rgba(30, 40, 80, 0.12);
+                box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             }
 
             .nav-pills {
@@ -400,31 +357,31 @@
                 width: 100%;
                 text-align: left;
                 padding: 0.7rem 1rem;
-                border-radius: 14px;
+                border-radius: 10px;
                 display: flex;
                 align-items: center;
                 font-size: 0.93rem;
                 margin: 0;
-                background: #f5f7fc;
-                box-shadow: none;
-                color: #475569;
+                background: #F8FAFF;
+                box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+                color: #3E4F6E;
                 border: 2px solid transparent;
                 transform: none !important;
                 transition: background 0.18s ease, color 0.18s ease;
             }
 
             .nav-pills .nav-link:hover {
-                background: #edf3fe;
-                color: #436cf5;
-                box-shadow: none;
+                background: #EFF6FF;
+                color: #2563EB;
+                box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
                 transform: none !important;
             }
 
             .nav-pills .nav-link.active {
-                background: linear-gradient(135deg, #628efb, #436cf5);
+                background: #2563EB;
                 color: #ffffff;
                 border-color: transparent;
-                box-shadow: 0 4px 12px rgba(67, 108, 245, 0.28);
+                box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
                 transform: none !important;
             }
 
@@ -439,7 +396,7 @@
             .nav-pills .nav-item:last-child a.btn {
                 width: 100%;
                 justify-content: center;
-                border-radius: 14px;
+                border-radius: 10px;
                 padding: 0.7rem 1rem;
                 margin-top: 0.25rem;
             }
@@ -447,8 +404,12 @@
 
         @media (max-width: 575.98px) {
             .glass-nav {
-                margin: 0.5rem auto 0.75rem;
-                padding: 0.55rem 0.85rem;
+                margin: 0;
+                padding: 0.55rem 1rem;
+                border-radius: 0;
+                border: none;
+                border-bottom: 1px solid #DCE6F2;
+                box-shadow: none;
             }
 
             .brand-text {
@@ -459,7 +420,7 @@
                 width: 38px;
                 height: 38px;
                 font-size: 1.15rem;
-                border-radius: 12px;
+                border-radius: 8px;
             }
         }
 
@@ -474,14 +435,14 @@
         .level2 > h2.anchored {
             font-size: 2.15rem;
             font-weight: 800;
-            color: #0f172a;
+            color: #081A30;
             letter-spacing: -0.8px;
             margin-bottom: 2rem;
             display: flex;
             align-items: center;
             position: relative;
             padding-bottom: 0.85rem;
-            border-bottom: 3px solid rgba(85, 130, 246, 0.18);
+            border-bottom: 3px solid rgba(59, 130, 246, 0.18);
         }
 
         .level3 {
@@ -491,7 +452,7 @@
         .level3 > h3.anchored {
             font-size: 1.45rem;
             font-weight: 800;
-            color: #1e293b;
+            color: #0A2540;
             margin-bottom: 1.35rem;
             display: flex;
             align-items: center;
@@ -543,24 +504,24 @@
         /* Course Item Card (.level4) */
         .level4 {
             background: var(--clay-surface);
-            border-radius: 26px;
+            border-radius: 12px;
             padding: 2rem 1.75rem;
-            border: 3px solid rgba(255, 255, 255, 0.95);
-            box-shadow: var(--clay-shadow-card);
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid #DCE6F2;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+            transition: all 0.35s cubic-bezier(0.2, 0, 0, 1);
             position: relative;
             height: 100%;
         }
 
         .level4:hover {
             transform: translateY(-6px);
-            box-shadow: var(--clay-shadow-card-hover);
+            box-shadow: 0 2px 4px rgba(10, 37, 64, 0.08), 0 10px 24px rgba(10, 37, 64, 0.09);
         }
 
         .level4 h4.anchored {
             font-size: 1.25rem;
             font-weight: 800;
-            color: #0f172a;
+            color: #081A30;
             margin-bottom: 0.85rem;
             display: flex;
             align-items: center;
@@ -576,15 +537,15 @@
 
         /* Tactile Clay Outline Button (.btn-outline-primary) */
         .btn-outline-primary {
-            border: 2px solid rgba(85, 130, 246, 0.4);
-            color: #436cf5;
+            border: 2px solid rgba(59, 130, 246, 0.4);
+            color: #2563EB;
             background: #ffffff;
-            border-radius: 18px;
+            border-radius: 10px;
             font-weight: 700;
             font-size: 0.9rem;
             padding: 0.6rem 1.35rem;
-            box-shadow: 0 4px 10px rgba(67, 108, 245, 0.12), inset 1px 1px 2px rgba(255, 255, 255, 0.8);
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+            transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
@@ -593,28 +554,28 @@
 
         .btn-outline-primary:hover,
         .btn-outline-primary:focus {
-            background: linear-gradient(145deg, #628efb, #436cf5);
-            border-color: #436cf5;
+            background: #2563EB;
+            border-color: #2563EB;
             color: #ffffff;
             transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(67, 108, 245, 0.32);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .btn-outline-primary:active {
             transform: translateY(1px);
-            box-shadow: 0 2px 6px rgba(67, 108, 245, 0.2);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .course-card-icon {
             width: 48px;
             height: 48px;
-            border-radius: 16px;
+            border-radius: 10px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-size: 1.35rem;
             margin-bottom: 1.25rem;
-            box-shadow: 0 4px 10px rgba(160, 175, 205, 0.25), inset 2px 2px 4px rgba(255, 255, 255, 0.8);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .badge-academic-tag {
@@ -630,7 +591,7 @@
         }
 
         .modal-body h6 {
-            color: #0f172a;
+            color: #081A30;
             font-weight: 700;
             margin-top: 1rem;
             margin-bottom: 0.5rem;
@@ -1559,7 +1520,7 @@
                 </div>
                 <div class="modal-body text-center pt-0 pb-5 px-4 px-md-5">
                     <div class="d-inline-flex align-items-center justify-content-center mb-4"
-                        style="width: 84px; height: 84px; border-radius: 26px; background: var(--clay-primary-light); color: var(--clay-primary); box-shadow: 6px 8px 18px rgba(160, 175, 205, 0.3), inset 3px 3px 6px rgba(255, 255, 255, 0.9), inset -3px -3px 6px rgba(160, 175, 205, 0.2);">
+                        style="width: 84px; height: 84px; border-radius: 12px; background: var(--clay-primary-light); color: var(--clay-primary); box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);">
                         <i class="bi bi-tools fs-1"></i>
                     </div>
                     <h3 class="fw-bold text-dark mb-3">Coming Soon!</h3>

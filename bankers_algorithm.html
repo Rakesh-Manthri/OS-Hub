@@ -7,12 +7,13 @@
 
     <!-- Bootstrap 5 CSS -->
     <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="design.css">
     <!-- Bootstrap Icons -->
     <link href="vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700" rel="stylesheet">
     <!-- Prism.js -->
     <link href="vendor/prism/prism-tomorrow.min.css" rel="stylesheet" />
     <!-- Shared claymorphism theme -->
@@ -20,8 +21,8 @@
 
     <style>
         .kpi-red {
-            background: #fef0f4;
-            border-left: 6px solid var(--accent-pink);
+            background: #EFF6FF;
+            border-left: 3px solid var(--accent-pink);
         }
 
         /* Editable State Matrices */
@@ -42,26 +43,26 @@
         }
 
         .state-matrix .group-alloc {
-            background: #eaf1ff;
-            color: #3355d8;
+            background: #EFF6FF;
+            color: #1D4ED8;
             border-left: 3px solid #ffffff;
         }
 
         .state-matrix .group-max {
-            background: #fef0f4;
-            color: #c92f5d;
+            background: #EFF6FF;
+            color: #1E40AF;
             border-left: 3px solid #ffffff;
         }
 
         .state-matrix .group-need {
-            background: #edfbf5;
-            color: #0f8a63;
+            background: #ECFDF5;
+            color: #15803D;
             border-left: 3px solid #ffffff;
         }
 
         .state-matrix th.res-head {
-            background: #f7f9fd;
-            color: #94a3b8;
+            background: #F8FAFF;
+            color: #7A8DB0;
             font-size: 0.68rem;
             letter-spacing: 0.5px;
         }
@@ -70,14 +71,14 @@
             width: 56px;
             height: 34px;
             border: 2px solid transparent;
-            border-radius: 10px;
-            background: #eef3f8;
+            border-radius: 8px;
+            background: #F8FAFF;
             color: var(--text-main);
             font-family: var(--font-mono);
             font-weight: 700;
             font-size: 0.84rem;
             text-align: center;
-            box-shadow: inset 2px 2px 5px rgba(160, 175, 205, 0.28), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
             -moz-appearance: textfield;
         }
@@ -91,14 +92,14 @@
         .matrix-input:focus {
             background: #ffffff;
             border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(67, 108, 245, 0.18);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
             outline: none;
         }
 
         .matrix-input.is-invalid {
-            background: #fef0f4;
+            background: #EFF6FF;
             border-color: var(--accent-pink);
-            color: #b4234b;
+            color: #1E40AF;
         }
 
         .need-cell {
@@ -107,18 +108,18 @@
             height: 34px;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
-            background: #edfbf5;
-            color: #0f8a63;
+            border-radius: 8px;
+            background: #ECFDF5;
+            color: #15803D;
             font-family: var(--font-mono);
             font-weight: 800;
             font-size: 0.84rem;
-            box-shadow: inset 2px 2px 5px rgba(20, 150, 105, 0.1), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .need-cell.is-invalid {
-            background: #fef0f4;
-            color: #b4234b;
+            background: #EFF6FF;
+            color: #1E40AF;
         }
 
         .matrix-legend {
@@ -147,10 +148,10 @@
         /* Available / Work Vectors */
         .vector-panel {
             height: 100%;
-            background: #f0f4fa;
-            border-radius: 22px;
+            background: #F8FAFF;
+            border-radius: 12px;
             padding: 1.15rem;
-            box-shadow: inset 3px 3px 8px rgba(160, 175, 205, 0.28), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .vector-input-grid {
@@ -178,18 +179,18 @@
             align-items: center;
             gap: 0.35rem;
             background: #ffffff;
-            border: 1px solid rgba(203, 213, 225, 0.8);
-            border-radius: 11px;
+            border: 1px solid rgba(199, 214, 238, 0.8);
+            border-radius: 8px;
             padding: 0.32rem 0.55rem;
             font-family: var(--font-mono);
             font-size: 0.78rem;
             font-weight: 800;
             color: var(--text-main);
-            box-shadow: 2px 3px 7px rgba(160, 175, 205, 0.16), inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .vector-chip .res-name {
-            color: #94a3b8;
+            color: #7A8DB0;
             font-size: 0.66rem;
             font-weight: 800;
         }
@@ -206,7 +207,7 @@
             justify-content: space-between;
             gap: 0.5rem;
             background: rgba(255, 255, 255, 0.72);
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 0.38rem 0.55rem;
             font-size: 0.74rem;
             font-weight: 700;
@@ -234,30 +235,30 @@
             min-width: 44px;
             height: 38px;
             padding: 0 0.65rem;
-            border-radius: 12px;
-            background: linear-gradient(145deg, #38cf9b, #2ec491);
+            border-radius: 8px;
+            background: #22C55E;
             color: #ffffff;
             font-family: var(--font-mono);
             font-size: 0.82rem;
             font-weight: 800;
-            box-shadow: 0 4px 10px rgba(46, 196, 145, 0.28), inset 1px 1px 2px rgba(255, 255, 255, 0.6);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .seq-chip.pending {
-            background: #eef3f8;
-            color: #94a3b8;
-            border: 1px dashed #cbd5e1;
-            box-shadow: none;
+            background: #F8FAFF;
+            color: #7A8DB0;
+            border: 1px dashed #C7D6EE;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .seq-chip.current {
-            background: linear-gradient(145deg, #628efb, #436cf5);
+            background: #3B82F6;
             color: #fff;
-            box-shadow: 0 4px 12px rgba(67, 108, 245, 0.35), inset 1px 1px 2px rgba(255, 255, 255, 0.6);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .seq-arrow {
-            color: #94a3b8;
+            color: #7A8DB0;
             font-size: 0.9rem;
             font-weight: 800;
         }
@@ -270,10 +271,10 @@
         }
 
         .safety-work-box {
-            background: #f0f4fa;
-            border-radius: 18px;
+            background: #F8FAFF;
+            border-radius: 10px;
             padding: 0.9rem 1rem;
-            box-shadow: inset 2px 2px 6px rgba(160, 175, 205, 0.22), inset -2px -2px 6px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .safety-work-box .label {
@@ -281,16 +282,16 @@
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #94a3b8;
+            color: #7A8DB0;
             margin-bottom: 0.45rem;
         }
 
         .current-process-row td {
-            background: #edf3fe !important;
+            background: #EFF6FF !important;
         }
 
         .current-process-row td:first-child {
-            box-shadow: inset 4px 0 0 var(--primary-blue);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .step-check-ok,
@@ -298,7 +299,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.3rem;
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 0.28rem 0.55rem;
             font-size: 0.72rem;
             font-weight: 800;
@@ -306,21 +307,21 @@
         }
 
         .step-check-ok {
-            background: #edfbf5;
-            color: #16a876;
+            background: #ECFDF5;
+            color: #15803D;
         }
 
         .step-check-no {
-            background: #fef0f4;
-            color: #d83664;
+            background: #EFF6FF;
+            color: #1E40AF;
         }
 
         /* Resource Request */
         .request-form-card {
-            background: #f0f4fa;
-            border-radius: 22px;
+            background: #F8FAFF;
+            border-radius: 12px;
             padding: 1.3rem;
-            box-shadow: inset 3px 3px 8px rgba(160, 175, 205, 0.24), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .request-empty {
@@ -332,33 +333,33 @@
             min-height: 300px;
             gap: 0.7rem;
             color: var(--text-muted);
-            background: #f7f9fd;
-            border: 2px dashed rgba(203, 213, 225, 0.9);
-            border-radius: 24px;
+            background: #F8FAFF;
+            border: 2px dashed rgba(199, 214, 238, 0.9);
+            border-radius: 12px;
             padding: 2rem;
         }
 
         .request-empty i {
             font-size: 2.4rem;
-            color: #a5b4fc;
+            color: #BFDBFE;
         }
 
         .request-outcome {
-            border: 3px solid rgba(255, 255, 255, 0.95);
-            border-radius: 24px;
+            border: 1px solid #DCE6F2;
+            border-radius: 12px;
             padding: 1.4rem;
-            box-shadow: var(--clay-shadow-card);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             height: 100%;
         }
 
         .request-outcome.granted {
-            background: linear-gradient(180deg, #ffffff 0%, #f7fffb 100%);
-            border-color: rgba(46, 196, 145, 0.55);
+            background: #ffffff;
+            border-color: rgba(34, 197, 94, 0.55);
         }
 
         .request-outcome.denied {
-            background: linear-gradient(180deg, #ffffff 0%, #fff8fa 100%);
-            border-color: rgba(247, 85, 131, 0.5);
+            background: #ffffff;
+            border-color: rgba(37, 99, 235, 0.5);
         }
 
         .request-checks {
@@ -372,21 +373,21 @@
             align-items: flex-start;
             gap: 0.6rem;
             padding: 0.6rem 0.75rem;
-            border-radius: 13px;
+            border-radius: 8px;
             font-size: 0.8rem;
             font-weight: 700;
-            background: #f7f9fd;
-            color: #475569;
+            background: #F8FAFF;
+            color: #3E4F6E;
         }
 
         .request-check-item.pass {
-            background: #edfbf5;
-            color: #0f8a63;
+            background: #ECFDF5;
+            color: #15803D;
         }
 
         .request-check-item.fail {
-            background: #fef0f4;
-            color: #b4234b;
+            background: #EFF6FF;
+            color: #1E40AF;
         }
 
         @media (max-width: 991.98px) {
@@ -412,12 +413,6 @@
     </style>
 </head>
 <body>
-
-    <div class="ambient-bg">
-        <div class="ambient-orb orb-blue"></div>
-        <div class="ambient-orb orb-pink"></div>
-        <div class="ambient-orb orb-green"></div>
-    </div>
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-xl glass-nav sticky-top py-2 px-3 mb-4">
@@ -558,9 +553,9 @@
                                 </table>
                             </div>
                             <div class="matrix-legend">
-                                <span><span class="legend-dot" style="background: #628efb;"></span>Allocation (held now)</span>
-                                <span><span class="legend-dot" style="background: #f75583;"></span>Max (future claim)</span>
-                                <span><span class="legend-dot" style="background: #2ec491;"></span>Need (still required)</span>
+                                <span><span class="legend-dot" style="background: #3B82F6;"></span>Allocation (held now)</span>
+                                <span><span class="legend-dot" style="background: #2563EB;"></span>Max (future claim)</span>
+                                <span><span class="legend-dot" style="background: #16A34A;"></span>Need (still required)</span>
                             </div>
                         </div>
 
@@ -574,7 +569,7 @@
                                 </div>
                                 <p class="text-muted small fw-semibold mb-3">Units of each resource that are currently unallocated.</p>
                                 <div class="vector-input-grid" id="availableInputs"></div>
-                                <hr class="my-3" style="border-color: rgba(160, 175, 205, 0.25);">
+                                <hr class="my-3" style="border-color: rgba(37, 99, 235, 0.25);">
                                 <div class="label fw-bold text-muted small text-uppercase mb-2">Resource Summary</div>
                                 <div class="resource-summary-list" id="resourceSummary"></div>
                             </div>
@@ -599,14 +594,14 @@
                         </div>
                     </div>
                     <div class="col-6 col-lg-3">
-                        <div class="kpi-card kpi-purple">
+                        <div class="kpi-card kpi-blue">
                             <div class="kpi-label">Safe Sequence</div>
                             <div class="kpi-value mt-1" id="kpiSequence" style="color: var(--accent-purple);">0 <span class="fs-6 fw-normal text-muted">/ 0</span></div>
                             <small class="text-muted d-block mt-1" id="kpiSequenceSub">Builds up during playback</small>
                         </div>
                     </div>
                     <div class="col-6 col-lg-3">
-                        <div class="kpi-card kpi-amber">
+                        <div class="kpi-card kpi-green">
                             <div class="kpi-label">Work Units</div>
                             <div class="kpi-value mt-1" id="kpiWork" style="color: var(--accent-amber);">0</div>
                             <small class="text-muted d-block mt-1" id="kpiWorkSub">Available vector</small>
@@ -743,7 +738,7 @@
                     <div class="col-12 col-lg-4">
                         <div class="frag-tile h-100">
                             <div class="d-flex align-items-center gap-3 mb-2">
-                                <span class="seq-chip" style="background: linear-gradient(145deg, #628efb, #436cf5);">1</span>
+                                <span class="seq-chip" style="background: #3B82F6;">1</span>
                                 <h6 class="fw-bold mb-0 text-dark">Validate the Request</h6>
                             </div>
                             <p class="text-muted small mb-0">Reject the request immediately if it exceeds the process's announced maximum claim or if the resources are not currently available.</p>
@@ -752,7 +747,7 @@
                     <div class="col-12 col-lg-4">
                         <div class="frag-tile h-100">
                             <div class="d-flex align-items-center gap-3 mb-2">
-                                <span class="seq-chip" style="background: linear-gradient(145deg, #fbbf24, #f59e0b);">2</span>
+                                <span class="seq-chip" style="background: #3B82F6;">2</span>
                                 <h6 class="fw-bold mb-0 text-dark">Pretend to Allocate</h6>
                             </div>
                             <p class="text-muted small mb-0">Temporarily reduce Available, increase Allocation, and reduce Need as if the request had already been granted.</p>
@@ -899,9 +894,9 @@
                     <div class="code-container">
                         <div class="code-header">
                             <div class="code-dots">
-                                <span style="background: #ef4444;"></span>
-                                <span style="background: #f59e0b;"></span>
-                                <span style="background: #10b981;"></span>
+                                <span style="background: #1E40AF;"></span>
+                                <span style="background: #2563EB;"></span>
+                                <span style="background: #22C55E;"></span>
                             </div>
                             <span class="text-light small font-monospace" id="codeFileName">bankers_safety.c</span>
                         </div>
@@ -1473,7 +1468,7 @@
                     <tr class="${isCurrent ? 'current-process-row' : ''}">
                         <td><strong class="font-monospace">P${process}</strong></td>
                         <td class="font-monospace fw-bold" style="font-size: 0.78rem;">${allocation.map(value => fmt(value)).join(' · ')}</td>
-                        <td class="font-monospace fw-bold" style="font-size: 0.78rem; color: #0f8a63;">${need.map(value => fmt(value)).join(' · ')}</td>
+                        <td class="font-monospace fw-bold" style="font-size: 0.78rem; color: #15803D;">${need.map(value => fmt(value)).join(' · ')}</td>
                         <td>${testCell}</td>
                         <td>${stateCell}</td>
                     </tr>
@@ -1774,7 +1769,7 @@
             for (let index = 0; index < total; index++) {
                 if (index > 0) chips.push('<span class="seq-arrow"><i class="bi bi-arrow-right"></i></span>');
                 if (index < sequence.length) {
-                    chips.push(`<span class="seq-chip" ${safe === false ? 'style="background: linear-gradient(145deg, #94a3b8, #64748b); box-shadow: none;"' : ''}>P${sequence[index]}</span>`);
+                    chips.push(`<span class="seq-chip" ${safe === false ? 'style="background: #7A8DB0; box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);"' : ''}>P${sequence[index]}</span>`);
                 } else {
                     chips.push('<span class="seq-chip pending">?</span>');
                 }
@@ -1938,8 +1933,8 @@
                 <div class="request-outcome ${granted ? 'granted' : 'denied'}">
                     <div class="d-flex align-items-start gap-3 mb-3">
                         <div class="banner-icon" style="width: 50px; height: 50px; font-size: 1.35rem; ${granted
-                            ? 'background: #d6f7e9; color: #16a876;'
-                            : 'background: #fde0e9; color: #d83664;'}">
+                            ? 'background: #D1FAE5; color: #15803D;'
+                            : 'background: #DBEAFE; color: #1E40AF;'}">
                             <i class="bi ${granted ? 'bi-shield-check' : 'bi-shield-exclamation'}"></i>
                         </div>
                         <div>
@@ -1976,7 +1971,7 @@
             document.getElementById('requestResult').innerHTML = `
                 <div class="request-outcome granted">
                     <div class="d-flex align-items-start gap-3">
-                        <div class="banner-icon" style="width: 50px; height: 50px; font-size: 1.35rem; background: #d6f7e9; color: #16a876;">
+                        <div class="banner-icon" style="width: 50px; height: 50px; font-size: 1.35rem; background: #D1FAE5; color: #15803D;">
                             <i class="bi bi-check2-circle"></i>
                         </div>
                         <div>

@@ -8,62 +8,49 @@
 
     <!-- Bootstrap 5 CSS -->
     <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="design.css">
     <!-- Bootstrap Icons -->
     <link href="vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
-    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <!-- Google Fonts: Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700" rel="stylesheet">
 
     <style>
         :root {
             /* Claymorphism Matte Pastel Palette */
-            --clay-bg: #eef2f7;
+            --clay-bg: #FFFFFF;
             --clay-surface: #ffffff;
-            --clay-surface-soft: #f7f9fd;
+            --clay-surface-soft: #F8FAFF;
 
-            --primary-blue: #436cf5;
-            --primary-blue-light: #628efb;
-            --primary-blue-soft: #edf3fe;
+            --primary-blue: #2563EB;
+            --primary-blue-light: #3B82F6;
+            --primary-blue-soft: #EFF6FF;
 
-            --accent-pink: #f75583;
-            --accent-pink-light: #fb6d93;
-            --accent-pink-soft: #fef0f4;
+            --accent-pink: #2563EB;
+            --accent-pink-light: #3B82F6;
+            --accent-pink-soft: #EFF6FF;
 
-            --accent-green: #2ec491;
-            --accent-green-light: #38cf9b;
-            --accent-green-soft: #edfbf5;
+            --accent-green: #16A34A;
+            --accent-green-light: #22C55E;
+            --accent-green-soft: #ECFDF5;
 
-            --accent-amber: #f59e0b;
-            --accent-purple: #8b5cf6;
+            --accent-amber: #2563EB;
+            --accent-purple: #2563EB;
 
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --text-main: #0A2540;
+            --text-muted: #52648A;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
 
             /* Canonical Clay Shadows */
-            --clay-shadow-card:
-                0 8px 24px rgba(30, 40, 80, 0.12),
-                0 2px 6px rgba(30, 40, 80, 0.07),
-                inset 3px 3px 6px rgba(255, 255, 255, 0.9),
-                inset -3px -3px 8px rgba(170, 185, 215, 0.18);
+            --clay-shadow-card: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
 
-            --clay-shadow-card-hover:
-                0 14px 35px rgba(30, 40, 80, 0.18),
-                0 4px 10px rgba(30, 40, 80, 0.09),
-                inset 4px 4px 7px rgba(255, 255, 255, 0.95),
-                inset -4px -4px 9px rgba(160, 178, 210, 0.22);
+            --clay-shadow-card-hover: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
 
-            --clay-shadow-btn:
-                0 6px 18px rgba(67, 108, 245, 0.30),
-                0 2px 5px rgba(30, 40, 80, 0.08),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.65),
-                inset -2px -2px 4px rgba(20, 50, 150, 0.2);
+            --clay-shadow-btn: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
 
-            --clay-shadow-sunken:
-                inset 3px 3px 7px rgba(160, 175, 205, 0.35),
-                inset -3px -3px 7px rgba(255, 255, 255, 0.95);
+            --clay-shadow-sunken: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         body {
@@ -78,178 +65,122 @@
         }
 
         /* Ambient Dynamic Light Orbs */
-        .ambient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
 
-        .ambient-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(85px);
-            opacity: 0.45;
-            animation: orbFloat 22s infinite alternate ease-in-out;
-        }
 
-        .orb-blue {
-            width: 480px;
-            height: 480px;
-            background: radial-gradient(circle, #60a5fa 0%, rgba(96, 165, 250, 0) 70%);
-            top: -100px;
-            left: -100px;
-        }
 
-        .orb-pink {
-            width: 440px;
-            height: 440px;
-            background: radial-gradient(circle, #f472b6 0%, rgba(244, 114, 182, 0) 70%);
-            bottom: 50px;
-            right: -80px;
-            animation-delay: -7s;
-        }
 
-        .orb-green {
-            width: 380px;
-            height: 380px;
-            background: radial-gradient(circle, #34d399 0%, rgba(52, 211, 153, 0) 70%);
-            top: 40%;
-            left: 30%;
-            opacity: 0.3;
-            animation-delay: -14s;
-        }
 
         @keyframes orbFloat {
             0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(40px, 30px) scale(1.08); }
+            50% { transform: translate(40px, 30px) scale(1); }
             100% { transform: translate(-30px, 50px) scale(0.95); }
         }
 
         /* Clay Floating Navigation Bar */
         .glass-nav {
-            background: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 2px solid rgba(255, 255, 255, 0.95);
-            border-radius: 24px;
-            box-shadow: 
-                0 10px 30px rgba(30, 40, 80, 0.10),
-                0 2px 6px rgba(30, 40, 80, 0.05),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.9);
-            margin: 1rem auto 1.5rem;
-            max-width: 1400px;
-            width: 96%;
-            z-index: 1030;
-            transition: all 0.3s ease;
+            background: #ffffff;
+            border-radius: 0;
+            margin: 0;
+            max-width: none;
+            padding: 0.85rem 2rem;
+            border: none;
+            border-bottom: 1px solid #DCE6F2;
+            box-shadow: none;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .brand-icon {
-            background: linear-gradient(145deg, #628efb, #436cf5);
+            background: #2563EB;
             color: white;
             width: 44px;
             height: 44px;
-            border-radius: 14px;
+            border-radius: 10px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-size: 1.35rem;
-            box-shadow: 
-                0 4px 12px rgba(67, 108, 245, 0.35),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.6),
-                inset -2px -2px 4px rgba(20, 50, 150, 0.2);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
-        .brand-text {
+                .brand-text {
             font-weight: 800;
-            background: linear-gradient(135deg, #436cf5 0%, #f75583 55%, #2ec491 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #0A2540;
             letter-spacing: -0.5px;
         }
 
         .glass-nav-toggler {
-            background: #f0f4fa;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 14px;
+            background: #F8FAFF;
+            border: 1px solid #DCE6F2;
+            border-radius: 10px;
             padding: 0.45rem 0.75rem;
-            color: #436cf5;
+            color: #2563EB;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow:
-                0 4px 10px rgba(160, 175, 205, 0.25),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.8),
-                inset -2px -2px 4px rgba(160, 175, 205, 0.15);
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
         }
 
         .glass-nav-toggler:hover, .glass-nav-toggler:focus {
             transform: translateY(-2px);
             background: #ffffff;
-            color: #2b55df;
+            color: #1D4ED8;
             outline: none;
         }
 
         .nav-pills .nav-link {
             color: var(--text-muted);
             font-weight: 700;
-            border-radius: 18px;
+            border-radius: 10px;
             padding: 0.6rem 1.25rem;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
             margin: 0 0.2rem;
             border: 2px solid transparent;
             background: transparent;
         }
 
         .nav-pills .nav-link:hover {
-            color: #436cf5;
-            background: #f0f4fa;
-            box-shadow:
-                0 4px 12px rgba(160, 175, 205, 0.2),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.8);
+            color: #2563EB;
+            background: #F8FAFF;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             transform: translateY(-2px);
         }
 
         .nav-pills .nav-link.active {
-            background: linear-gradient(145deg, #628efb, #436cf5);
+            background: #2563EB;
             color: white;
-            box-shadow: var(--clay-shadow-btn);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             border-color: transparent;
         }
 
         .btn-glass-outline {
             background: #ffffff;
-            border: 2px solid rgba(67, 108, 245, 0.25);
-            color: #436cf5;
+            border: 2px solid rgba(37, 99, 235, 0.25);
+            color: #2563EB;
             font-weight: 700;
-            border-radius: 16px;
+            border-radius: 10px;
             padding: 0.5rem 1.15rem;
-            box-shadow: 
-                0 4px 12px rgba(67, 108, 245, 0.12),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.9);
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+            transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
         }
 
         .btn-glass-outline:hover {
-            background: linear-gradient(145deg, #628efb, #436cf5);
+            background: #1D4ED8;
             color: white;
             border-color: transparent;
             transform: translateY(-2px);
-            box-shadow: var(--clay-shadow-btn);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         /* Search Filter Card */
         .search-filter-card {
             background: var(--clay-surface);
-            border: 3px solid rgba(255, 255, 255, 0.95);
-            border-radius: 24px;
+            border: 1px solid #DCE6F2;
+            border-radius: 12px;
             padding: 1.25rem 1.6rem;
-            box-shadow: var(--clay-shadow-card);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             margin-top: 1.5rem;
             margin-bottom: 1.75rem;
             transition: all 0.3s ease;
@@ -269,22 +200,22 @@
             height: 6px;
         }
         .unit-nav-bar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: #C7D6EE;
             border-radius: 4px;
         }
 
         .unit-tab-pill {
             background: #ffffff;
-            border: 2px solid rgba(255, 255, 255, 0.95);
+            border: 1px solid #DCE6F2;
             color: var(--text-muted);
-            border-radius: 18px;
+            border-radius: 10px;
             padding: 0.65rem 1.25rem;
             font-weight: 700;
             font-size: 0.9rem;
             cursor: pointer;
             white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(30, 40, 80, 0.06), inset 1px 1px 2px rgba(255, 255, 255, 0.9);
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+            transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
             display: inline-flex;
             align-items: center;
             gap: 0.45rem;
@@ -293,26 +224,26 @@
         .unit-tab-pill:hover {
             color: var(--primary-blue);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(67, 108, 245, 0.15);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .unit-tab-pill.active {
-            background: linear-gradient(145deg, #628efb, #436cf5);
+            background: #2563EB;
             color: white;
             border-color: transparent;
-            box-shadow: var(--clay-shadow-btn);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             transform: translateY(-2px);
         }
 
         /* Search Box */
         .lecture-search-input {
-            background: #edf2f8;
+            background: #F8FAFF;
             border: 2px solid transparent;
-            border-radius: 20px;
+            border-radius: 10px;
             padding: 0.75rem 1.25rem;
             font-weight: 600;
             color: var(--text-main);
-            box-shadow: var(--clay-shadow-sunken);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             transition: all 0.25s ease;
             width: 100%;
         }
@@ -320,18 +251,18 @@
         .lecture-search-input:focus {
             background: #ffffff;
             border-color: var(--primary-blue);
-            box-shadow: 0 0 0 4px rgba(67, 108, 245, 0.2), inset 1px 1px 3px rgba(160, 175, 205, 0.15);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2), inset 1px 1px 3px rgba(37, 99, 235, 0.15);
             outline: none;
         }
 
         /* Lecture Card (Clay Card) */
         .lecture-card {
             background: var(--clay-surface);
-            border: 3px solid rgba(255, 255, 255, 0.95);
-            border-radius: 26px;
+            border: 1px solid #DCE6F2;
+            border-radius: 12px;
             padding: 1.85rem 1.65rem;
-            box-shadow: var(--clay-shadow-card);
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+            transition: all 0.35s cubic-bezier(0.2, 0, 0, 1);
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -340,7 +271,7 @@
 
         .lecture-card:hover {
             transform: translateY(-6px);
-            box-shadow: var(--clay-shadow-card-hover);
+            box-shadow: 0 2px 4px rgba(10, 37, 64, 0.08), 0 10px 24px rgba(10, 37, 64, 0.09);
         }
 
         .lecture-code-badge {
@@ -350,20 +281,20 @@
             font-weight: 800;
             font-size: 0.78rem;
             padding: 0.35rem 0.75rem;
-            border-radius: 12px;
+            border-radius: 8px;
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
-            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.8);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .lecture-meta-chip {
-            background: #f1f5f9;
-            color: #475569;
+            background: #F8FAFF;
+            color: #3E4F6E;
             font-size: 0.75rem;
             font-weight: 700;
             padding: 0.25rem 0.65rem;
-            border-radius: 10px;
+            border-radius: 8px;
             display: inline-flex;
             align-items: center;
             gap: 0.3rem;
@@ -383,10 +314,10 @@
 
         /* Action Buttons */
         .btn-view-slides {
-            background: linear-gradient(145deg, #628efb, #436cf5);
+            background: #2563EB;
             color: white;
             border: none;
-            border-radius: 16px;
+            border-radius: 10px;
             padding: 0.65rem 1.25rem;
             font-weight: 700;
             font-size: 0.88rem;
@@ -395,23 +326,23 @@
             justify-content: center;
             gap: 0.4rem;
             text-decoration: none;
-            box-shadow: var(--clay-shadow-btn);
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+            transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
             flex-grow: 1;
         }
 
         .btn-view-slides:hover {
-            background: linear-gradient(145deg, #6d96fc, #3b64ec);
+            background: #1D4ED8;
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(67, 108, 245, 0.35);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .btn-download-pdf {
             background: #ffffff;
-            color: #475569;
-            border: 2px solid rgba(160, 175, 205, 0.3);
-            border-radius: 16px;
+            color: #3E4F6E;
+            border: 2px solid rgba(37, 99, 235, 0.3);
+            border-radius: 10px;
             padding: 0.65rem 1.15rem;
             font-weight: 700;
             font-size: 0.88rem;
@@ -420,16 +351,16 @@
             justify-content: center;
             gap: 0.4rem;
             text-decoration: none;
-            box-shadow: 0 4px 10px rgba(30, 40, 80, 0.05), inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             transition: all 0.2s ease;
         }
 
         .btn-download-pdf:hover {
-            background: #f8fafc;
-            color: #0f172a;
-            border-color: #94a3b8;
+            background: #F8FAFF;
+            color: #081A30;
+            border-color: #7A8DB0;
             transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(30, 40, 80, 0.1);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         /* Coming Soon Badge */
@@ -442,26 +373,27 @@
             font-weight: 800;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            box-shadow: 
-                2px 3px 8px rgba(247, 85, 131, 0.2),
-                inset 1px 1px 2px rgba(255, 255, 255, 0.8);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         /* Responsive */
         @media (max-width: 991.98px) {
             .glass-nav {
-                border-radius: 20px;
-                padding: 0.65rem 1rem;
-                margin: 0.75rem auto 1rem;
+                margin: 0;
+                padding: 0.55rem 1rem;
+                border-radius: 0;
+                border: none;
+                border-bottom: 1px solid #DCE6F2;
+                box-shadow: none;
             }
 
             .navbar-collapse {
                 background: #ffffff;
-                border: 2px solid rgba(67, 108, 245, 0.12);
-                border-radius: 20px;
+                border: 2px solid rgba(37, 99, 235, 0.12);
+                border-radius: 10px;
                 padding: 0.85rem;
                 margin-top: 0.75rem;
-                box-shadow: 0 8px 24px rgba(30, 40, 80, 0.12);
+                box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             }
 
             .nav-pills {
@@ -475,13 +407,13 @@
                 width: 100%;
                 text-align: left;
                 padding: 0.7rem 1rem;
-                border-radius: 14px;
+                border-radius: 10px;
                 display: flex;
                 align-items: center;
                 margin: 0;
-                background: #f5f7fc;
-                box-shadow: none;
-                color: #475569;
+                background: #F8FAFF;
+                box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+                color: #3E4F6E;
                 border: 2px solid transparent;
             }
         }
@@ -489,11 +421,11 @@
         @media (max-width: 575.98px) {
             .search-filter-card {
                 padding: 1rem 1.15rem;
-                border-radius: 20px;
+                border-radius: 10px;
             }
             .lecture-card {
                 padding: 1.35rem 1.15rem;
-                border-radius: 20px;
+                border-radius: 10px;
             }
         }
     </style>
@@ -501,12 +433,6 @@
 
 <body>
     <!-- Ambient Animated Light Orbs -->
-    <div class="ambient-bg">
-        <div class="ambient-orb orb-blue"></div>
-        <div class="ambient-orb orb-pink"></div>
-        <div class="ambient-orb orb-green"></div>
-    </div>
-
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg glass-nav sticky-top py-2 px-3 mb-4">
         <div class="container-fluid max-w-7xl">
@@ -920,7 +846,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="memory management background swapping address binding compile load execution time logical physical address space mmu dynamic loading dynamic linking">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(46, 196, 145, 0.12); color: #059669;">
+                            <span class="lecture-code-badge" style="background: rgba(34, 197, 94, 0.12); color: #059669;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 2.1
                             </span>
                             <div class="d-flex gap-1">
@@ -954,7 +880,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="contiguous memory allocation fixed variable dynamic partitioning placement strategies first fit best fit worst fit internal external fragmentation compaction">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(46, 196, 145, 0.12); color: #059669;">
+                            <span class="lecture-code-badge" style="background: rgba(34, 197, 94, 0.12); color: #059669;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 2.2
                             </span>
                             <div class="d-flex gap-1">
@@ -988,7 +914,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="segmentation user view memory logical address format segment number offset segment table limit base protection sharing">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(46, 196, 145, 0.12); color: #059669;">
+                            <span class="lecture-code-badge" style="background: rgba(34, 197, 94, 0.12); color: #059669;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 2.3
                             </span>
                             <div class="d-flex gap-1">
@@ -1022,7 +948,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="paging frames pages page table tlb translation lookaside buffer effective memory access time emat hierarchical multilevel page table inverted">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(46, 196, 145, 0.12); color: #059669;">
+                            <span class="lecture-code-badge" style="background: rgba(34, 197, 94, 0.12); color: #059669;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 2.4
                             </span>
                             <div class="d-flex gap-1">
@@ -1056,7 +982,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="virtual memory demand paging page fault page replacement algorithms fifo lru optimal belady anomaly second chance frame allocation">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(46, 196, 145, 0.12); color: #059669;">
+                            <span class="lecture-code-badge" style="background: rgba(34, 197, 94, 0.12); color: #059669;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 2.5
                             </span>
                             <div class="d-flex gap-1">
@@ -1093,7 +1019,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="2" data-keywords="thrashing working set model page fault frequency kernel memory allocation buddy system slab allocator">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1D4ED8;">
                                 <i class="bi bi-file-earmark-slides-fill"></i> LEC 2.6
                             </span>
                             <div class="d-flex gap-1">
@@ -1149,7 +1075,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="ipc inter process communication shared memory message passing direct indirect communication mailboxes ports sockets rpc pipes">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1E40AF;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 3.1
                             </span>
                             <div class="d-flex gap-1">
@@ -1183,7 +1109,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="process synchronization race conditions critical section mutual exclusion progress bounded waiting preemptive kernel non preemptive">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1E40AF;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 3.2
                             </span>
                             <div class="d-flex gap-1">
@@ -1217,7 +1143,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="petersons solution bakery algorithm software synchronization two process n process turn flag array mutual exclusion proof">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1E40AF;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 3.2.1
                             </span>
                             <div class="d-flex gap-1">
@@ -1251,7 +1177,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="mutex locks semaphores monitors testandset compareandswap spinlocks wait signal condition variables counting binary">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1E40AF;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 3.2.2
                             </span>
                             <div class="d-flex gap-1">
@@ -1285,7 +1211,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="classical synchronization problems bounded buffer producer consumer readers writers dining philosophers deadlock starvation">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1E40AF;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 3.2.3
                             </span>
                             <div class="d-flex gap-1">
@@ -1325,7 +1251,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="deadlocks system model 4 necessary conditions mutual exclusion hold wait no preemption circular wait resource allocation graph rag cycle">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1E40AF;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 3.3
                             </span>
                             <div class="d-flex gap-1">
@@ -1359,7 +1285,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="3" data-keywords="deadlock prevention avoidance detection recovery bankers algorithm safe state safe sequence resource request algorithm">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(247, 85, 131, 0.12); color: #e11d48;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1E40AF;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 3.3.1
                             </span>
                             <div class="d-flex gap-1">
@@ -1418,7 +1344,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="file concept file attributes operations create read write reposition access methods sequential direct indexed">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1D4ED8;">
                                 <i class="bi bi-file-earmark-slides-fill"></i> LEC 4.1
                             </span>
                             <div class="d-flex gap-1">
@@ -1452,7 +1378,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="file system structure mounting directory structure allocation methods contiguous linked indexed free space management bit vector">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1D4ED8;">
                                 <i class="bi bi-file-earmark-slides-fill"></i> LEC 4.2
                             </span>
                             <div class="d-flex gap-1">
@@ -1486,7 +1412,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="disk structure disk scheduling algorithms fcfs sstf scan cscan look clook seek time rotational latency cylinder platter">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1D4ED8;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 4.3
                             </span>
                             <div class="d-flex gap-1">
@@ -1523,7 +1449,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="raid structure redundancy disk striping mirroring parity raid 0 raid 1 raid 5 raid 6 nested raid reliability">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1D4ED8;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 4.3.1
                             </span>
                             <div class="d-flex gap-1">
@@ -1557,7 +1483,7 @@
                 <div class="col-12 col-md-6 col-lg-6 lecture-card-item" data-unit="4" data-keywords="protection goals principles least privilege rings domain access matrix security">
                     <div class="lecture-card">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="lecture-code-badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+                            <span class="lecture-code-badge" style="background: rgba(37, 99, 235, 0.12); color: #1D4ED8;">
                                 <i class="bi bi-journal-bookmark-fill"></i> LEC 4.4
                             </span>
                             <div class="d-flex gap-1">

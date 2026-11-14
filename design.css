@@ -1,0 +1,100 @@
+/* ==========================================================================
+   OS EduHub — Minimal design system
+   Palette: white, blue, green only. No pink, purple, amber, red, orange.
+   This file overrides Bootstrap's built-in palette (danger/warning/info
+   grays) and Prism's syntax colors so every surface stays in palette.
+   Load order: vendor Bootstrap -> design.css -> simulator-theme.css / page styles.
+   ========================================================================== */
+
+/* --- Bootstrap palette overrides --------------------------------------- */
+.text-danger { color: #1D4ED8 !important; }
+.bg-danger { background-color: #2563EB !important; }
+.border-danger { border-color: #BFDBFE !important; }
+.btn-danger { background-color: #2563EB !important; border-color: #2563EB !important; color: #fff !important; }
+.btn-outline-danger { color: #1D4ED8 !important; border-color: #BFDBFE !important; }
+.btn-outline-danger:hover { background-color: #2563EB !important; border-color: #2563EB !important; color: #fff !important; }
+.badge.bg-danger { background-color: #2563EB !important; }
+.alert-danger { background-color: #EFF6FF !important; color: #1E40AF !important; border-color: #BFDBFE !important; }
+
+.text-warning { color: #15803D !important; }
+.bg-warning { background-color: #16A34A !important; }
+.border-warning { border-color: #86EFAC !important; }
+.btn-warning { background-color: #16A34A !important; border-color: #16A34A !important; color: #fff !important; }
+.btn-outline-warning { color: #15803D !important; border-color: #86EFAC !important; }
+.btn-outline-warning:hover { background-color: #16A34A !important; border-color: #16A34A !important; color: #fff !important; }
+.badge.bg-warning { background-color: #16A34A !important; color: #fff !important; }
+.alert-warning { background-color: #ECFDF5 !important; color: #15803D !important; border-color: #86EFAC !important; }
+
+.text-info { color: #2563EB !important; }
+.bg-info { background-color: #2563EB !important; }
+.border-info { border-color: #BFDBFE !important; }
+.badge.bg-info { background-color: #2563EB !important; }
+.alert-info { background-color: #EFF6FF !important; color: #1E40AF !important; border-color: #BFDBFE !important; }
+
+.text-muted { color: #52648A !important; }
+.text-secondary { color: #52648A !important; }
+.text-dark { color: #0A2540 !important; }
+.text-light { color: #fff !important; }
+.text-primary { color: #2563EB !important; }
+.text-success { color: #16A34A !important; }
+.bg-light { background-color: #F8FAFF !important; }
+.bg-secondary { background-color: #DBEAFE !important; }
+.bg-primary { background-color: #2563EB !important; }
+.bg-success { background-color: #16A34A !important; }
+.border-success { border-color: #86EFAC !important; }
+.btn-light { background-color: #fff !important; border-color: #DCE6F2 !important; color: #0A2540 !important; }
+.btn-outline-info { color: #2563EB !important; border-color: #BFDBFE !important; }
+.btn-outline-info:hover { background-color: #2563EB !important; color: #fff !important; }
+.btn-outline-success { color: #15803D !important; border-color: #86EFAC !important; }
+.btn-outline-success:hover { background-color: #16A34A !important; color: #fff !important; }
+
+/* --- Bootstrap subtle / emphasis variants --------------------------------- */
+.bg-primary-subtle { background-color: #EFF6FF !important; }
+.border-primary-subtle { border-color: #BFDBFE !important; }
+.text-primary-emphasis { color: #1D4ED8 !important; }
+.bg-success-subtle { background-color: #ECFDF5 !important; }
+.border-success-subtle { border-color: #86EFAC !important; }
+.text-success-emphasis { color: #15803D !important; }
+.bg-danger-subtle { background-color: #EFF6FF !important; }
+.border-danger-subtle { border-color: #BFDBFE !important; }
+.text-danger-emphasis { color: #1E40AF !important; }
+.bg-warning-subtle { background-color: #ECFDF5 !important; }
+.border-warning-subtle { border-color: #86EFAC !important; }
+.text-warning-emphasis { color: #15803D !important; }
+.bg-info-subtle { background-color: #EFF6FF !important; }
+.border-info-subtle { border-color: #BFDBFE !important; }
+.text-info-emphasis { color: #1D4ED8 !important; }
+.bg-secondary-subtle { background-color: #EAF1FB !important; }
+.border-secondary-subtle { border-color: #C7D6EE !important; }
+.text-secondary-emphasis { color: #3E4F6E !important; }
+.bg-light-subtle { background-color: #F8FAFF !important; }
+.text-body-emphasis { color: #0A2540 !important; }
+.text-body-secondary { color: #52648A !important; }
+
+/* --- Close button: recolor Bootstrap's black X to blue -------------------- */
+.btn-close { filter: invert(22%) sepia(84%) saturate(2200%) hue-rotate(210deg) brightness(96%) contrast(102%); }
+
+/* --- Base --------------------------------------------------------------- */
+::selection { background: #DBEAFE; color: #0A2540; }
+:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }
+
+/* --- Prism syntax highlighting (blue / green / white on deep blue) ------ */
+code[class*="language-"], pre[class*="language-"] { color: #DBEAFE; text-shadow: none; }
+.token.comment, .token.prolog, .token.doctype, .token.cdata { color: #7A8DB0; }
+.token.punctuation { color: #93C5FD; }
+.token.property, .token.tag, .token.boolean, .token.number, .token.constant,
+.token.symbol, .token.deleted { color: #86EFAC; }
+.token.selector, .token.attr-name, .token.string, .token.char, .token.builtin,
+.token.inserted { color: #93C5FD; }
+.token.operator, .token.entity, .token.url { color: #DBEAFE; background: none; }
+.token.atrule, .token.attr-value, .token.keyword { color: #60A5FA; }
+.token.function, .token.class-name { color: #34D399; }
+.token.regex, .token.important, .token.variable { color: #86EFAC; }
+.token.important, .token.bold { font-weight: 700; }
+.token.italic { font-style: italic; }
+
+/* --- Scrollbar (blue) ---------------------------------------------------- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #F8FAFF; }
+::-webkit-scrollbar-thumb { background: #BFDBFE; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #93C5FD; }
