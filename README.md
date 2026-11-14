@@ -191,7 +191,7 @@ Styled with a **Tactile Claymorphism** design language, the interface delivers p
   - **Portrait (Vertical)**: Optimized single-handed navigation, responsive bottom toolbar, compact side arrows, and natural touch swipe gestures (Swipe Left: Next, Swipe Right: Prev).
   - **Landscape (Horizontal)**: 100% full-screen presentation stage with zero top obstruction, compact action bar, and responsive height adaptation.
 - **Minimalist Full-Stage Layout**: Top OSHub banner removed to maximize presentation viewport, with subtle floating corner pills for Home navigation and PDF uploads.
-- **Offline & File-Protocol Ready**: Pre-compiled with `lecture/pdfData.js` for zero-CORS instant loading when opening directly via `file:///`.
+- **Offline-Ready**: Core libraries (Bootstrap, PDF.js, Prism, KaTeX) are vendored in `vendor/`. All 26 lecture slide decks are bundled with pre-compiled data files (`lecture/unit*_data.js`) for instant zero-CORS offline loading over `file:///` protocols, as well as direct fetch over HTTP/HTTPS. Custom PDF upload and drag-and-drop are also supported.
 
 ---
 
@@ -288,7 +288,8 @@ OS-Hub/
 ├── readers_writers.html     # Readers–Writers (Readers/Writers/FIFO) Simulator & C Code
 ├── simulator-theme.css      # Shared claymorphism theme for the simulator pages
 ├── syllabus.html           # Full Operating Systems Syllabus (U24PC540IT)
-├── lecture/                # PDF lecture courseware (Unit-1 slide decks & data)
+├── lecture/                # PDF lecture decks for Units 1–4 (plain PDF files)
+├── vendor/                 # Local copies of Bootstrap, PDF.js, Prism, KaTeX (offline use)
 └── README.md               # Comprehensive platform documentation
 ```
 
@@ -299,7 +300,6 @@ OS-Hub/
 - **HTML5 & CSS3** (Tactile Claymorphism Styling & CSS Grid/Flexbox)
 - **[Bootstrap 5.3](https://getbootstrap.com/)** (Responsive layout components & UI utilities)
 - **[Vanilla JavaScript (ES6+)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)** (Simulation engines, canvas chalkboard, state management)
-- **[Reveal.js 4.6.1](https://revealjs.com/)** (Interactive HTML presentation framework with Quarto styling)
 - **[PDF.js 3.11](https://mozilla.github.io/pdf.js/)** (Client-side PDF rendering engine for custom lecture decks)
 - **[KaTeX](https://katex.org/)** (Fast mathematical LaTeX typesetting)
 - **[Prism.js](https://prismjs.com/)** (C code syntax highlighting)

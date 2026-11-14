@@ -7,16 +7,17 @@
     <title>OS EduHub — Lecture 01 Slide Deck (1.1.0 Introduction)</title>
 
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- PDF.js Engine -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- PDF.js Engine & Worker -->
+    <script src="vendor/pdfjs/pdf.min.js"></script>
+    <script src="vendor/pdfjs/pdf.worker.min.js"></script>
 
     <!-- Pre-embedded PDF Data for instant zero-CORS file:// loading -->
     <script src="lecture/pdfData.js"></script>
@@ -1098,14 +1099,24 @@
     </div>
 
     <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
 
     <!-- ============================================== -->
     <!-- SLIDE DECK ENGINE JAVASCRIPT                   -->
     <!-- ============================================== -->
     <script>
         // PDF.js Worker Configuration
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        // On file:// origins, use the pre-loaded main thread message handler to bypass browser worker restrictions
+        if (window.pdfjsWorker && window.pdfjsWorker.WorkerMessageHandler) {
+            try {
+                pdfjsLib.PDFWorker._mainThreadWorkerMessageHandler = window.pdfjsWorker.WorkerMessageHandler;
+            } catch (e) {}
+        }
+        if (window.location.protocol === 'file:') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+        } else {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'vendor/pdfjs/pdf.worker.min.js';
+        }
 
         // Core Presentation State
         let pdfDoc = null;
@@ -1193,7 +1204,7 @@
             return `os_pdf_${prefix}_${safeName}_p${pageNum}`;
         }
 
-        // 1. PDF Loading Engine (Triple-Robust: Base64 offline -> Fetch relative -> File upload fallback)
+        // 1. PDF Loading Engine (Triple-Robust: Pre-embedded Base64 -> Direct Fetch -> File Upload fallback)
         async function initPdfDeck() {
             showLoading("Loading Lecture Slides...");
             try {
@@ -1205,7 +1216,13 @@
                 if (badge) badge.innerHTML = `<i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> ${activePdfName}`;
                 document.title = `OS EduHub — ${activePdfName.replace('.pdf', '')}`;
 
-                // Strategy A: Pre-embedded Base64 in window.ALL_PDF_DATA / UNIT DATA or DEFAULT_PDF_BASE64
+                // Determine unit folder for HTTP fetch fallback
+                let unitFolder = 'unit-1';
+                if (activePdfName.startsWith('2.') || targetParam.includes('unit-2')) unitFolder = 'unit-2';
+                else if (activePdfName.startsWith('3.') || targetParam.includes('unit-3')) unitFolder = 'unit-3';
+                else if (activePdfName.startsWith('4.') || targetParam.includes('unit-4')) unitFolder = 'unit-4';
+
+                // Strategy A: Pre-embedded Base64 (zero-CORS file:// offline compatibility)
                 const allData = window.ALL_PDF_DATA || {};
                 const u1Data = window.UNIT1_PDF_DATA || {};
                 const u2Data = window.UNIT2_PDF_DATA || {};
@@ -1230,11 +1247,7 @@
                     }
                     pdfDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
                 } else {
-                    // Strategy B: Fetch relative PDF file based on unit number
-                    let unitFolder = 'unit-1';
-                    if (activePdfName.startsWith('2.') || targetParam.includes('unit-2')) unitFolder = 'unit-2';
-                    else if (activePdfName.startsWith('3.') || targetParam.includes('unit-3')) unitFolder = 'unit-3';
-                    else if (activePdfName.startsWith('4.') || targetParam.includes('unit-4')) unitFolder = 'unit-4';
+                    // Strategy B: Direct Fetch from relative path (when served over HTTP/HTTPS)
                     pdfDoc = await pdfjsLib.getDocument(`lecture/${unitFolder}/${activePdfName}`).promise;
                 }
 
