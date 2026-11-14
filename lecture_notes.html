@@ -15,8 +15,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- PDF.js Engine -->
+    <!-- PDF.js Engine & Worker -->
     <script src="vendor/pdfjs/pdf.min.js"></script>
+    <script src="vendor/pdfjs/pdf.worker.min.js"></script>
+
+    <!-- Pre-embedded PDF Data for instant zero-CORS file:// loading -->
+    <script src="lecture/pdfData.js"></script>
+    <script src="lecture/unit1_data.js"></script>
+    <script src="lecture/unit2_data.js"></script>
+    <script src="lecture/unit3_data.js"></script>
+    <script src="lecture/unit4_data.js"></script>
 
     <style>
         :root {
@@ -1098,7 +1106,17 @@
     <!-- ============================================== -->
     <script>
         // PDF.js Worker Configuration
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'vendor/pdfjs/pdf.worker.min.js';
+        // On file:// origins, use the pre-loaded main thread message handler to bypass browser worker restrictions
+        if (window.pdfjsWorker && window.pdfjsWorker.WorkerMessageHandler) {
+            try {
+                pdfjsLib.PDFWorker._mainThreadWorkerMessageHandler = window.pdfjsWorker.WorkerMessageHandler;
+            } catch (e) {}
+        }
+        if (window.location.protocol === 'file:') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+        } else {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'vendor/pdfjs/pdf.worker.min.js';
+        }
 
         // Core Presentation State
         let pdfDoc = null;
@@ -1186,10 +1204,7 @@
             return `os_pdf_${prefix}_${safeName}_p${pageNum}`;
         }
 
-        // 1. PDF Loading Engine (Fetch the PDF file directly -> File upload fallback)
-        // Decks live as plain files under lecture/unit-1..4 and are fetched with
-        // PDF.js, so no embedded base64 copies are needed. On file:// the fetch
-        // is blocked by the browser; use Upload / drag-and-drop in that case.
+        // 1. PDF Loading Engine (Triple-Robust: Pre-embedded Base64 -> Direct Fetch -> File Upload fallback)
         async function initPdfDeck() {
             showLoading("Loading Lecture Slides...");
             try {
@@ -1201,12 +1216,40 @@
                 if (badge) badge.innerHTML = `<i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> ${activePdfName}`;
                 document.title = `OS EduHub — ${activePdfName.replace('.pdf', '')}`;
 
-                // Load the PDF directly from lecture/<unit>/<file>
+                // Determine unit folder for HTTP fetch fallback
                 let unitFolder = 'unit-1';
                 if (activePdfName.startsWith('2.') || targetParam.includes('unit-2')) unitFolder = 'unit-2';
                 else if (activePdfName.startsWith('3.') || targetParam.includes('unit-3')) unitFolder = 'unit-3';
                 else if (activePdfName.startsWith('4.') || targetParam.includes('unit-4')) unitFolder = 'unit-4';
-                pdfDoc = await pdfjsLib.getDocument(`lecture/${unitFolder}/${activePdfName}`).promise;
+
+                // Strategy A: Pre-embedded Base64 (zero-CORS file:// offline compatibility)
+                const allData = window.ALL_PDF_DATA || {};
+                const u1Data = window.UNIT1_PDF_DATA || {};
+                const u2Data = window.UNIT2_PDF_DATA || {};
+                const u3Data = window.UNIT3_PDF_DATA || {};
+                const u4Data = window.UNIT4_PDF_DATA || {};
+                const b64Data = allData[activePdfName] || u1Data[activePdfName] || u2Data[activePdfName] || u3Data[activePdfName] || u4Data[activePdfName];
+
+                if (b64Data) {
+                    const binaryString = atob(b64Data);
+                    const len = binaryString.length;
+                    const bytes = new Uint8Array(len);
+                    for (let i = 0; i < len; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    pdfDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
+                } else if (window.DEFAULT_PDF_BASE64 && activePdfName === '1.1.0-Introduction.pdf') {
+                    const binaryString = atob(window.DEFAULT_PDF_BASE64);
+                    const len = binaryString.length;
+                    const bytes = new Uint8Array(len);
+                    for (let i = 0; i < len; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    pdfDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
+                } else {
+                    // Strategy B: Direct Fetch from relative path (when served over HTTP/HTTPS)
+                    pdfDoc = await pdfjsLib.getDocument(`lecture/${unitFolder}/${activePdfName}`).promise;
+                }
 
                 totalPages = pdfDoc.numPages;
                 totalSlidesNum.textContent = totalPages;
@@ -1216,7 +1259,21 @@
                 renderSlide(currentPage);
                 generateThumbnails();
             } catch (err) {
-                console.warn("Auto-load failed, use Upload / drag-and-drop:", err);
+                console.warn("Auto-load failed, trying fallback:", err);
+                try {
+                    if (window.DEFAULT_PDF_BASE64) {
+                        activePdfName = '1.1.0-Introduction.pdf';
+                        const binaryString = atob(window.DEFAULT_PDF_BASE64);
+                        const bytes = new Uint8Array(binaryString.length);
+                        for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+                        pdfDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
+                        totalPages = pdfDoc.numPages;
+                        totalSlidesNum.textContent = totalPages;
+                        renderSlide(1);
+                        generateThumbnails();
+                        return;
+                    }
+                } catch (e2) {}
                 hideLoading();
                 loadingLabel.textContent = "Please select or drop PDF file";
                 showLoading("Upload / Import PDF to start");

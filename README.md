@@ -191,7 +191,7 @@ Styled with a **Tactile Claymorphism** design language, the interface delivers p
   - **Portrait (Vertical)**: Optimized single-handed navigation, responsive bottom toolbar, compact side arrows, and natural touch swipe gestures (Swipe Left: Next, Swipe Right: Prev).
   - **Landscape (Horizontal)**: 100% full-screen presentation stage with zero top obstruction, compact action bar, and responsive height adaptation.
 - **Minimalist Full-Stage Layout**: Top OSHub banner removed to maximize presentation viewport, with subtle floating corner pills for Home navigation and PDF uploads.
-- **Offline-Ready**: Core libraries (Bootstrap, PDF.js, Prism, KaTeX) are vendored in `vendor/`, so the simulators and slide reader work offline on any static host. Opening `lecture_notes.html` directly via `file:///` needs the Upload / drag-and-drop option, since browsers block local file fetches.
+- **Offline-Ready**: Core libraries (Bootstrap, PDF.js, Prism, KaTeX) are vendored in `vendor/`. All 26 lecture slide decks are bundled with pre-compiled data files (`lecture/unit*_data.js`) for instant zero-CORS offline loading over `file:///` protocols, as well as direct fetch over HTTP/HTTPS. Custom PDF upload and drag-and-drop are also supported.
 
 ---
 

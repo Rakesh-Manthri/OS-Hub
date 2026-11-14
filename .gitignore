@@ -1,3 +1,4 @@
 .hallmark/
 .agents/
 skills-lock.json
+*.patch
