@@ -7,12 +7,13 @@
 
     <!-- Bootstrap 5 CSS -->
     <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="design.css">
     <!-- Bootstrap Icons -->
     <link href="vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700" rel="stylesheet">
     <!-- Prism.js -->
     <link href="vendor/prism/prism-tomorrow.min.css" rel="stylesheet" />
     <!-- Shared claymorphism theme -->
@@ -21,10 +22,10 @@
     <style>
         /* Dining Stage */
         .dining-stage {
-            background: #f0f4fa;
-            border-radius: 26px;
+            background: #F8FAFF;
+            border-radius: 12px;
             padding: 0.75rem;
-            box-shadow: inset 3px 3px 8px rgba(160, 175, 205, 0.28), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         #diningSvg {
@@ -63,7 +64,7 @@
             height: 13px;
             border-radius: 50%;
             border: 2px solid #ffffff;
-            box-shadow: 0 1px 4px rgba(30, 40, 80, 0.22);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             display: inline-block;
         }
 
@@ -72,7 +73,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.3rem;
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 0.25rem 0.55rem;
             font-size: 0.7rem;
             font-weight: 800;
@@ -80,28 +81,28 @@
         }
 
         .state-thinking {
-            background: #eef3f8;
-            color: #64748b;
+            background: #F8FAFF;
+            color: #52648A;
         }
 
         .state-hungry {
-            background: #fef4df;
-            color: #b45309;
+            background: #EFF6FF;
+            color: #1D4ED8;
         }
 
         .state-waiting {
-            background: #fef0f4;
-            color: #c92f5d;
+            background: #EFF6FF;
+            color: #1E40AF;
         }
 
         .state-eating {
-            background: #edfbf5;
-            color: #0f8a63;
+            background: #ECFDF5;
+            color: #15803D;
         }
 
         .state-deadlocked {
-            background: #fee2e2;
-            color: #b91c1c;
+            background: #DBEAFE;
+            color: #1E40AF;
         }
 
         /* Status detail table */
@@ -126,11 +127,11 @@
         }
 
         .deadlocked-row td {
-            background: #fef0f4 !important;
+            background: #EFF6FF !important;
         }
 
         .deadlocked-row td:first-child {
-            box-shadow: inset 4px 0 0 var(--accent-pink);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .fork-chip {
@@ -138,20 +139,20 @@
             align-items: center;
             gap: 0.35rem;
             background: #ffffff;
-            border: 1px solid rgba(203, 213, 225, 0.85);
-            border-radius: 10px;
+            border: 1px solid rgba(199, 214, 238, 0.85);
+            border-radius: 8px;
             padding: 0.26rem 0.5rem;
             font-family: var(--font-mono);
             font-size: 0.7rem;
             font-weight: 800;
             color: var(--text-muted);
-            box-shadow: 2px 3px 7px rgba(160, 175, 205, 0.14), inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .fork-chip.owned {
-            background: #edfbf5;
-            border-color: rgba(46, 196, 145, 0.3);
-            color: #0f8a63;
+            background: #ECFDF5;
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #15803D;
         }
 
         /* SVG state halo */
@@ -171,7 +172,7 @@
             justify-content: space-between;
             gap: 0.5rem;
             background: rgba(255, 255, 255, 0.72);
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 0.38rem 0.55rem;
             font-size: 0.74rem;
             font-weight: 700;
@@ -189,12 +190,12 @@
             display: flex;
             align-items: flex-start;
             gap: 0.8rem;
-            background: #fef0f4;
-            border: 2px solid rgba(247, 85, 131, 0.45);
-            border-radius: 18px;
+            background: #EFF6FF;
+            border: 2px solid rgba(37, 99, 235, 0.45);
+            border-radius: 10px;
             padding: 0.85rem 1rem;
             margin-bottom: 1rem;
-            box-shadow: 0 6px 16px rgba(247, 85, 131, 0.12), inset 2px 2px 4px rgba(255, 255, 255, 0.85);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .deadlock-callout > i {
@@ -205,13 +206,13 @@
         }
 
         .deadlock-callout strong {
-            color: #b4234b;
+            color: #1E40AF;
         }
 
         .deadlock-callout .deadlock-text {
             font-size: 0.8rem;
             font-weight: 600;
-            color: #b4234b;
+            color: #1E40AF;
             margin-top: 0.15rem;
         }
 
@@ -229,12 +230,12 @@
             display: flex;
             align-items: flex-start;
             gap: 0.55rem;
-            background: #f7f9fd;
-            border-radius: 12px;
+            background: #F8FAFF;
+            border-radius: 8px;
             padding: 0.48rem 0.6rem;
             font-size: 0.78rem;
             font-weight: 600;
-            color: #475569;
+            color: #3E4F6E;
         }
 
         .event-tick {
@@ -242,7 +243,7 @@
             font-family: var(--font-mono);
             font-size: 0.68rem;
             font-weight: 800;
-            color: #94a3b8;
+            color: #7A8DB0;
             padding-top: 0.12rem;
         }
 
@@ -254,33 +255,33 @@
             min-height: 160px;
             gap: 0.5rem;
             color: var(--text-muted);
-            border: 2px dashed rgba(203, 213, 225, 0.9);
-            border-radius: 18px;
+            border: 2px dashed rgba(199, 214, 238, 0.9);
+            border-radius: 10px;
             padding: 1.5rem;
             text-align: center;
         }
 
         .event-empty i {
             font-size: 1.9rem;
-            color: #a5b4fc;
+            color: #BFDBFE;
         }
 
         /* Comparison */
         .meal-progress {
             height: 10px;
             border-radius: 999px;
-            background: #edf2f8;
+            background: #F8FAFF;
             overflow: hidden;
-            box-shadow: inset 2px 2px 5px rgba(160, 175, 205, 0.28), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .meal-progress > span {
             display: block;
             height: 100%;
             border-radius: 999px;
-            background: linear-gradient(90deg, #38cf9b, #2ec491);
-            box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.55);
-            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: #22C55E;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+            transition: width 0.8s cubic-bezier(0.2, 0, 0, 1);
         }
 
         .mini-dot-row {
@@ -302,27 +303,27 @@
             font-family: var(--font-mono);
             font-size: 0.58rem;
             font-weight: 800;
-            box-shadow: 0 2px 6px rgba(30, 40, 80, 0.18);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .mini-dot.thinking {
-            background: #94a3b8;
+            background: #7A8DB0;
         }
 
         .mini-dot.hungry {
-            background: #f59e0b;
+            background: #2563EB;
         }
 
         .mini-dot.waiting {
-            background: #f75583;
+            background: #2563EB;
         }
 
         .mini-dot.eating {
-            background: #2ec491;
+            background: #16A34A;
         }
 
         .mini-dot.deadlocked {
-            background: #b91c1c;
+            background: #1E40AF;
         }
 
         .strategy-note {
@@ -362,17 +363,11 @@
 </head>
 <body>
 
-    <div class="ambient-bg">
-        <div class="ambient-orb orb-blue"></div>
-        <div class="ambient-orb orb-pink"></div>
-        <div class="ambient-orb orb-green"></div>
-    </div>
-
     <!-- Navigation -->
     <nav class="navbar navbar-expand-xl glass-nav sticky-top py-2 px-3 mb-4">
         <div class="container-fluid max-w-7xl">
             <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
-                <div class="brand-icon" style="background: linear-gradient(145deg, #fbbf24, #f59e0b); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35), inset 2px 2px 4px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(150, 90, 10, 0.3);">
+                <div class="brand-icon" style="background: #3B82F6; box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);">
                     <i class="bi bi-people-fill"></i>
                 </div>
                 <div>
@@ -556,14 +551,14 @@
                         </div>
                     </div>
                     <div class="col-6 col-lg-3">
-                        <div class="kpi-card kpi-amber">
+                        <div class="kpi-card kpi-green">
                             <div class="kpi-label">Longest Wait</div>
                             <div class="kpi-value mt-1" id="kpiWait" style="color: var(--accent-amber);">0 <span class="fs-6 fw-normal text-muted">ticks</span></div>
                             <small class="text-muted d-block mt-1" id="kpiWaitSub">No philosopher waiting</small>
                         </div>
                     </div>
                     <div class="col-6 col-lg-3">
-                        <div class="kpi-card kpi-purple">
+                        <div class="kpi-card kpi-blue">
                             <div class="kpi-label">Eating Now</div>
                             <div class="kpi-value mt-1" id="kpiEating" style="color: var(--accent-purple);">0 <span class="fs-6 fw-normal text-muted">/ 5</span></div>
                             <small class="text-muted d-block mt-1" id="kpiEatingSub">Forks in use: 0 / 5</small>
@@ -625,15 +620,15 @@
                             <div class="dining-stage">
                                 <svg id="diningSvg" viewBox="0 0 600 600" role="img" aria-label="Dining philosophers round table"></svg>
                                 <div class="state-legend">
-                                    <span class="legend-pill"><span class="legend-swatch" style="background: #cbd5e1;"></span>Thinking</span>
-                                    <span class="legend-pill"><span class="legend-swatch" style="background: #fbbf24;"></span>Hungry</span>
-                                    <span class="legend-pill"><span class="legend-swatch" style="background: #f75583;"></span>Waiting for fork</span>
-                                    <span class="legend-pill"><span class="legend-swatch" style="background: #2ec491;"></span>Eating</span>
+                                    <span class="legend-pill"><span class="legend-swatch" style="background: #C7D6EE;"></span>Thinking</span>
+                                    <span class="legend-pill"><span class="legend-swatch" style="background: #3B82F6;"></span>Hungry</span>
+                                    <span class="legend-pill"><span class="legend-swatch" style="background: #2563EB;"></span>Waiting for fork</span>
+                                    <span class="legend-pill"><span class="legend-swatch" style="background: #16A34A;"></span>Eating</span>
                                 </div>
                             </div>
                             <div class="small text-muted fw-semibold mt-2 px-1">
                                 <i class="bi bi-bezier2 me-1"></i>
-                                Solid lines connect philosophers to forks they hold. Dashed pink lines show the fork they are waiting for.
+                                Solid lines connect philosophers to forks they hold. Dashed blue lines show the fork they are waiting for.
                             </div>
                         </div>
 
@@ -877,9 +872,9 @@
                     <div class="code-container">
                         <div class="code-header">
                             <div class="code-dots">
-                                <span style="background: #ef4444;"></span>
-                                <span style="background: #f59e0b;"></span>
-                                <span style="background: #10b981;"></span>
+                                <span style="background: #1E40AF;"></span>
+                                <span style="background: #2563EB;"></span>
+                                <span style="background: #22C55E;"></span>
                             </div>
                             <span class="text-light small font-monospace" id="codeFileName">dining_naive.c</span>
                         </div>
@@ -904,21 +899,21 @@
         const STRATEGY_META = {
             NAIVE: {
                 label: 'Naive',
-                color: '#f75583',
+                color: '#2563EB',
                 icon: 'bi-exclamation-octagon-fill',
                 badge: 'Left then right',
                 description: 'Each philosopher reaches for the left fork first, then the right fork. A synchronized hungry start can leave everyone holding one fork forever.'
             },
             ORDERED: {
                 label: 'Ordered',
-                color: '#436cf5',
+                color: '#2563EB',
                 icon: 'bi-sort-numeric-down',
                 badge: 'Resource hierarchy',
                 description: 'Every philosopher acquires the lower-numbered fork before the higher-numbered fork, which removes circular wait.'
             },
             WAITER: {
                 label: 'Waiter',
-                color: '#2ec491',
+                color: '#16A34A',
                 icon: 'bi-person-badge-fill',
                 badge: 'Arbitrator',
                 description: 'A waiter admits at most N − 1 philosophers to the table, guaranteeing that at least one fork stays available.'
@@ -926,11 +921,11 @@
         };
 
         const STATE_META = {
-            thinking: { label: 'Thinking', fill: '#e2e8f0', stroke: '#94a3b8', text: '#475569', chip: 'state-thinking', dot: 'thinking' },
-            hungry: { label: 'Hungry', fill: '#fef3c7', stroke: '#f59e0b', text: '#92400e', chip: 'state-hungry', dot: 'hungry' },
-            waiting: { label: 'Waiting', fill: '#ffe4ec', stroke: '#f75583', text: '#b4234b', chip: 'state-waiting', dot: 'waiting' },
-            eating: { label: 'Eating', fill: '#d1fae5', stroke: '#2ec491', text: '#0f8a63', chip: 'state-eating', dot: 'eating' },
-            deadlocked: { label: 'Deadlocked', fill: '#fee2e2', stroke: '#b91c1c', text: '#991b1b', chip: 'state-deadlocked', dot: 'deadlocked' }
+            thinking: { label: 'Thinking', fill: '#DCE6F2', stroke: '#7A8DB0', text: '#3E4F6E', chip: 'state-thinking', dot: 'thinking' },
+            hungry: { label: 'Hungry', fill: '#DBEAFE', stroke: '#2563EB', text: '#1E40AF', chip: 'state-hungry', dot: 'hungry' },
+            waiting: { label: 'Waiting', fill: '#EFF6FF', stroke: '#2563EB', text: '#1E40AF', chip: 'state-waiting', dot: 'waiting' },
+            eating: { label: 'Eating', fill: '#d1fae5', stroke: '#16A34A', text: '#15803D', chip: 'state-eating', dot: 'eating' },
+            deadlocked: { label: 'Deadlocked', fill: '#DBEAFE', stroke: '#1E40AF', text: '#1E40AF', chip: 'state-deadlocked', dot: 'deadlocked' }
         };
 
         const presets = {
@@ -1265,18 +1260,18 @@
             ).length;
 
             const parts = [];
-            parts.push(`<circle cx="${cx}" cy="${cy}" r="150" fill="#f8fafc" stroke="#dbe4f0" stroke-width="2"></circle>`);
-            parts.push(`<circle cx="${cx}" cy="${cy}" r="112" fill="none" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="5 7"></circle>`);
-            parts.push(`<text x="${cx}" y="${cy - 12}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="14" font-weight="800" fill="#334155">ROUND TABLE</text>`);
-            parts.push(`<text x="${cx}" y="${cy + 9}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#94a3b8">TICK ${snapshot.tick}</text>`);
-            parts.push(`<text x="${cx}" y="${cy + 30}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#64748b">${eating} eating · ${waiting} waiting</text>`);
+            parts.push(`<circle cx="${cx}" cy="${cy}" r="150" fill="#F8FAFF" stroke="#DBEAFE" stroke-width="2"></circle>`);
+            parts.push(`<circle cx="${cx}" cy="${cy}" r="112" fill="none" stroke="#DCE6F2" stroke-width="1.5" stroke-dasharray="5 7"></circle>`);
+            parts.push(`<text x="${cx}" y="${cy - 12}" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="800" fill="#2A3B5C">ROUND TABLE</text>`);
+            parts.push(`<text x="${cx}" y="${cy + 9}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#7A8DB0">TICK ${snapshot.tick}</text>`);
+            parts.push(`<text x="${cx}" y="${cy + 30}" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#52648A">${eating} eating · ${waiting} waiting</text>`);
 
             snapshot.philosophers.forEach(philosopher => {
                 const from = philosopherPosition(philosopher.id);
 
                 philosopher.holds.forEach(fork => {
                     const to = forkPosition(fork);
-                    parts.push(`<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="#2ec491" stroke-width="3" stroke-linecap="round" opacity="0.85"></line>`);
+                    parts.push(`<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="#16A34A" stroke-width="3" stroke-linecap="round" opacity="0.85"></line>`);
                 });
 
                 if (philosopher.state === 'waiting' && philosopher.holds.length === 1) {
@@ -1284,7 +1279,7 @@
                     const right = (philosopher.id + 1) % n;
                     const needed = philosopher.holds[0] === left ? right : left;
                     const to = forkPosition(needed);
-                    parts.push(`<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="#f75583" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="6 5" opacity="0.95"></line>`);
+                    parts.push(`<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="#2563EB" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="6 5" opacity="0.95"></line>`);
                 }
             });
 
@@ -1303,9 +1298,9 @@
                 const position = forkPosition(fork);
                 const owned = owner !== null;
                 const awaited = awaitedForks.has(fork) && !owned;
-                const stroke = awaited ? '#f75583' : (owned ? '#2ec491' : '#cbd5e1');
-                const fill = owned ? '#edfbf5' : '#ffffff';
-                const textColor = owned ? '#0f8a63' : (awaited ? '#b4234b' : '#64748b');
+                const stroke = awaited ? '#2563EB' : (owned ? '#16A34A' : '#C7D6EE');
+                const fill = owned ? '#ECFDF5' : '#ffffff';
+                const textColor = owned ? '#15803D' : (awaited ? '#1E40AF' : '#52648A');
                 const title = owned ? `Fork ${fork} held by P${owner}` : `Fork ${fork} is free`;
 
                 parts.push(`<g><title>${title}</title>`);
@@ -1327,15 +1322,15 @@
                 }
 
                 if (state === 'deadlocked') {
-                    parts.push(`<circle cx="${position.x}" cy="${position.y}" r="45" fill="none" stroke="#b91c1c" stroke-width="2" opacity="0.35" stroke-dasharray="4 4"></circle>`);
+                    parts.push(`<circle cx="${position.x}" cy="${position.y}" r="45" fill="none" stroke="#1E40AF" stroke-width="2" opacity="0.35" stroke-dasharray="4 4"></circle>`);
                 }
 
                 parts.push(`<circle cx="${position.x}" cy="${position.y}" r="37" fill="${meta.fill}" stroke="${meta.stroke}" stroke-width="3"></circle>`);
-                parts.push(`<text x="${position.x}" y="${position.y + 6}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="16" font-weight="800" fill="${meta.text}">P${philosopher.id}</text>`);
+                parts.push(`<text x="${position.x}" y="${position.y + 6}" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="800" fill="${meta.text}">P${philosopher.id}</text>`);
 
                 if (state === 'deadlocked') {
-                    parts.push(`<circle cx="${position.x + 27}" cy="${position.y - 27}" r="10" fill="#b91c1c" stroke="#ffffff" stroke-width="2"></circle>`);
-                    parts.push(`<text x="${position.x + 27}" y="${position.y - 23}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="800" fill="#ffffff">!</text>`);
+                    parts.push(`<circle cx="${position.x + 27}" cy="${position.y - 27}" r="10" fill="#1E40AF" stroke="#ffffff" stroke-width="2"></circle>`);
+                    parts.push(`<text x="${position.x + 27}" y="${position.y - 23}" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="800" fill="#ffffff">!</text>`);
                 }
 
                 parts.push('</g>');
@@ -1436,19 +1431,19 @@
 
             if (snapshot.deadlock) {
                 statusElement.textContent = 'Deadlocked';
-                statusElement.style.color = '#b91c1c';
+                statusElement.style.color = '#1E40AF';
                 statusSub.textContent = `Circular wait detected at tick ${snapshot.tick}`;
             } else if (currentStep === 0) {
                 statusElement.textContent = 'Ready';
-                statusElement.style.color = '#436cf5';
+                statusElement.style.color = '#2563EB';
                 statusSub.textContent = 'Run the simulation or step through ticks';
             } else if (final && meals >= target) {
                 statusElement.textContent = 'Complete';
-                statusElement.style.color = '#0f8a63';
+                statusElement.style.color = '#15803D';
                 statusSub.textContent = `All ${target} meals served in ${snapshot.tick} ticks`;
             } else {
                 statusElement.textContent = 'Running';
-                statusElement.style.color = '#436cf5';
+                statusElement.style.color = '#2563EB';
                 statusSub.textContent = `${eating} eating · ${waiting} waiting`;
             }
 

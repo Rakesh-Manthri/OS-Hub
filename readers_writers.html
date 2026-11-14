@@ -7,12 +7,13 @@
 
     <!-- Bootstrap 5 CSS -->
     <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="design.css">
     <!-- Bootstrap Icons -->
     <link href="vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700" rel="stylesheet">
     <!-- Prism.js -->
     <link href="vendor/prism/prism-tomorrow.min.css" rel="stylesheet" />
     <!-- Shared claymorphism theme -->
@@ -21,10 +22,10 @@
     <style>
         /* Resource stage */
         .rw-stage {
-            background: #f0f4fa;
-            border-radius: 24px;
+            background: #F8FAFF;
+            border-radius: 12px;
             padding: 0.8rem;
-            box-shadow: inset 3px 3px 8px rgba(160, 175, 205, 0.28), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .resource-stage {
@@ -35,10 +36,10 @@
         }
 
         .resource-side {
-            background: #f8fafc;
-            border-radius: 18px;
+            background: #F8FAFF;
+            border-radius: 10px;
             padding: 0.7rem;
-            box-shadow: inset 2px 2px 6px rgba(160, 175, 205, 0.22), inset -2px -2px 6px rgba(255, 255, 255, 0.95);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             display: flex;
             flex-direction: column;
             gap: 0.45rem;
@@ -68,13 +69,13 @@
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 0.34rem 0.5rem;
             font-family: var(--font-mono);
             font-size: 0.72rem;
             font-weight: 800;
             border: 1px solid transparent;
-            box-shadow: 0 3px 8px rgba(30, 40, 80, 0.09), inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             animation: actorIn 0.25s ease-out;
         }
 
@@ -84,15 +85,15 @@
         }
 
         .actor-chip.reader {
-            background: linear-gradient(145deg, #eef3ff, #dbe7ff);
-            border-color: rgba(67, 108, 245, 0.28);
-            color: #3152c4;
+            background: #EFF6FF;
+            border-color: rgba(37, 99, 235, 0.28);
+            color: #1D4ED8;
         }
 
         .actor-chip.writer {
-            background: linear-gradient(145deg, #fff1f5, #ffe0e9);
-            border-color: rgba(247, 85, 131, 0.3);
-            color: #b4234b;
+            background: #F8FAFF;
+            border-color: rgba(37, 99, 235, 0.3);
+            color: #1E40AF;
         }
 
         .actor-meta {
@@ -107,9 +108,9 @@
             justify-content: center;
             width: 100%;
             min-height: 70px;
-            border: 2px dashed rgba(203, 213, 225, 0.9);
-            border-radius: 13px;
-            color: #94a3b8;
+            border: 2px dashed rgba(199, 214, 238, 0.9);
+            border-radius: 8px;
+            color: #7A8DB0;
             font-size: 0.72rem;
             font-weight: 700;
             text-align: center;
@@ -117,7 +118,7 @@
         }
 
         .resource-core {
-            border-radius: 20px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -125,36 +126,36 @@
             gap: 0.3rem;
             text-align: center;
             padding: 0.9rem 0.5rem;
-            background: linear-gradient(145deg, #ffffff, #eef3fb);
-            border: 2px solid #e2e8f0;
-            box-shadow: 0 8px 18px rgba(30, 40, 80, 0.11), inset 3px 3px 6px rgba(255, 255, 255, 0.95), inset -3px -3px 7px rgba(170, 185, 215, 0.14);
+            background: #ffffff;
+            border: 2px solid #DCE6F2;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
 
         .resource-core > i {
             font-size: 2rem;
-            color: #64748b;
+            color: #52648A;
             line-height: 1;
         }
 
         .resource-core.is-read {
-            border-color: rgba(67, 108, 245, 0.45);
-            box-shadow: 0 8px 22px rgba(67, 108, 245, 0.2), inset 3px 3px 6px rgba(255, 255, 255, 0.95), inset -3px -3px 7px rgba(170, 185, 215, 0.14);
+            border-color: rgba(37, 99, 235, 0.45);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
-        .resource-core.is-read > i { color: #436cf5; }
+        .resource-core.is-read > i { color: #2563EB; }
 
         .resource-core.is-write {
-            border-color: rgba(247, 85, 131, 0.48);
-            box-shadow: 0 8px 22px rgba(247, 85, 131, 0.2), inset 3px 3px 6px rgba(255, 255, 255, 0.95), inset -3px -3px 7px rgba(170, 185, 215, 0.14);
+            border-color: rgba(37, 99, 235, 0.48);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
-        .resource-core.is-write > i { color: #f75583; }
+        .resource-core.is-write > i { color: #2563EB; }
 
         .resource-core-title {
             font-size: 0.8rem;
             font-weight: 800;
-            color: #334155;
+            color: #2A3B5C;
             line-height: 1.2;
         }
 
@@ -165,12 +166,12 @@
             letter-spacing: 0.45px;
             padding: 0.18rem 0.55rem;
             border-radius: 999px;
-            background: #eef3f8;
-            color: #64748b;
+            background: #F8FAFF;
+            color: #52648A;
         }
 
-        .is-read .resource-mode { background: #edf3fe; color: #3152c4; }
-        .is-write .resource-mode { background: #fef0f4; color: #b4234b; }
+        .is-read .resource-mode { background: #EFF6FF; color: #1D4ED8; }
+        .is-write .resource-mode { background: #EFF6FF; color: #1E40AF; }
 
         .resource-caption {
             font-size: 0.65rem;
@@ -187,9 +188,9 @@
             gap: 0.42rem;
             min-height: 52px;
             padding: 0.55rem;
-            background: #f7f9fd;
-            border-radius: 16px;
-            box-shadow: inset 2px 2px 6px rgba(160, 175, 205, 0.18), inset -2px -2px 6px rgba(255, 255, 255, 0.95);
+            background: #F8FAFF;
+            border-radius: 10px;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
             align-items: center;
         }
 
@@ -197,40 +198,40 @@
             display: inline-flex;
             align-items: center;
             gap: 0.38rem;
-            border-radius: 11px;
+            border-radius: 8px;
             padding: 0.28rem 0.48rem;
             font-size: 0.7rem;
             font-weight: 800;
-            border: 1px solid rgba(203, 213, 225, 0.85);
+            border: 1px solid rgba(199, 214, 238, 0.85);
             background: #ffffff;
-            color: #475569;
-            box-shadow: 2px 3px 7px rgba(160, 175, 205, 0.12), inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+            color: #3E4F6E;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
-        .queue-chip.reader { border-color: rgba(67, 108, 245, 0.28); color: #3152c4; background: #f5f8ff; }
-        .queue-chip.writer { border-color: rgba(247, 85, 131, 0.28); color: #b4234b; background: #fff7fa; }
-        .queue-chip.starved { border-color: rgba(247, 85, 131, 0.55); background: #fef0f4; color: #b4234b; }
+        .queue-chip.reader { border-color: rgba(37, 99, 235, 0.28); color: #1D4ED8; background: #F8FAFF; }
+        .queue-chip.writer { border-color: rgba(37, 99, 235, 0.28); color: #1E40AF; background: #F8FAFF; }
+        .queue-chip.starved { border-color: rgba(37, 99, 235, 0.55); background: #EFF6FF; color: #1E40AF; }
         .queue-chip .queue-wait { font-family: var(--font-mono); font-size: 0.62rem; opacity: 0.75; }
-        .queue-empty { font-size: 0.74rem; font-weight: 700; color: #94a3b8; padding-left: 0.15rem; }
+        .queue-empty { font-size: 0.74rem; font-weight: 700; color: #7A8DB0; padding-left: 0.15rem; }
 
         /* Process state chips */
         .rw-state {
             display: inline-flex;
             align-items: center;
             gap: 0.28rem;
-            border-radius: 9px;
+            border-radius: 6px;
             padding: 0.22rem 0.48rem;
             font-size: 0.67rem;
             font-weight: 800;
             white-space: nowrap;
         }
 
-        .rw-reading { background: #edf3fe; color: #3152c4; }
-        .rw-writing { background: #fef0f4; color: #b4234b; }
-        .rw-waiting { background: #fef4df; color: #b45309; }
-        .rw-done { background: #edfbf5; color: #0f8a63; }
-        .rw-pending { background: #eef3f8; color: #64748b; }
-        .rw-starved { background: #fee2e2; color: #b91c1c; }
+        .rw-reading { background: #EFF6FF; color: #1D4ED8; }
+        .rw-writing { background: #EFF6FF; color: #1E40AF; }
+        .rw-waiting { background: #EFF6FF; color: #1D4ED8; }
+        .rw-done { background: #ECFDF5; color: #15803D; }
+        .rw-pending { background: #F8FAFF; color: #52648A; }
+        .rw-starved { background: #DBEAFE; color: #1E40AF; }
 
         .process-table {
             min-width: 540px;
@@ -249,18 +250,18 @@
         }
 
         .starved-row td {
-            background: #fff8f0 !important;
+            background: #F8FAFF !important;
         }
 
         .starved-row td:first-child {
-            box-shadow: inset 4px 0 0 var(--accent-amber);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         /* Timeline */
         .timeline-wrapper {
             overflow-x: auto;
             overflow-y: hidden;
-            border-radius: 16px;
+            border-radius: 10px;
             padding-bottom: 0.2rem;
         }
 
@@ -300,9 +301,9 @@
             display: inline-block;
         }
 
-        .tl-swatch.wait { background: #fde68a; }
-        .tl-swatch.read { background: #628efb; }
-        .tl-swatch.write { background: #fb6d93; }
+        .tl-swatch.wait { background: #DBEAFE; }
+        .tl-swatch.read { background: #3B82F6; }
+        .tl-swatch.write { background: #3B82F6; }
 
         /* Summary rows */
         .resource-summary-row {
@@ -311,7 +312,7 @@
             justify-content: space-between;
             gap: 0.5rem;
             background: rgba(255, 255, 255, 0.72);
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 0.38rem 0.55rem;
             font-size: 0.74rem;
             font-weight: 700;
@@ -329,12 +330,12 @@
             display: flex;
             align-items: flex-start;
             gap: 0.8rem;
-            background: #fff8ed;
-            border: 2px solid rgba(245, 158, 11, 0.45);
-            border-radius: 18px;
+            background: #F8FAFF;
+            border: 2px solid rgba(37, 99, 235, 0.45);
+            border-radius: 10px;
             padding: 0.85rem 1rem;
             margin-bottom: 1rem;
-            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.12), inset 2px 2px 4px rgba(255, 255, 255, 0.85);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
         .starvation-callout > i {
@@ -344,8 +345,8 @@
             margin-top: 0.1rem;
         }
 
-        .starvation-callout strong { color: #92400e; }
-        .starvation-callout .starvation-text { font-size: 0.8rem; font-weight: 600; color: #92400e; margin-top: 0.15rem; }
+        .starvation-callout strong { color: #1E40AF; }
+        .starvation-callout .starvation-text { font-size: 0.8rem; font-weight: 600; color: #1E40AF; margin-top: 0.15rem; }
 
         /* Event log */
         .event-log {
@@ -361,12 +362,12 @@
             display: flex;
             align-items: flex-start;
             gap: 0.55rem;
-            background: #f7f9fd;
-            border-radius: 12px;
+            background: #F8FAFF;
+            border-radius: 8px;
             padding: 0.48rem 0.6rem;
             font-size: 0.77rem;
             font-weight: 600;
-            color: #475569;
+            color: #3E4F6E;
         }
 
         .event-tick {
@@ -374,7 +375,7 @@
             font-family: var(--font-mono);
             font-size: 0.68rem;
             font-weight: 800;
-            color: #94a3b8;
+            color: #7A8DB0;
             padding-top: 0.12rem;
         }
 
@@ -386,13 +387,13 @@
             min-height: 150px;
             gap: 0.5rem;
             color: var(--text-muted);
-            border: 2px dashed rgba(203, 213, 225, 0.9);
-            border-radius: 18px;
+            border: 2px dashed rgba(199, 214, 238, 0.9);
+            border-radius: 10px;
             padding: 1.5rem;
             text-align: center;
         }
 
-        .event-empty i { font-size: 1.9rem; color: #a5b4fc; }
+        .event-empty i { font-size: 1.9rem; color: #BFDBFE; }
 
         /* Comparison extras */
         .mini-dot-row {
@@ -414,14 +415,14 @@
             font-family: var(--font-mono);
             font-size: 0.56rem;
             font-weight: 800;
-            box-shadow: 0 2px 6px rgba(30, 40, 80, 0.18);
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
 
-        .mini-dot.reader { background: #628efb; }
-        .mini-dot.writer { background: #fb6d93; }
-        .mini-dot.waiting { background: #f59e0b; }
-        .mini-dot.done { background: #2ec491; }
-        .mini-dot.starved { background: #b91c1c; }
+        .mini-dot.reader { background: #3B82F6; }
+        .mini-dot.writer { background: #3B82F6; }
+        .mini-dot.waiting { background: #2563EB; }
+        .mini-dot.done { background: #16A34A; }
+        .mini-dot.starved { background: #1E40AF; }
 
         .policy-note {
             font-size: 0.74rem;
@@ -435,7 +436,7 @@
             gap: 0.3rem;
             font-size: 0.7rem;
             font-weight: 800;
-            color: #b4234b;
+            color: #1E40AF;
         }
 
         @media (max-width: 991.98px) {
@@ -470,17 +471,11 @@
 </head>
 <body>
 
-    <div class="ambient-bg">
-        <div class="ambient-orb orb-blue"></div>
-        <div class="ambient-orb orb-pink"></div>
-        <div class="ambient-orb orb-green"></div>
-    </div>
-
     <!-- Navigation -->
     <nav class="navbar navbar-expand-xl glass-nav sticky-top py-2 px-3 mb-4">
         <div class="container-fluid max-w-7xl">
             <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
-                <div class="brand-icon" style="background: linear-gradient(145deg, #a78bfa, #8b5cf6); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35), inset 2px 2px 4px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(70, 40, 150, 0.3);">
+                <div class="brand-icon" style="background: #3B82F6; box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);">
                     <i class="bi bi-arrow-left-right"></i>
                 </div>
                 <div>
@@ -685,14 +680,14 @@
                         </div>
                     </div>
                     <div class="col-6 col-lg-3">
-                        <div class="kpi-card kpi-purple">
+                        <div class="kpi-card kpi-blue">
                             <div class="kpi-label">Writer Slot</div>
                             <div class="kpi-value mt-1" id="kpiWriter" style="color: var(--accent-purple);">Idle</div>
                             <small class="text-muted d-block mt-1" id="kpiWriterSub">Exclusive access is free</small>
                         </div>
                     </div>
                     <div class="col-6 col-lg-3">
-                        <div class="kpi-card kpi-amber">
+                        <div class="kpi-card kpi-green">
                             <div class="kpi-label">Waiting Queue</div>
                             <div class="kpi-value mt-1" id="kpiWaiting" style="color: var(--accent-amber);">0</div>
                             <small class="text-muted d-block mt-1" id="kpiWaitingSub">No processes waiting</small>
@@ -701,7 +696,7 @@
                     <div class="col-6 col-lg-3">
                         <div class="kpi-card kpi-green" id="fairnessKpiCard">
                             <div class="kpi-label">Fairness</div>
-                            <div class="kpi-value mt-1" id="kpiFairness" style="font-size: 1.55rem; color: #0f8a63;">Ready</div>
+                            <div class="kpi-value mt-1" id="kpiFairness" style="font-size: 1.55rem; color: #15803D;">Ready</div>
                             <small class="text-muted d-block mt-1" id="kpiFairnessSub">Run the simulation</small>
                         </div>
                     </div>
@@ -1017,19 +1012,19 @@
                         <h6 class="fw-bold text-dark mb-3"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Why Starvation Happens</h6>
                         <div class="row g-3">
                             <div class="col-12 col-md-4">
-                                <div class="p-3 rounded-4" style="background: #f5f8ff; border: 1px solid rgba(67, 108, 245, 0.18);">
+                                <div class="p-3 rounded-4" style="background: #F8FAFF; border: 1px solid rgba(37, 99, 235, 0.18);">
                                     <div class="fw-bold text-primary mb-1">Reader stream</div>
                                     <div class="small text-muted">New readers keep joining while the writer waits. Writers preference blocks those readers; readers preference does not.</div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4">
-                                <div class="p-3 rounded-4" style="background: #fff7fa; border: 1px solid rgba(247, 85, 131, 0.18);">
-                                    <div class="fw-bold mb-1" style="color: #b4234b;">Writer stream</div>
+                                <div class="p-3 rounded-4" style="background: #F8FAFF; border: 1px solid rgba(37, 99, 235, 0.18);">
+                                    <div class="fw-bold mb-1" style="color: #1E40AF;">Writer stream</div>
                                     <div class="small text-muted">Queued writers keep replacing the active writer. Readers preference lets readers through; writers preference keeps admitting writers.</div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4">
-                                <div class="p-3 rounded-4" style="background: #edfbf5; border: 1px solid rgba(46, 196, 145, 0.2);">
+                                <div class="p-3 rounded-4" style="background: #ECFDF5; border: 1px solid rgba(34, 197, 94, 0.2);">
                                     <div class="fw-bold text-success mb-1">FIFO fix</div>
                                     <div class="small text-muted">Grant service in arrival order. Once a process is at the front, later arrivals cannot pass it, so waiting is bounded.</div>
                                 </div>
@@ -1069,9 +1064,9 @@
                     <div class="code-container">
                         <div class="code-header">
                             <div class="code-dots">
-                                <span style="background: #ef4444;"></span>
-                                <span style="background: #f59e0b;"></span>
-                                <span style="background: #10b981;"></span>
+                                <span style="background: #1E40AF;"></span>
+                                <span style="background: #2563EB;"></span>
+                                <span style="background: #22C55E;"></span>
                             </div>
                             <span class="text-light small font-monospace" id="codeFileName">readers_first.c</span>
                         </div>
@@ -1096,7 +1091,7 @@
         const POLICY_META = {
             READERS_FIRST: {
                 label: 'Readers First',
-                color: '#436cf5',
+                color: '#2563EB',
                 icon: 'bi-book-half',
                 badge: 'Reader preference',
                 hint: 'Readers admit while a writer waits',
@@ -1104,7 +1099,7 @@
             },
             WRITERS_FIRST: {
                 label: 'Writers First',
-                color: '#f75583',
+                color: '#2563EB',
                 icon: 'bi-pencil-square',
                 badge: 'Writer preference',
                 hint: 'Waiting writers block new readers',
@@ -1112,7 +1107,7 @@
             },
             FAIR: {
                 label: 'Fair / FIFO',
-                color: '#2ec491',
+                color: '#16A34A',
                 icon: 'bi-list-ol',
                 badge: 'FIFO admission',
                 hint: 'Arrival order decides who enters',
@@ -1552,30 +1547,30 @@
             const step = Math.max(1, Math.ceil(totalTicks / 8));
             for (let tickValue = 0; tickValue <= totalTicks; tickValue += step) {
                 const x = xFor(tickValue);
-                parts.push(`<line x1="${x}" y1="${padTop - 8}" x2="${x}" y2="${height - padBottom + 4}" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3 5"></line>`);
-                parts.push(`<text x="${x}" y="${height - 12}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#94a3b8">${tickValue}</text>`);
+                parts.push(`<line x1="${x}" y1="${padTop - 8}" x2="${x}" y2="${height - padBottom + 4}" stroke="#DCE6F2" stroke-width="1" stroke-dasharray="3 5"></line>`);
+                parts.push(`<text x="${x}" y="${height - 12}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#7A8DB0">${tickValue}</text>`);
             }
 
-            parts.push(`<text x="${width - padRight}" y="${padTop - 12}" text-anchor="end" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#94a3b8">tick</text>`);
+            parts.push(`<text x="${width - padRight}" y="${padTop - 12}" text-anchor="end" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#7A8DB0">tick</text>`);
 
             snapshot.processes.forEach((process, index) => {
                 const y = padTop + index * rowHeight + rowHeight / 2;
-                const color = process.type === 'reader' ? '#628efb' : '#fb6d93';
-                const labelColor = process.wasOvertaken ? '#b91c1c' : color;
+                const color = process.type === 'reader' ? '#3B82F6' : '#3B82F6';
+                const labelColor = process.wasOvertaken ? '#1E40AF' : color;
                 const label = `${process.id}${process.wasOvertaken ? ' !' : ''}`;
 
                 parts.push(`<g><title>${process.id} · arrival ${process.arrival} · ${process.wasOvertaken ? 'overtaken while waiting' : 'no overtaking'}</title>`);
-                parts.push(`<line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="#eef2f8" stroke-width="1.2"></line>`);
+                parts.push(`<line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="#F8FAFF" stroke-width="1.2"></line>`);
                 parts.push(`<text x="${padLeft - 12}" y="${y + 4}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800" fill="${labelColor}">${label}</text>`);
 
                 if (process.arrival <= snapshot.tick) {
                     const waitingEnd = process.start !== null ? process.start : snapshot.tick;
 
                     if (waitingEnd > process.arrival) {
-                        parts.push(`<line x1="${xFor(process.arrival)}" y1="${y}" x2="${xFor(waitingEnd)}" y2="${y}" stroke="#fde68a" stroke-width="7" stroke-linecap="round" opacity="0.95"></line>`);
+                        parts.push(`<line x1="${xFor(process.arrival)}" y1="${y}" x2="${xFor(waitingEnd)}" y2="${y}" stroke="#DBEAFE" stroke-width="7" stroke-linecap="round" opacity="0.95"></line>`);
                     }
 
-                    parts.push(`<circle cx="${xFor(process.arrival)}" cy="${y}" r="3.4" fill="${process.arrival <= snapshot.tick ? '#94a3b8' : '#ffffff'}" stroke="#ffffff" stroke-width="1.5"></circle>`);
+                    parts.push(`<circle cx="${xFor(process.arrival)}" cy="${y}" r="3.4" fill="${process.arrival <= snapshot.tick ? '#7A8DB0' : '#ffffff'}" stroke="#ffffff" stroke-width="1.5"></circle>`);
                 }
 
                 if (process.start !== null) {
@@ -1597,8 +1592,8 @@
 
                 if (process.overtaken > 0 && process.start === null) {
                     const x = xFor(snapshot.tick) - 2;
-                    parts.push(`<circle cx="${x}" cy="${y}" r="6.5" fill="#f75583" stroke="#ffffff" stroke-width="1.5"></circle>`);
-                    parts.push(`<text x="${x}" y="${y + 3.5}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="9" font-weight="800" fill="#ffffff">!</text>`);
+                    parts.push(`<circle cx="${x}" cy="${y}" r="6.5" fill="#2563EB" stroke="#ffffff" stroke-width="1.5"></circle>`);
+                    parts.push(`<text x="${x}" y="${y + 3.5}" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" font-weight="800" fill="#ffffff">!</text>`);
                 }
 
                 parts.push('</g>');
@@ -1606,8 +1601,8 @@
 
             if (snapshot.tick > 0) {
                 const currentX = xFor(snapshot.tick);
-                parts.push(`<line x1="${currentX}" y1="${padTop - 6}" x2="${currentX}" y2="${height - padBottom + 4}" stroke="#436cf5" stroke-width="1.8" stroke-dasharray="5 4" opacity="0.8"></line>`);
-                parts.push(`<circle cx="${currentX}" cy="${padTop - 6}" r="3.5" fill="#436cf5"></circle>`);
+                parts.push(`<line x1="${currentX}" y1="${padTop - 6}" x2="${currentX}" y2="${height - padBottom + 4}" stroke="#2563EB" stroke-width="1.8" stroke-dasharray="5 4" opacity="0.8"></line>`);
+                parts.push(`<circle cx="${currentX}" cy="${padTop - 6}" r="3.5" fill="#2563EB"></circle>`);
             }
 
             svg.innerHTML = parts.join('');
@@ -1665,7 +1660,7 @@
                 : 'No readers active';
 
             document.getElementById('kpiWriter').textContent = writer ? 'Writing' : 'Idle';
-            document.getElementById('kpiWriter').style.color = writer ? '#b4234b' : 'var(--accent-purple)';
+            document.getElementById('kpiWriter').style.color = writer ? '#1E40AF' : 'var(--accent-purple)';
             document.getElementById('kpiWriterSub').textContent = writer
                 ? `${writer.id} · ${writer.remaining} ticks remaining`
                 : 'Exclusive access is free';
@@ -1680,23 +1675,23 @@
             const fairnessCard = document.getElementById('fairnessKpiCard');
             const final = currentStep === simulation.history.length - 1;
 
-            fairnessCard.style.borderLeftColor = '#2ec491';
-            fairness.style.color = '#0f8a63';
+            fairnessCard.style.borderLeftColor = '#16A34A';
+            fairness.style.color = '#15803D';
 
             if (starving.length) {
                 fairness.textContent = 'Starving';
-                fairness.style.color = '#b4234b';
-                fairnessCard.style.borderLeftColor = '#f75583';
+                fairness.style.color = '#1E40AF';
+                fairnessCard.style.borderLeftColor = '#2563EB';
                 fairnessSub.textContent = `${starving.map(process => process.id).join(', ')} overtaken while waiting`;
             } else if (currentStep === 0) {
                 fairness.textContent = 'Ready';
-                fairness.style.color = '#436cf5';
-                fairnessCard.style.borderLeftColor = '#436cf5';
+                fairness.style.color = '#2563EB';
+                fairnessCard.style.borderLeftColor = '#2563EB';
                 fairnessSub.textContent = 'Run the simulation';
             } else if (final && simulation.starved.length) {
                 fairness.textContent = 'Starved';
-                fairness.style.color = '#b4234b';
-                fairnessCard.style.borderLeftColor = '#f75583';
+                fairness.style.color = '#1E40AF';
+                fairnessCard.style.borderLeftColor = '#2563EB';
                 fairnessSub.textContent = `${simulation.starved.join(', ')} overtaken · max wait ${maxWait}t`;
             } else if (final && simulation.allDone) {
                 fairness.textContent = 'Fair';
