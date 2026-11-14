@@ -6,7 +6,9 @@
 [![Theme](https://img.shields.io/badge/Theme-Tactile%20Claymorphism-6366f1?style=flat-square)](#-design--claymorphism-theme)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](#license)
 
-**OS EduHub** is a modern, mobile-responsive, interactive educational platform and simulator suite designed for Operating Systems (OS) students, educators, and software engineers. 
+**OS EduHub** is a modern, mobile-responsive, interactive educational platform and simulator suite designed for Operating Systems (OS) students, educators, and software engineers.
+
+🌐 **Live demo:** https://rakesh-manthri.github.io/OS-Hub/
 
 Styled with a **Tactile Claymorphism** design language, the interface delivers plush rounded surfaces, soft matte pastel color palettes, inflated shadows, and playful depth.
 
@@ -216,14 +218,14 @@ No build tools, package managers, or web servers are required!
 
 1. Clone or download this repository:
    ```bash
-   git clone https://github.com/your-username/CPU-Scheduler.git
+   git clone https://github.com/Rakesh-Manthri/OS-Hub.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd CPU-Scheduler
+   cd OS-Hub
    ```
 3. Open `index.html` directly in any modern browser (Chrome, Edge, Firefox, Safari):
-   - Double-click [`index.html`](file:///c:/Projects/CPU-Scheduler/index.html), or
+   - Double-click `index.html`, or
    - Right-click $\rightarrow$ **Open With** $\rightarrow$ **Google Chrome / Microsoft Edge**.
 
 ---
@@ -272,7 +274,7 @@ $$\text{Starvation} \iff \text{a later arrival completes before an earlier waiti
 ## 📁 Project Structure
 
 ```
-CPU-Scheduler/
+OS-Hub/
 │
 ├── index.html              # OS EduHub main SPA portal & academic course hub
 ├── lectures.html           # Unit-wise Lecture Decks Catalog (View Slides & Download PDF)
