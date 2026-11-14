@@ -6,7 +6,9 @@
 [![Theme](https://img.shields.io/badge/Theme-Tactile%20Claymorphism-6366f1?style=flat-square)](#-design--claymorphism-theme)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](#license)
 
-**OS EduHub** is a modern, mobile-responsive, interactive educational platform and simulator suite designed for Operating Systems (OS) students, educators, and software engineers. 
+**OS EduHub** is a modern, mobile-responsive, interactive educational platform and simulator suite designed for Operating Systems (OS) students, educators, and software engineers.
+
+🌐 **Live demo:** https://rakesh-manthri.github.io/OS-Hub/
 
 Styled with a **Tactile Claymorphism** design language, the interface delivers plush rounded surfaces, soft matte pastel color palettes, inflated shadows, and playful depth.
 
