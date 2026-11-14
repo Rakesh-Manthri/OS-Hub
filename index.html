@@ -645,10 +645,10 @@
         <div class="container-fluid max-w-7xl">
             <a class="navbar-brand d-flex align-items-center gap-2" href="#" onclick="navigateTo('home-section')">
                 <div class="brand-icon">
-                    <i class="bi bi-motherboard-fill"></i>
+                    <i class="bi bi-cpu-fill"></i>
                 </div>
                 <div>
-                    <span class="brand-text fs-4">OS EduHub</span>
+                    <span class="brand-text fs-4">OS Hub</span>
                 </div>
             </a>
 
@@ -660,14 +660,9 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="nav nav-pills ms-auto my-2 my-lg-0" id="mainNav">
                     <li class="nav-item">
-                        <button class="nav-link active" data-target="home-section" onclick="navigateTo('home-section')">
-                            <i class="bi bi-house-door-fill me-1"></i> Home
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" data-target="learning-section" onclick="navigateTo('learning-section')">
-                            <i class="bi bi-journal-bookmark-fill me-1"></i> Learning Hub
-                        </button>
+                        <a href="syllabus.html" class="nav-link">
+                            <i class="bi bi-book-half me-1"></i> Course Material
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a href="lectures.html" class="nav-link">
@@ -675,12 +670,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link" onclick="navigateTo('home-section'); document.getElementById('course-material')?.scrollIntoView({behavior: 'smooth'});">
-                            <i class="bi bi-collection-fill me-1"></i> Course Material
+                        <button class="nav-link" data-target="learning-section" onclick="navigateTo('learning-section')">
+                            <i class="bi bi-cpu me-1"></i> Simulators
                         </button>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link coming-soon-trigger">
+                        <button class="nav-link" data-bs-toggle="modal" data-bs-target="#aboutModal">
                             <i class="bi bi-info-circle-fill me-1"></i> About
                         </button>
                     </li>
@@ -1514,6 +1509,46 @@
         </div>
     </div>
 
+    <!-- About OS Hub Modal -->
+    <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-modal-content border-0">
+                <div class="modal-header border-0 pb-0">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="brand-icon" style="width: 38px; height: 38px; font-size: 1.1rem;">
+                            <i class="bi bi-cpu-fill"></i>
+                        </div>
+                        <h4 class="modal-title fw-bold text-dark mb-0" id="aboutModalLabel">About OS Hub</h4>
+                    </div>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pt-3 pb-4 px-4 px-md-5">
+                    <p class="text-secondary fs-6 mb-4" style="line-height: 1.7;">
+                        <strong>OS Hub</strong> is an interactive educational suite designed to help computer science students, educators, and engineers intuitively visualize and master core Operating Systems concepts through tactile simulations, interactive algorithms, and complete courseware.
+                    </p>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <div class="p-3 rounded-4" style="background: rgba(67, 108, 245, 0.06); border: 1px solid rgba(67, 108, 245, 0.15);">
+                                <h6 class="fw-bold text-primary mb-2"><i class="bi bi-cpu me-1"></i> Interactive Simulators</h6>
+                                <p class="small text-muted mb-0">Visual execution, real-time comparisons, and C source code for CPU scheduling, paging, disk algorithms, memory allocation, deadlocks, and synchronization.</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="p-3 rounded-4" style="background: rgba(46, 196, 145, 0.08); border: 1px solid rgba(46, 196, 145, 0.2);">
+                                <h6 class="fw-bold text-success mb-2"><i class="bi bi-journal-bookmark-fill me-1"></i> Academic Courseware</h6>
+                                <p class="small text-muted mb-0">26 pure PDF lecture decks with high-DPI rendering, slide scribble notes, and full 4-unit curriculum mapping (Course Code: U24PC540IT).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 border-top">
+                        <span class="small text-muted font-monospace"><i class="bi bi-check-circle-fill text-success me-1"></i> 100% Offline Capable &bull; Responsive Design</span>
+                        <button type="button" class="btn btn-primary px-4 rounded-pill" data-bs-dismiss="modal">Explore OS Hub</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Glassmorphism Coming Soon Modal -->
     <div class="modal fade" id="comingSoonModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -1578,6 +1613,11 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const comingSoonModal = new bootstrap.Modal(document.getElementById('comingSoonModal'));
+
+            // Check if URL hash requests simulators/learning-section
+            if (window.location.hash === '#simulators' || window.location.hash === '#learning-section') {
+                navigateTo('learning-section');
+            }
 
             // Attach event listener to all "Coming Soon" triggers
             const triggers = document.querySelectorAll('.coming-soon-trigger');
