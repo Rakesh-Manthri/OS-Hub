@@ -113,6 +113,62 @@
             box-shadow: 0 3px 7px rgba(67, 108, 245, 0.3);
         }
 
+        .disk-start-pin, .disk-end-pin {
+            position: absolute;
+            top: 14px;
+            transform: translateX(-50%);
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .disk-start-pin::before, .disk-end-pin::before {
+            content: '';
+            display: block;
+            width: 2px;
+            height: 48px;
+            margin: 0 auto;
+        }
+
+        .disk-start-pin::before {
+            background: #2563eb;
+            box-shadow: 0 0 4px rgba(37, 99, 235, 0.4);
+        }
+
+        .disk-end-pin::before {
+            background: #059669;
+            box-shadow: 0 0 4px rgba(5, 150, 105, 0.4);
+        }
+
+        .disk-start-pin .disk-pin-label {
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2563eb;
+            color: #ffffff;
+            border-radius: 6px;
+            padding: 1px 6px;
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .disk-end-pin .disk-pin-label {
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #059669;
+            color: #ffffff;
+            border-radius: 6px;
+            padding: 1px 6px;
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
         .disk-scale {
             display: flex;
             justify-content: space-between;
@@ -201,8 +257,13 @@
         }
 
         .seq-chip.start {
-            background: #334155;
-            box-shadow: 0 3px 8px rgba(51, 65, 85, 0.3);
+            background: #2563eb;
+            box-shadow: 0 3px 8px rgba(37, 99, 235, 0.35);
+        }
+
+        .seq-chip.end-head {
+            background: #059669;
+            box-shadow: 0 3px 8px rgba(5, 150, 105, 0.35);
         }
 
         .seq-chip.boundary {
@@ -508,16 +569,18 @@
                     </div>
                     <div class="col-6 col-lg-3">
                         <div class="kpi-card kpi-purple">
-                            <div class="kpi-label">Requests Served</div>
-                            <div class="kpi-value mt-1" id="kpiServed" style="color: var(--accent-purple);">0 <span class="fs-6 fw-normal text-muted">/ 0</span></div>
-                            <small class="text-muted d-block mt-1" id="kpiServedSub">At the current step</small>
+                            <div class="kpi-label">Head Positions</div>
+                            <div class="kpi-value mt-1 text-dark" id="kpiHeadPos" style="font-size: 1.35rem;">
+                                <span class="text-primary font-monospace" id="kpiStartHead">53</span> &rarr; <span class="text-success font-monospace" id="kpiEndHead">183</span>
+                            </div>
+                            <small class="text-muted d-block mt-1" id="kpiHeadPosSub">Start Head &rarr; End Position</small>
                         </div>
                     </div>
                     <div class="col-6 col-lg-3">
                         <div class="kpi-card kpi-amber">
-                            <div class="kpi-label">Head Direction</div>
-                            <div class="kpi-value mt-1" id="kpiDirection" style="color: var(--accent-amber); font-size: 1.55rem;">Higher</div>
-                            <small class="text-muted d-block mt-1" id="kpiDirectionSub">Initial head: 53</small>
+                            <div class="kpi-label">Requests Served</div>
+                            <div class="kpi-value mt-1" id="kpiServed" style="color: var(--accent-amber); font-size: 1.35rem;">0 <span class="fs-6 fw-normal text-muted">/ 0</span></div>
+                            <small class="text-muted d-block mt-1" id="kpiServedSub">At the current step</small>
                         </div>
                     </div>
                 </div>
@@ -527,7 +590,7 @@
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-2">
                         <div>
                             <h5 class="fw-bold mb-0 text-dark d-flex align-items-center">
-                                <i class="bi bi-hdd-stack-fill text-primary me-2"></i>Disk Head Movement
+                                <i class="bi bi-hdd-stack-fill text-primary me-2"></i>Disk Head Movement (Vertical Graph)
                             </h5>
                             <small class="text-muted">Seek step <strong class="text-primary font-monospace" id="stepCounterLabel">0 / 0</strong> of the service sequence</small>
                         </div>
@@ -565,11 +628,23 @@
 
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
                         <div class="disk-legend">
-                            <span class="legend-chip"><span class="legend-dot-round" style="background: #f59e0b;"></span>Pending request</span>
-                            <span class="legend-chip"><span class="legend-dot-round" style="background: #2ec491;"></span>Served request</span>
-                            <span class="legend-chip"><span class="legend-dot-round" style="background: #436cf5;"></span>Head position</span>
+                            <span class="legend-chip"><span class="legend-dot-round" style="background: #2563eb;"></span>Start Head</span>
+                            <span class="legend-chip"><span class="legend-dot-round" style="background: #059669;"></span>End Head</span>
+                            <span class="legend-chip"><span class="legend-dot-round" style="background: #436cf5;"></span>Active Head</span>
+                            <span class="legend-chip"><span class="legend-dot-round" style="background: #f59e0b;"></span>Pending / Boundary</span>
+                            <span class="legend-chip"><span class="legend-dot-round" style="background: #2ec491;"></span>Served Request</span>
                         </div>
-                        <span class="badge bg-light text-dark border font-monospace" id="headBadge">Current head: 53</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Graph orientation">
+                                <button type="button" class="btn btn-sm btn-outline-primary active" id="btnLayoutVertical" onclick="setChartLayout('vertical')" title="Textbook vertical layout">
+                                    <i class="bi bi-distribute-vertical me-1"></i>Vertical
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnLayoutHorizontal" onclick="setChartLayout('horizontal')" title="Timeline horizontal layout">
+                                    <i class="bi bi-distribute-horizontal me-1"></i>Horizontal
+                                </button>
+                            </div>
+                            <span class="badge bg-light text-dark border font-monospace" id="headBadge">Current head: 53</span>
+                        </div>
                     </div>
 
                     <div class="disk-lane mb-3">
@@ -1239,11 +1314,30 @@
             return currentStep > 0 ? simulation.moves[currentStep - 1].cumulative : 0;
         }
 
+        let chartLayout = 'vertical';
+
+        function setChartLayout(layout) {
+            chartLayout = layout;
+            const btnV = document.getElementById('btnLayoutVertical');
+            const btnH = document.getElementById('btnLayoutHorizontal');
+            if (btnV && btnH) {
+                if (layout === 'vertical') {
+                    btnV.classList.add('active');
+                    btnH.classList.remove('active');
+                } else {
+                    btnH.classList.add('active');
+                    btnV.classList.remove('active');
+                }
+            }
+            renderSeekChart();
+        }
+
         function renderKPIs() {
             const movement = currentMovement();
             const served = currentServedCount();
             const average = served > 0 ? movement / served : 0;
-            const directional = DIRECTIONAL_ALGOS.has(simulation.algorithm);
+            const endCyl = simulation.points[simulation.points.length - 1].cyl;
+            const currentHead = simulation.points[currentStep] ? simulation.points[currentStep].cyl : simulation.head;
 
             document.getElementById('kpiMovement').innerHTML =
                 `${fmt(movement)} <span class="fs-6 fw-normal text-muted">cyl</span>`;
@@ -1263,12 +1357,20 @@
                 ? 'Every request has been served'
                 : `${simulation.requests.length - served} request${simulation.requests.length - served === 1 ? '' : 's'} remaining`;
 
-            document.getElementById('kpiDirection').textContent = directional
-                ? (simulation.direction === 'right' ? 'Higher' : 'Lower')
-                : 'Not used';
-            document.getElementById('kpiDirectionSub').textContent = directional
-                ? `Initial head: ${fmt(simulation.head)} · ${ALGO_LABELS[simulation.algorithm]}`
-                : `Initial head: ${fmt(simulation.head)} · FCFS/SSTF`;
+            const startHeadEl = document.getElementById('kpiStartHead');
+            const endHeadEl = document.getElementById('kpiEndHead');
+            const headPosSub = document.getElementById('kpiHeadPosSub');
+            if (startHeadEl) startHeadEl.textContent = fmt(simulation.head);
+            if (endHeadEl) endHeadEl.textContent = fmt(endCyl);
+            if (headPosSub) {
+                if (currentStep === 0) {
+                    headPosSub.textContent = `Start: ${fmt(simulation.head)} → End: ${fmt(endCyl)}`;
+                } else if (currentStep === simulation.moves.length) {
+                    headPosSub.textContent = `Completed at cylinder ${fmt(endCyl)}`;
+                } else {
+                    headPosSub.textContent = `Current Head: ${fmt(currentHead)} (Step ${currentStep}/${simulation.moves.length})`;
+                }
+            }
         }
 
         function renderDiskLane() {
@@ -1293,102 +1395,320 @@
             }).join('');
 
             const head = currentPoint ? currentPoint.cyl : simulation.head;
+            const startHead = simulation.head;
+            const endHead = simulation.points[simulation.points.length - 1].cyl;
+
+            let pinsHTML = '';
+            if (startHead === endHead) {
+                pinsHTML = `
+                    <span class="disk-start-pin" style="left: ${percent(startHead)}%;" title="Start & End head: cylinder ${startHead}">
+                        <span class="disk-pin-label">Start & End: ${startHead}</span>
+                    </span>
+                `;
+            } else {
+                pinsHTML = `
+                    <span class="disk-start-pin" style="left: ${percent(startHead)}%;" title="Initial start head: cylinder ${startHead}">
+                        <span class="disk-pin-label">Start: ${startHead}</span>
+                    </span>
+                    <span class="disk-end-pin" style="left: ${percent(endHead)}%;" title="Final end head: cylinder ${endHead}">
+                        <span class="disk-pin-label">End: ${endHead}</span>
+                    </span>
+                `;
+            }
+
             track.innerHTML = `
                 <div class="disk-track-line"></div>
                 ${dots}
+                ${pinsHTML}
                 <span class="disk-head-marker" style="left: ${percent(head)}%;">
                     <span class="disk-head-label">${fmt(head)}</span>
                 </span>
             `;
 
-            document.getElementById('diskScale').innerHTML = [0, 0.25, 0.5, 0.75, 1]
-                .map(fraction => `<span>${fmt(Math.round(maxCylinder * fraction))}</span>`)
-                .join('');
+            document.getElementById('diskScale').innerHTML = `
+                <span class="fw-bold text-dark">0 (Start)</span>
+                <span>${fmt(Math.round(maxCylinder * 0.25))}</span>
+                <span>${fmt(Math.round(maxCylinder * 0.5))}</span>
+                <span>${fmt(Math.round(maxCylinder * 0.75))}</span>
+                <span class="fw-bold text-dark">${fmt(maxCylinder)} (End)</span>
+            `;
 
             document.getElementById('headBadge').textContent = `Current head: ${fmt(head)} · ${ALGO_LABELS[simulation.algorithm]}`;
         }
 
         function renderSeekChart() {
             const svg = document.getElementById('seekChart');
-            const width = 900;
-            const height = 320;
-            const padLeft = 62;
-            const padRight = 24;
-            const padTop = 22;
-            const padBottom = 46;
             const maxCylinder = simulation.diskSize - 1;
             const points = simulation.points;
-            const xFor = index => points.length <= 1
-                ? padLeft
-                : padLeft + (index / (points.length - 1)) * (width - padLeft - padRight);
-            const yFor = cylinder => padTop + (1 - cylinder / maxCylinder) * (height - padTop - padBottom);
             const parts = [];
 
-            parts.push(`<rect x="0" y="0" width="${width}" height="${height}" fill="transparent"></rect>`);
+            if (chartLayout === 'vertical') {
+                // Classic OS Textbook Vertical Seek Graph
+                // Horizontal axis: Cylinders (0 on left to maxCylinder on right)
+                // Vertical axis: Step progression downwards (top to bottom)
+                const width = 920;
+                const padLeft = 95;
+                const padRight = 45;
+                const padTop = 64;
+                const padBottom = 40;
+                const trackWidth = width - padLeft - padRight;
+                const rowHeight = points.length <= 10 ? 46 : (points.length <= 18 ? 40 : 34);
+                const height = padTop + (points.length - 1) * rowHeight + padBottom;
 
-            [0, 0.25, 0.5, 0.75, 1].forEach(fraction => {
-                const value = Math.round(maxCylinder * fraction);
-                const y = yFor(value);
-                parts.push(`<line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="#dbe4f0" stroke-width="1.2" stroke-dasharray="4 5"></line>`);
-                parts.push(`<text x="${padLeft - 12}" y="${y + 4}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#94a3b8">${value}</text>`);
-            });
+                svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+                parts.push(`<rect x="0" y="0" width="${width}" height="${height}" fill="transparent"></rect>`);
 
-            if (points.length <= 13) {
-                points.forEach((point, index) => {
-                    const x = xFor(index);
-                    parts.push(`<text x="${x}" y="${height - 18}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#94a3b8">${index === 0 ? 'H' : index}</text>`);
+                const xFor = cyl => padLeft + (maxCylinder > 0 ? (cyl / maxCylinder) : 0) * trackWidth;
+                const yFor = index => padTop + index * rowHeight;
+
+                // Key cylinders for top ruler & vertical guide gridlines
+                const keyCylinders = [...new Set([0, points[0].cyl, ...points.map(p => p.cyl), maxCylinder])].sort((a, b) => a - b);
+
+                // Draw vertical gridlines extending from top ruler to bottom
+                keyCylinders.forEach(cyl => {
+                    const x = xFor(cyl);
+                    const isBoundary = cyl === 0 || cyl === maxCylinder;
+                    const isStart = cyl === points[0].cyl;
+                    const strokeColor = isBoundary ? '#cbd5e1' : (isStart ? '#93c5fd' : '#e2e8f0');
+                    const strokeWidth = isBoundary || isStart ? 1.5 : 1;
+                    const strokeDash = isBoundary ? 'none' : '3 4';
+
+                    parts.push(`<line x1="${x}" y1="${padTop - 24}" x2="${x}" y2="${height - padBottom + 12}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-dasharray="${strokeDash}"></line>`);
                 });
+
+                // Top horizontal ruler bar
+                parts.push(`<line x1="${padLeft}" y1="${padTop - 24}" x2="${width - padRight}" y2="${padTop - 24}" stroke="#64748b" stroke-width="2.2" stroke-linecap="round"></line>`);
+
+                // Top axis labels
+                keyCylinders.forEach(cyl => {
+                    const x = xFor(cyl);
+                    const isBoundary = cyl === 0 || cyl === maxCylinder;
+                    const isStart = cyl === points[0].cyl;
+
+                    let label = String(cyl);
+                    let badgeColor = '#475569';
+                    let weight = '700';
+                    let fontSize = '11';
+
+                    if (cyl === 0) {
+                        label = '0 (Start)';
+                        badgeColor = '#0f172a';
+                        weight = '800';
+                    } else if (cyl === maxCylinder) {
+                        label = `${maxCylinder} (End)`;
+                        badgeColor = '#0f172a';
+                        weight = '800';
+                    } else if (isStart) {
+                        label = `H: ${cyl}`;
+                        badgeColor = '#2563eb';
+                        weight = '800';
+                    }
+
+                    parts.push(`<circle cx="${x}" cy="${padTop - 24}" r="3" fill="${badgeColor}"></circle>`);
+                    parts.push(`<text x="${x}" y="${padTop - 32}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="${fontSize}" font-weight="${weight}" fill="${badgeColor}">${label}</text>`);
+                });
+
+                // Draw seek lines (zig-zags progressing downwards)
+                for (let index = 1; index < points.length; index++) {
+                    const visited = index <= currentStep;
+                    const jump = points[index].jump;
+                    const isBoundary = points[index].kind === 'boundary';
+
+                    const x1 = xFor(points[index - 1].cyl);
+                    const y1 = yFor(index - 1);
+                    const x2 = xFor(points[index].cyl);
+                    const y2 = yFor(index);
+
+                    let stroke = '#cbd5e1';
+                    let strokeWidth = 1.6;
+                    let strokeDash = '3 4';
+                    let opacity = '0.55';
+
+                    if (visited) {
+                        opacity = '1';
+                        if (jump) {
+                            stroke = '#f75583';
+                            strokeWidth = 2.4;
+                            strokeDash = '6 4';
+                        } else if (isBoundary) {
+                            stroke = '#f59e0b';
+                            strokeWidth = 2.6;
+                            strokeDash = 'none';
+                        } else {
+                            stroke = '#436cf5';
+                            strokeWidth = 2.8;
+                            strokeDash = 'none';
+                        }
+                    }
+
+                    parts.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stroke}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-dasharray="${strokeDash}" opacity="${opacity}"></line>`);
+
+                    // Seek distance pill along line
+                    if (visited) {
+                        const midX = (x1 + x2) / 2;
+                        const midY = (y1 + y2) / 2;
+                        const dist = Math.abs(points[index].cyl - points[index - 1].cyl);
+                        const distText = jump ? `Jump ${dist}` : `${dist} cyl`;
+                        const badgeBg = jump ? 'rgba(247, 85, 131, 0.92)' : (isBoundary ? 'rgba(245, 158, 11, 0.92)' : 'rgba(30, 41, 59, 0.85)');
+
+                        parts.push(`
+                            <g transform="translate(${midX}, ${midY})">
+                                <rect x="-26" y="-10" width="52" height="18" rx="9" fill="${badgeBg}"></rect>
+                                <text x="0" y="3" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" font-weight="700" fill="#ffffff">${distText}</text>
+                            </g>
+                        `);
+                    }
+                }
+
+                // Row guidelines & Nodes
+                points.forEach((point, index) => {
+                    const x = xFor(point.cyl);
+                    const y = yFor(index);
+                    const visited = index <= currentStep;
+                    const isCurrent = index === currentStep;
+                    const isStart = index === 0;
+                    const isEnd = index === points.length - 1;
+                    const jump = point.jump;
+                    const isBoundary = point.kind === 'boundary';
+
+                    // Row horizontal guide line & left step label
+                    const rowLabel = isStart ? 'Start Head' : (isEnd ? 'End Head' : `Step #${index}`);
+                    const rowLabelColor = isCurrent ? '#2563eb' : (visited ? '#475569' : '#94a3b8');
+                    const rowLabelWeight = isStart || isEnd || isCurrent ? '800' : '600';
+
+                    parts.push(`<line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2 3"></line>`);
+                    parts.push(`<text x="${padLeft - 12}" y="${y + 4}" text-anchor="end" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="${rowLabelWeight}" fill="${rowLabelColor}">${rowLabel}</text>`);
+
+                    // Node styling
+                    let nodeFill = '#ffffff';
+                    let nodeStroke = '#94a3b8';
+                    let nodeRadius = 5;
+
+                    if (isStart) {
+                        nodeFill = '#2563eb';
+                        nodeStroke = '#ffffff';
+                        nodeRadius = 7.5;
+                    } else if (isEnd && visited) {
+                        nodeFill = '#059669';
+                        nodeStroke = '#ffffff';
+                        nodeRadius = 7.5;
+                    } else if (visited) {
+                        if (jump) {
+                            nodeFill = '#f75583';
+                            nodeStroke = '#ffffff';
+                            nodeRadius = 6.5;
+                        } else if (isBoundary) {
+                            nodeFill = '#f59e0b';
+                            nodeStroke = '#ffffff';
+                            nodeRadius = 6.5;
+                        } else {
+                            nodeFill = '#436cf5';
+                            nodeStroke = '#ffffff';
+                            nodeRadius = 6;
+                        }
+                    }
+
+                    // Active head halo
+                    if (isCurrent) {
+                        parts.push(`<circle cx="${x}" cy="${y}" r="15" fill="rgba(67, 108, 245, 0.22)"></circle>`);
+                        parts.push(`<circle cx="${x}" cy="${y}" r="9" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="3 2"></circle>`);
+                    }
+
+                    parts.push(`<circle cx="${x}" cy="${y}" r="${nodeRadius}" fill="${nodeFill}" stroke="${nodeStroke}" stroke-width="2"><title>${rowLabel}: Cylinder ${point.cyl}</title></circle>`);
+
+                    // Cylinder number badge beside node
+                    const cylLabel = String(point.cyl);
+                    const tagX = x + (x > width - padRight - 50 ? -16 : 16);
+                    const tagAnchor = x > width - padRight - 50 ? 'end' : 'start';
+                    const tagFill = isCurrent ? '#2563eb' : (isStart ? '#1e40af' : (isEnd && visited ? '#065f46' : '#334155'));
+
+                    parts.push(`<text x="${tagX}" y="${y + 4}" text-anchor="${tagAnchor}" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800" fill="${tagFill}">${cylLabel}</text>`);
+                });
+
             } else {
-                parts.push(`<text x="${(padLeft + width - padRight) / 2}" y="${height - 16}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="700" fill="#94a3b8">Service order →</text>`);
-            }
+                // Horizontal Timeline Seek Chart
+                const width = 900;
+                const height = 320;
+                const padLeft = 62;
+                const padRight = 24;
+                const padTop = 22;
+                const padBottom = 46;
 
-            for (let index = 1; index < points.length; index++) {
-                const visited = index <= currentStep;
-                const jump = points[index].jump;
-                const x1 = xFor(index - 1);
-                const y1 = yFor(points[index - 1].cyl);
-                const x2 = xFor(index);
-                const y2 = yFor(points[index].cyl);
-                const color = visited ? (jump ? '#f75583' : '#436cf5') : '#cbd5e1';
-                const width = visited ? (jump ? 2.4 : 2.8) : 1.5;
-                const dash = jump ? '6 5' : (visited ? '' : '3 6');
-                const opacity = visited ? '1' : '0.55';
-                parts.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" stroke-linecap="round" stroke-dasharray="${dash}" opacity="${opacity}"></line>`);
-            }
+                svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+                parts.push(`<rect x="0" y="0" width="${width}" height="${height}" fill="transparent"></rect>`);
 
-            points.forEach((point, index) => {
-                const visited = index <= currentStep;
-                const isCurrent = index === currentStep;
-                const x = xFor(index);
-                const y = yFor(point.cyl);
-                const jump = point.jump;
-                const isStart = point.kind === 'start';
-                const fill = isStart || visited
-                    ? (jump ? '#f75583' : (point.kind === 'boundary' ? '#f59e0b' : '#436cf5'))
-                    : '#ffffff';
-                const stroke = visited || isStart
-                    ? (jump ? '#f75583' : (point.kind === 'boundary' ? '#f59e0b' : '#436cf5'))
-                    : '#cbd5e1';
-                const radius = isCurrent ? 6 : (isStart ? 5.5 : 4);
+                const xFor = index => points.length <= 1
+                    ? padLeft
+                    : padLeft + (index / (points.length - 1)) * (width - padLeft - padRight);
+                const yFor = cylinder => padTop + (1 - cylinder / maxCylinder) * (height - padTop - padBottom);
 
-                if (isCurrent) {
-                    parts.push(`<circle cx="${x}" cy="${y}" r="13" fill="rgba(67, 108, 245, 0.16)"></circle>`);
+                [0, 0.25, 0.5, 0.75, 1].forEach(fraction => {
+                    const value = Math.round(maxCylinder * fraction);
+                    const y = yFor(value);
+                    parts.push(`<line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="#dbe4f0" stroke-width="1.2" stroke-dasharray="4 5"></line>`);
+                    parts.push(`<text x="${padLeft - 12}" y="${y + 4}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#94a3b8">${value}</text>`);
+                });
+
+                if (points.length <= 13) {
+                    points.forEach((point, index) => {
+                        const x = xFor(index);
+                        const lbl = index === 0 ? 'Start' : (index === points.length - 1 ? 'End' : index);
+                        parts.push(`<text x="${x}" y="${height - 18}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#94a3b8">${lbl}</text>`);
+                    });
+                } else {
+                    parts.push(`<text x="${(padLeft + width - padRight) / 2}" y="${height - 16}" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="700" fill="#94a3b8">Service order →</text>`);
                 }
 
-                parts.push(`<circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="2"><title>Cylinder ${point.cyl}${isStart ? ' (initial head)' : ''}</title></circle>`);
-
-                if (isStart || isCurrent) {
-                    const label = isStart ? `H ${point.cyl}` : `${point.cyl}`;
-                    const labelY = Math.max(16, y - 14);
-                    parts.push(`<text x="${x}" y="${labelY}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800" fill="#334155">${label}</text>`);
+                for (let index = 1; index < points.length; index++) {
+                    const visited = index <= currentStep;
+                    const jump = points[index].jump;
+                    const x1 = xFor(index - 1);
+                    const y1 = yFor(points[index - 1].cyl);
+                    const x2 = xFor(index);
+                    const y2 = yFor(points[index].cyl);
+                    const color = visited ? (jump ? '#f75583' : '#436cf5') : '#cbd5e1';
+                    const lineWidth = visited ? (jump ? 2.4 : 2.8) : 1.5;
+                    const dash = jump ? '6 5' : (visited ? '' : '3 6');
+                    const opacity = visited ? '1' : '0.55';
+                    parts.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${lineWidth}" stroke-linecap="round" stroke-dasharray="${dash}" opacity="${opacity}"></line>`);
                 }
-            });
+
+                points.forEach((point, index) => {
+                    const visited = index <= currentStep;
+                    const isCurrent = index === currentStep;
+                    const x = xFor(index);
+                    const y = yFor(point.cyl);
+                    const jump = point.jump;
+                    const isStart = index === 0;
+                    const isEnd = index === points.length - 1;
+                    const fill = isStart || visited
+                        ? (jump ? '#f75583' : (point.kind === 'boundary' ? '#f59e0b' : (isEnd ? '#059669' : '#436cf5')))
+                        : '#ffffff';
+                    const stroke = visited || isStart
+                        ? (jump ? '#f75583' : (point.kind === 'boundary' ? '#f59e0b' : (isEnd ? '#059669' : '#436cf5')))
+                        : '#cbd5e1';
+                    const radius = isCurrent ? 6 : (isStart || isEnd ? 5.5 : 4);
+
+                    if (isCurrent) {
+                        parts.push(`<circle cx="${x}" cy="${y}" r="13" fill="rgba(67, 108, 245, 0.16)"></circle>`);
+                    }
+
+                    parts.push(`<circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="2"><title>Cylinder ${point.cyl}${isStart ? ' (initial head)' : (isEnd ? ' (end head)' : '')}</title></circle>`);
+
+                    if (isStart || isCurrent || isEnd) {
+                        const label = isStart ? `Start: ${point.cyl}` : (isEnd ? `End: ${point.cyl}` : `${point.cyl}`);
+                        const labelY = Math.max(16, y - 14);
+                        parts.push(`<text x="${x}" y="${labelY}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="800" fill="#334155">${label}</text>`);
+                    }
+                });
+            }
 
             svg.innerHTML = parts.join('');
         }
 
         function renderSequence() {
             const chips = [];
+            const lastIndex = simulation.points.length - 1;
 
             simulation.points.forEach((point, index) => {
                 if (index > 0) {
@@ -1401,7 +1721,10 @@
 
                 if (point.kind === 'start') {
                     className += ' start';
-                    label = `H ${point.cyl}`;
+                    label = `Start Head: ${point.cyl}`;
+                } else if (index === lastIndex) {
+                    className += ' end-head';
+                    label = `End Head: ${point.cyl}`;
                 } else if (point.kind === 'boundary') {
                     className += ' boundary';
                 } else if (point.jump) {
@@ -1415,10 +1738,12 @@
                 }
 
                 const title = point.kind === 'start'
-                    ? 'Initial head'
-                    : (point.kind === 'boundary'
-                        ? 'Disk boundary'
-                        : (point.jump ? 'Circular jump' : 'Serve request'));
+                    ? `Initial start head: cylinder ${point.cyl}`
+                    : (index === lastIndex
+                        ? `Final end head: cylinder ${point.cyl}`
+                        : (point.kind === 'boundary'
+                            ? `Disk boundary: cylinder ${point.cyl}`
+                            : (point.jump ? `Circular jump to cylinder ${point.cyl}` : `Serve request: cylinder ${point.cyl}`)));
 
                 chips.push(`<span class="${className}" title="${title}">${label}</span>`);
             });
