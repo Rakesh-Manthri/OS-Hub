@@ -33,6 +33,12 @@ body {
     font-family: var(--font-mono) !important;
 }
 
+/* Long unbroken strings (URLs, file paths) wrap instead of overflowing
+   their container on narrow screens. */
+a, .font-monospace {
+    overflow-wrap: anywhere;
+}
+
 /* --- Bootstrap palette overrides --------------------------------------- */
 .text-danger { color: #1D4ED8 !important; }
 .bg-danger { background-color: #2563EB !important; }
