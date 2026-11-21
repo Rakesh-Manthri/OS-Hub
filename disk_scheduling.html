@@ -275,7 +275,7 @@
         .mini-path {
             display: block;
             width: 100%;
-            height: 82px;
+            height: 160px;
             background: #F8FAFF;
             border-radius: 10px;
             box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
@@ -1877,29 +1877,31 @@
         };
 
         function miniPathHTML(sim) {
+            // Vertical mini seek graph (cylinders across, steps flowing down),
+            // matching the main chart's vertical layout.
             const width = 240;
-            const height = 82;
+            const height = 160;
             const padX = 12;
             const padY = 12;
             const maxCylinder = sim.diskSize - 1;
             const points = sim.points;
             const color = ALGO_COLORS[sim.algorithm];
-            const xFor = index => points.length <= 1
-                ? padX
-                : padX + (index / (points.length - 1)) * (width - 2 * padX);
-            const yFor = cylinder => padY + (1 - cylinder / maxCylinder) * (height - 2 * padY);
+            const xFor = cylinder => padX + (maxCylinder > 0 ? (cylinder / maxCylinder) : 0) * (width - 2 * padX);
+            const yFor = index => points.length <= 1
+                ? padY
+                : padY + (index / (points.length - 1)) * (height - 2 * padY);
             const parts = [];
 
             for (let index = 1; index < points.length; index++) {
                 const jump = points[index].jump;
-                parts.push(`<line x1="${xFor(index - 1)}" y1="${yFor(points[index - 1].cyl)}" x2="${xFor(index)}" y2="${yFor(points[index].cyl)}" stroke="${color}" stroke-width="2.2" stroke-linecap="round" ${jump ? 'stroke-dasharray="4 3"' : ''} opacity="0.9"></line>`);
+                parts.push(`<line x1="${xFor(points[index - 1].cyl)}" y1="${yFor(index - 1)}" x2="${xFor(points[index].cyl)}" y2="${yFor(index)}" stroke="${color}" stroke-width="2.2" stroke-linecap="round" ${jump ? 'stroke-dasharray="4 3"' : ''} opacity="0.9"></line>`);
             }
 
-            parts.push(`<circle cx="${xFor(0)}" cy="${yFor(points[0].cyl)}" r="3.2" fill="#2A3B5C" stroke="#ffffff" stroke-width="1.5"></circle>`);
+            parts.push(`<circle cx="${xFor(points[0].cyl)}" cy="${yFor(0)}" r="3.2" fill="#2A3B5C" stroke="#ffffff" stroke-width="1.5"></circle>`);
 
             if (points.length > 1) {
                 const end = points.length - 1;
-                parts.push(`<circle cx="${xFor(end)}" cy="${yFor(points[end].cyl)}" r="3.2" fill="${color}" stroke="#ffffff" stroke-width="1.5"></circle>`);
+                parts.push(`<circle cx="${xFor(points[end].cyl)}" cy="${yFor(end)}" r="3.2" fill="${color}" stroke="#ffffff" stroke-width="1.5"></circle>`);
             }
 
             return `<svg class="mini-path" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">${parts.join('')}</svg>`;
@@ -2506,7 +2508,8 @@ int main(void) {
     <footer class="py-4 text-center text-muted small border-top bg-white">
         <div class="container">
             <p class="mb-1"><strong>OS Hub</strong> &bull; Designed &amp; built by <strong>Rakesh Manthri</strong></p>
-            <p class="mb-1">Academic Year 2025&ndash;2026 &bull; <a href="https://vce.ac.in" target="_blank" rel="noopener">Vasavi College of Engineering</a></p>
+            <p class="mb-1">Academic Year 2025&ndash;2026</p>
+            <p class="mb-1"><a href="https://vce.ac.in" target="_blank" rel="noopener">Vasavi College of Engineering</a></p>
             <p class="mb-0">&copy; 2025&ndash;2026 Rakesh Manthri. All rights reserved.</p>
         </div>
     </footer>
