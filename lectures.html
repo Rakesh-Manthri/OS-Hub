@@ -204,6 +204,43 @@
             border-radius: 4px;
         }
 
+        /* Unit nav scroll arrows */
+        .unit-nav-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .unit-nav-wrap .unit-nav-bar {
+            flex: 1;
+            min-width: 0;
+            margin-bottom: 0;
+        }
+        .unit-nav-arrow {
+            flex-shrink: 0;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            border: 1px solid #DCE6F2;
+            background: #ffffff;
+            color: #2563EB;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
+            transition: all 0.2s ease;
+        }
+        .unit-nav-arrow:hover {
+            background: #EFF6FF;
+            transform: translateY(-1px);
+        }
+        .unit-nav-arrow:disabled {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
         .unit-tab-pill {
             background: #ffffff;
             border: 1px solid #DCE6F2;
@@ -491,15 +528,16 @@
                 </div>
                 <div class="col-12 col-md-auto d-flex justify-content-between align-items-center gap-3">
                     <span id="resultsCountLabel" class="text-muted fw-bold small">Showing 26 lectures</span>
-                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold">
-                        <i class="bi bi-filter me-1"></i> Live Filter
-                    </span>
                 </div>
             </div>
         </div>
 
         <!-- Unit Navigation Tabs -->
-        <div class="unit-nav-bar" id="unitNavBar">
+        <div class="unit-nav-wrap">
+            <button class="unit-nav-arrow" id="unitNavPrev" type="button" title="Scroll units left" aria-label="Scroll unit tabs left">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <div class="unit-nav-bar" id="unitNavBar">
             <button class="unit-tab-pill active" data-unit="all">
                 <i class="bi bi-grid-fill"></i> All Units
                 <span class="badge bg-primary text-white ms-1">25</span>
@@ -523,6 +561,10 @@
             <button class="unit-tab-pill" data-unit="5">
                 <i class="bi bi-5-circle-fill text-info"></i> Unit V: Case Studies
                 <span class="badge bg-light text-muted ms-1">Soon</span>
+            </button>
+            </div>
+            <button class="unit-nav-arrow" id="unitNavNext" type="button" title="Scroll units right" aria-label="Scroll unit tabs right">
+                <i class="bi bi-chevron-right"></i>
             </button>
         </div>
 
@@ -1577,14 +1619,11 @@
     </div>
 
     <!-- Footer -->
-    <footer class="mt-auto py-4 border-top bg-white position-relative" style="z-index: 1;">
-        <div class="container text-center">
-            <p class="text-muted small mb-1">
-                <strong>OS EduHub</strong> &bull; Operating Systems Courseware (Course Code: U24PC540IT)
-            </p>
-            <p class="text-muted small mb-0">
-                Department of Information Technology, Vasavi College of Engineering &bull; Dr. S Arun Kumar
-            </p>
+    <footer class="py-4 text-center text-muted small border-top bg-white">
+        <div class="container">
+            <p class="mb-1"><strong>OS Hub</strong> &bull; Designed &amp; built by <strong>Rakesh Manthri</strong></p>
+            <p class="mb-1">Academic Year 2025&ndash;2026 &bull; <a href="https://vce.ac.in" target="_blank" rel="noopener">Vasavi College of Engineering</a></p>
+            <p class="mb-0">&copy; 2025&ndash;2026 Rakesh Manthri. All rights reserved.</p>
         </div>
     </footer>
 
@@ -1600,6 +1639,23 @@
         const resultsCountLabel = document.getElementById('resultsCountLabel');
 
         let activeUnit = 'all';
+
+        // Unit nav scroll arrows (lectures page)
+        const unitNavBar = document.getElementById('unitNavBar');
+        const unitNavPrev = document.getElementById('unitNavPrev');
+        const unitNavNext = document.getElementById('unitNavNext');
+        function updateUnitNavArrows() {
+            if (!unitNavBar || !unitNavPrev || !unitNavNext) return;
+            unitNavPrev.disabled = unitNavBar.scrollLeft <= 0;
+            unitNavNext.disabled = unitNavBar.scrollLeft + unitNavBar.clientWidth >= unitNavBar.scrollWidth - 1;
+        }
+        if (unitNavBar && unitNavPrev && unitNavNext) {
+            unitNavPrev.addEventListener('click', () => unitNavBar.scrollBy({ left: -280, behavior: 'smooth' }));
+            unitNavNext.addEventListener('click', () => unitNavBar.scrollBy({ left: 280, behavior: 'smooth' }));
+            unitNavBar.addEventListener('scroll', updateUnitNavArrows, { passive: true });
+            window.addEventListener('resize', updateUnitNavArrows);
+            updateUnitNavArrows();
+        }
 
         // Unit Tab Filter
         unitTabs.forEach(tab => {
