@@ -6,6 +6,33 @@
    Load order: vendor Bootstrap -> design.css -> simulator-theme.css / page styles.
    ========================================================================== */
 
+/* --- Typography: one font system for every page -------------------------- */
+/* Inter for all UI text, JetBrains Mono for numbers, code and labels.     */
+/* Every page loads the same two families; these variables are the single   */
+/* source of truth — do not re-define --font-sans / --font-mono per page.   */
+:root {
+    --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    /* Type scale (rem) */
+    --text-xs: 0.68rem;
+    --text-sm: 0.78rem;
+    --text-md: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.1rem;
+    --text-xl: 1.35rem;
+    --text-2xl: 2rem;
+}
+
+body {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+}
+
+/* Bootstrap's .font-monospace uses its own stack; point it at JetBrains Mono. */
+.font-monospace {
+    font-family: var(--font-mono) !important;
+}
+
 /* --- Bootstrap palette overrides --------------------------------------- */
 .text-danger { color: #1D4ED8 !important; }
 .bg-danger { background-color: #2563EB !important; }

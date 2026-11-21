@@ -259,7 +259,7 @@
             border: 2px solid transparent;
             border-radius: 10px;
             padding: 0.6rem 1rem;
-            font-size: 0.95rem;
+            font-size: 0.875rem;
             font-weight: 600;
             color: var(--text-main);
             box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
@@ -366,7 +366,7 @@
         }
 
         .kpi-label {
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.6px;
@@ -502,7 +502,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.72rem;
+            font-size: 0.78rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.6px;
@@ -582,7 +582,7 @@
             background: repeating-#DCE6F2 !important;
             color: #3E4F6E !important;
             font-weight: 700;
-            font-size: 0.75rem;
+            font-size: 0.78rem;
         }
 
         .gantt-timeline-ticks {
@@ -590,7 +590,7 @@
             position: relative;
             margin-top: 8px;
             font-family: var(--font-mono);
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             font-weight: 700;
             color: var(--text-muted);
             min-height: 24px;
@@ -622,7 +622,7 @@
 
         .table-glass th {
             font-weight: 800;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             text-transform: uppercase;
             letter-spacing: 0.6px;
             color: var(--text-muted);
@@ -634,7 +634,7 @@
         .table-glass td {
             padding: 0.85rem 1rem;
             border-bottom: 1px solid rgba(220, 230, 242, 0.8);
-            font-size: 0.95rem;
+            font-size: 0.875rem;
             font-weight: 600;
         }
 
@@ -646,7 +646,7 @@
             font-family: var(--font-mono);
             padding: 0.3rem 0.75rem;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.875rem;
             color: white;
             box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
         }
@@ -680,7 +680,7 @@
         }
 
         .algo-badge {
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -2462,11 +2462,11 @@
                         </span>
                         <div class="text-start">
                             <div class="fw-bold text-dark font-monospace small">t = ${activeBlock.start} &rarr; ${activeBlock.end}</div>
-                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.7rem;">Slice: ${duration} units</span>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.78rem;">Slice: ${duration} units</span>
                         </div>
                     </div>
                     <div class="w-100 px-1">
-                        <div class="d-flex justify-content-between text-muted font-monospace" style="font-size: 0.7rem; margin-bottom: 2px;">
+                        <div class="d-flex justify-content-between text-muted font-monospace" style="font-size: 0.78rem; margin-bottom: 2px;">
                             <span>Progress</span>
                             <span>${elapsedInBlock + 1} / ${duration}</span>
                         </div>
@@ -2482,7 +2482,7 @@
                 cpuCoreContent.innerHTML = `
                     <i class="bi bi-cpu text-muted fs-2 mb-1"></i>
                     <div class="fw-bold text-muted small">CPU Idle (No Active Job)</div>
-                    <small class="text-muted font-monospace" style="font-size: 0.75rem;">Interval: t = ${activeBlock.start} &rarr; ${activeBlock.end}</small>
+                    <small class="text-muted font-monospace" style="font-size: 0.78rem;">Interval: t = ${activeBlock.start} &rarr; ${activeBlock.end}</small>
                 `;
             } else {
                 cpuCoreContainer.className = 'cpu-core-box finished';
@@ -2491,7 +2491,7 @@
                 cpuCoreContent.innerHTML = `
                     <i class="bi bi-check-circle-fill text-success fs-1 mb-1"></i>
                     <div class="fw-bold text-success small">All Processes Serviced</div>
-                    <small class="text-muted font-monospace" style="font-size: 0.75rem;">Makespan: ${res.makespan} units</small>
+                    <small class="text-muted font-monospace" style="font-size: 0.78rem;">Makespan: ${res.makespan} units</small>
                 `;
             }
 
@@ -2520,7 +2520,7 @@
                     <div class="queue-empty-state">
                         <i class="bi bi-inbox fs-3 mb-1 text-primary opacity-50"></i>
                         <span class="small fw-bold">Ready Queue is Empty at t = ${t}</span>
-                        <span style="font-size: 0.75rem; opacity: 0.75;">No processes waiting for dispatch</span>
+                        <span style="font-size: 0.78rem; opacity: 0.75;">No processes waiting for dispatch</span>
                     </div>
                 `;
                 queueCountBadge.innerText = `0 in queue`;
@@ -2534,14 +2534,14 @@
                     
                     card.innerHTML = `
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="process-badge" style="background-color: ${p.color}; font-size: 0.75rem; padding: 0.15rem 0.5rem;">
+                            <span class="process-badge" style="background-color: ${p.color}; font-size: 0.78rem; padding: 0.15rem 0.5rem;">
                                 ${p.id}
                             </span>
-                            <span class="badge bg-light text-dark border" style="font-size: 0.65rem;">BT: ${p.bt}</span>
+                            <span class="badge bg-light text-dark border" style="font-size: 0.68rem;">BT: ${p.bt}</span>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center gap-1 font-monospace" style="font-size: 0.7rem;">
+                        <div class="d-flex justify-content-between align-items-center gap-1 font-monospace" style="font-size: 0.78rem;">
                             <span class="text-muted">AT: ${p.at}</span>
-                            ${isPriority ? `<span class="badge bg-warning-subtle text-dark border border-warning-subtle" style="font-size: 0.65rem;">Pri: ${p.priority}</span>` : ''}
+                            ${isPriority ? `<span class="badge bg-warning-subtle text-dark border border-warning-subtle" style="font-size: 0.68rem;">Pri: ${p.priority}</span>` : ''}
                         </div>
                     `;
                     readyQueueContainer.appendChild(card);
@@ -2723,7 +2723,7 @@
                 if (!block.isIdle) {
                     div.style.backgroundColor = block.color;
                 }
-                div.innerHTML = `<span>${block.pid}</span><span style="font-size:0.65rem; opacity:0.85;">[${duration}]</span>`;
+                div.innerHTML = `<span>${block.pid}</span><span style="font-size: 0.68rem; opacity:0.85;">[${duration}]</span>`;
                 div.title = `${block.pid}: ${block.start} -> ${block.end} (Duration: ${duration})`;
                 div.dataset.blockIndex = index;
                 div.onclick = () => {

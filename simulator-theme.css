@@ -22,8 +22,7 @@
 
             --text-main: #0A2540;
             --text-muted: #52648A;
-            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
+            /* --font-sans / --font-mono live in design.css (single definition). */
 
             /* Canonical Clay Shadows */
             --clay-shadow-card: 0 1px 2px rgba(10, 37, 64, 0.06), 0 4px 14px rgba(10, 37, 64, 0.05);
