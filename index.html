@@ -314,6 +314,36 @@
             line-height: 1.7;
         }
 
+        /* 3D hero (Three.js scene, see js/os-3d-hero.js) */
+        #hero-3d-canvas {
+            display: block;
+            width: 100%;
+            margin: 2rem auto 0;
+            max-width: 1100px;
+            height: 420px;
+        }
+
+        #hero-3d-fallback {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin: 2rem auto 0;
+            max-width: 1100px;
+            color: #52648A;
+        }
+
+        .hero-3d-fallback-icons {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-3d-fallback-caption {
+            font-family: "Inter", sans-serif;
+            font-size: 0.95rem;
+            color: #52648A;
+        }
+
         /* Plush Clay Modal */
         .glass-modal-content {
             background: #ffffff;
@@ -667,6 +697,17 @@
                         onclick="navigateTo('learning-section')">
                         Explore Simulators <i class="bi bi-arrow-right ms-2"></i>
                     </button>
+                </div>
+                <div class="hero-3d-wrap">
+                    <canvas id="hero-3d-canvas" aria-label="Interactive 3D models of a CPU chip, disk platter, memory modules and process cubes"></canvas>
+                    <div id="hero-3d-fallback" style="display:none;">
+                        <div class="hero-3d-fallback-icons d-flex justify-content-center gap-3">
+                            <span class="hero-3d-fallback-icon" style="color:#2563EB;"><i class="bi bi-cpu-fill"></i></span>
+                            <span class="hero-3d-fallback-icon" style="color:#16A34A;"><i class="bi bi-hdd-stack-fill"></i></span>
+                            <span class="hero-3d-fallback-icon" style="color:#2563EB;"><i class="bi bi-memory"></i></span>
+                        </div>
+                        <p class="hero-3d-fallback-caption mb-0">Interactive 3D scene needs WebGL</p>
+                    </div>
                 </div>
             </section>
 
@@ -1535,6 +1576,15 @@
 
     <!-- Bootstrap JS Bundle -->
     <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="vendor/three/three.min.js"></script>
+    <script src="js/os-3d-hero.js"></script>
+    <script>
+        (function () {
+            if (typeof window.OSHub3D !== 'undefined' && typeof window.OSHub3D.init === 'function') {
+                window.OSHub3D.init('hero-3d-canvas');
+            }
+        })();
+    </script>
 
     <!-- SPA Navigation & Interactions -->
     <script>
